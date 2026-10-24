@@ -9,6 +9,7 @@ import Grupo from './pages/Grupo.jsx'
 import Integrante from './pages/Integrante.jsx'
 import Perfil from './pages/Perfil.jsx'
 import NaoEncontrada from './pages/NaoEncontrada.jsx'
+import Vitrine from './pages/Vitrine.jsx'
 
 // Mapa do site: cada <Route> liga um endereço (path) a uma tela (element).
 export default function App() {
@@ -26,6 +27,9 @@ export default function App() {
         <Route path="/grupo/:idGrupo" element={<Grupo />} />
         <Route path="/grupo/:idGrupo/integrante/:idUsuario" element={<Integrante />} />
         <Route path="/perfil" element={<Perfil />} />
+
+        {/* Provisória: vitrine do design base (etapa 3) */}
+        <Route path="/vitrine" element={<Vitrine />} />
 
         {/* Qualquer outro endereço */}
         <Route path="*" element={<NaoEncontrada />} />

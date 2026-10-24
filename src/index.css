@@ -1,6 +1,59 @@
 /* Liga o Tailwind no projeto */
 @import "tailwindcss";
 
-/* Tokens de cores e fontes: serão definidos na etapa 3 (design base) */
+/*
+  TOKENS DE DESIGN: troque aqui e o site inteiro muda.
+  Cada --color-xxx vira classes do Tailwind: bg-xxx, text-xxx, border-xxx.
+  Ex.: --color-destaque → bg-destaque, text-destaque.
+  Estilo: "editorial-greeting" (taste-skill). Base neutra; a festa
+  fica nos confetes (as cores pastel de cada pessoa, lá embaixo).
+*/
 @theme {
+  /* Superfícies */
+  --color-fundo: #ffffff;       /* fundo da página */
+  --color-painel: #f9f9f9;      /* painéis (um passo fora do branco) */
+  --color-elevado: #ffffff;     /* cartão dentro de painel */
+  --color-ativo: #ededed;       /* item selecionado (ex.: aba, menu) */
+
+  /* Linhas */
+  --color-borda: #eaeaea;       /* borda de cartões */
+  --color-linha: #f3f3f3;       /* divisória entre linhas de lista */
+  --color-controle: #d9d9d6;    /* borda de campos e botões */
+
+  /* Texto */
+  --color-texto: #1f201d;       /* texto principal */
+  --color-suave: #636361;       /* texto secundário (passa contraste 4.5:1) */
+
+  /* Ações e sinais */
+  --color-primario: #1f201d;    /* botão principal: quase preto */
+  --color-destaque: #1b6e66;    /* a única cor de destaque */
+  --color-positivo: #2e7d32;
+  --color-negativo: #b42318;    /* só para erro e ações perigosas */
+  --color-negativo-claro: #fdecea;
+
+  /* Confetes: cor pastel fixa de cada pessoa (fundo + tinta do mesmo tom) */
+  --color-confete-1: #fde4dc;  --color-confete-1-tinta: #7a2e17;  /* coral */
+  --color-confete-2: #fcefcf;  --color-confete-2-tinta: #6b4a07;  /* âmbar */
+  --color-confete-3: #e3f2d3;  --color-confete-3-tinta: #2f5212;  /* verde */
+  --color-confete-4: #d6f2ea;  --color-confete-4-tinta: #135446;  /* menta */
+  --color-confete-5: #dbeefb;  --color-confete-5-tinta: #164a6e;  /* céu */
+  --color-confete-6: #fbe0ec;  --color-confete-6-tinta: #7a1f47;  /* rosa */
+
+  /* Tipografia */
+  --font-sans: "Instrument Sans", Inter, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;   /* só na saudação */
+
+  /* Cantos arredondados → classes rounded-cartao, rounded-campo */
+  --radius-cartao: 22px;
+  --radius-campo: 10px;
+}
+
+/* Estilos base da página */
+body {
+  @apply bg-fundo text-texto font-sans text-sm antialiased;
+}
+
+/* Números alinhados (mesma largura para cada dígito) */
+.num {
+  font-variant-numeric: tabular-nums;
 }
