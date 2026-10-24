@@ -101,6 +101,8 @@ export default function Grupo() {
   const souAdmin = grupo.id_admin === usuario.id
   // Minha "participação" neste grupo: é a ela que meus presentes ficam ligados
   const minhaParticipacao = integrantes.find((p) => p.id_usuario === usuario.id)
+  // Na aba Integrantes aparecem só os outros (sua lista fica na aba "Minha lista")
+  const outros = integrantes.filter((p) => p.id_usuario !== usuario.id)
   const acaoTopo = souAdmin ? (
     <BotaoIcone rotulo="Editar grupo" onClick={() => setModal('editar')}>
       <IconeConfig className="h-5 w-5" />
@@ -151,7 +153,7 @@ export default function Grupo() {
       <div className="mt-8">
         <Abas
           abas={[
-            { id: 'integrantes', rotulo: `Integrantes (${integrantes.length})` },
+            { id: 'integrantes', rotulo: `Integrantes (${outros.length})` },
             { id: 'lista', rotulo: 'Minha lista de presentes' },
           ]}
           ativa={aba}
@@ -159,17 +161,19 @@ export default function Grupo() {
         />
 
         {aba === 'integrantes' ? (
-          <ul className="mt-4 flex flex-col gap-2">
-            {integrantes.map((p) => (
-              <li key={p.id_usuario}>
-                <CartaoIntegrante
-                  integrante={p}
-                  ehVoce={p.id_usuario === usuario.id}
-                  ehAdmin={p.id_usuario === grupo.id_admin}
-                />
-              </li>
-            ))}
-          </ul>
+          outros.length === 0 ? (
+            <p className="mt-4 rounded-2xl border border-dashed border-controle px-4 py-3 text-sm text-suave">
+              Por enquanto, só você está no grupo. Copie o código de convite acima e mande para quem você quer chamar.
+            </p>
+          ) : (
+            <ul className="mt-4 flex flex-col gap-2">
+              {outros.map((p) => (
+                <li key={p.id_usuario}>
+                  <CartaoIntegrante integrante={p} ehAdmin={p.id_usuario === grupo.id_admin} />
+                </li>
+              ))}
+            </ul>
+          )
         ) : (
           minhaParticipacao && (
             <div className="mt-6">

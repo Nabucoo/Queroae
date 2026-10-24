@@ -1,12 +1,12 @@
 import { useCallback, useId, useState } from 'react'
 import Avatar from './Avatar.jsx'
 import ListaDoIntegrante from './ListaDoIntegrante.jsx'
-import MinhaLista from './MinhaLista.jsx'
 import { IconeSeta } from './Icones.jsx'
 
-// Card de um integrante na aba Integrantes. Clicar abre/fecha a lista de presentes.
+// Card de OUTRO integrante na aba Integrantes (você não aparece lá).
+// Clicar abre/fecha a lista de presentes.
 // A lista só é buscada na primeira vez que o card abre.
-export default function CartaoIntegrante({ integrante, ehVoce, ehAdmin }) {
+export default function CartaoIntegrante({ integrante, ehAdmin }) {
   const [aberto, setAberto] = useState(false)
   const [qtd, setQtd] = useState(integrante.presente[0]?.count ?? 0)
   const idConteudo = useId() // liga o botão ao conteúdo (acessibilidade)
@@ -28,14 +28,11 @@ export default function CartaoIntegrante({ integrante, ehVoce, ehAdmin }) {
         <Avatar nome={nome} id={integrante.id_usuario} />
         <div className="min-w-0">
           <p className="flex items-center gap-2 text-sm font-medium">
-            <span className="truncate">
-              {nome}
-              {ehVoce && <span className="font-normal text-suave"> (você)</span>}
-            </span>
+            <span className="truncate">{nome}</span>
             {ehAdmin && <span className="shrink-0 rounded-full bg-ativo px-2 py-0.5 text-xs font-normal text-suave">Admin</span>}
           </p>
           <p className="num mt-0.5 text-xs text-suave">
-            {ehVoce ? 'Sua lista' : qtd === 1 ? '1 presente' : `${qtd} presentes`}
+            {qtd === 1 ? '1 presente' : `${qtd} presentes`}
           </p>
         </div>
         <IconeSeta className={`ml-auto h-4 w-4 shrink-0 text-suave transition-transform ${aberto ? 'rotate-90' : ''}`} />
@@ -44,12 +41,7 @@ export default function CartaoIntegrante({ integrante, ehVoce, ehAdmin }) {
       {/* Só monta a lista quando abre: assim os presentes são buscados sob demanda */}
       {aberto && (
         <div id={idConteudo} className="border-t border-linha px-4 pt-4 pb-4">
-          {ehVoce ? (
-            // Regra da surpresa: no seu próprio card, a lista de dono (sem escolhas)
-            <MinhaLista idUsuarioGrupo={integrante.id_usuario_grupo} />
-          ) : (
-            <ListaDoIntegrante idUsuarioGrupo={integrante.id_usuario_grupo} nome={nome} onMudou={aoMudar} />
-          )}
+          <ListaDoIntegrante idUsuarioGrupo={integrante.id_usuario_grupo} nome={nome} onMudou={aoMudar} />
         </div>
       )}
     </div>
