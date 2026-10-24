@@ -4,9 +4,11 @@ import { useEffect, useRef } from 'react'
 // que já fecha com a tecla Esc e prende o foco dentro dele.
 export default function Modal({ aberto, onFechar, titulo, children }) {
   const ref = useRef(null) // "ref" = um jeito de mexer direto no elemento HTML
+  const deveriaEstarAberto = useRef(aberto)
 
   // useEffect roda depois que a tela é desenhada: abre ou fecha o <dialog>
   useEffect(() => {
+    deveriaEstarAberto.current = aberto
     const dialogo = ref.current
     if (aberto && !dialogo.open) dialogo.showModal()
     if (!aberto && dialogo.open) dialogo.close()
@@ -15,7 +17,8 @@ export default function Modal({ aberto, onFechar, titulo, children }) {
   return (
     <dialog
       ref={ref}
-      onClose={onFechar}
+      // Só avisa quando a PESSOA fechou (ex.: tecla Esc), não quando o app fechou
+      onClose={() => deveriaEstarAberto.current && onFechar()}
       // Clicar no fundo escuro (fora da caixa) também fecha
       onClick={(e) => e.target === ref.current && onFechar()}
       className={[
