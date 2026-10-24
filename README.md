@@ -43,7 +43,6 @@ src/
 supabase/
   migrations/    cópia do SQL do banco (tabelas, funções e RLS)
   functions/     Edge Function apagar-conta (roda no servidor do Supabase)
-  templates/     e-mails em português para colar no painel
 scripts/         testar-conexao.js
 ```
 
@@ -59,14 +58,14 @@ scripts/         testar-conexao.js
 2. **Cadastro:** Authentication › Sign In / Providers › ligar *Allow new users to sign up* e o provedor *Email*.
 3. **URLs:** Authentication › URL Configuration › *Site URL* = `http://localhost:5173` e *Redirect URLs* com `http://localhost:5173/**`. Ao publicar o site, adicione também o endereço final.
 4. **SMTP (e-mails):** Authentication › Emails › SMTP Settings, com Gmail: host `smtp.gmail.com`, porta `465`, usuário = seu Gmail, senha = **senha de app** do Google (myaccount.google.com/apppasswords). Depois, em Rate Limits, aumente o limite de envio.
-5. **E-mails em português:** Authentication › Emails › Templates. Cole `supabase/templates/confirmar-cadastro.html` em *Confirm signup* e `redefinir-senha.html` em *Reset Password* (o assunto sugerido está na 1ª linha de cada arquivo).
+5. **E-mails em português:** já configurados em Authentication › Emails › Templates (*Confirm signup* e *Reset Password*). Os modelos originais estão no histórico do Git (commit da etapa 9), caso precise colar de novo.
 6. **Edge Function:** Edge Functions › `apagar-conta` › cole o conteúdo de `supabase/functions/apagar-conta/index.ts` e faça o Deploy, com *Verify JWT* ligado. **Sempre que esse arquivo mudar, publique de novo.**
 
 ## Checklist final de testes
 
 Use contas de teste. Dica: `seuemail+teste1@gmail.com`, `+teste2`… chegam todas na mesma caixa.
 
-- [ ] SMTP configurado: o e-mail de confirmação chega, em português, enviado por "QueroAê"
+- [x] SMTP configurado: o e-mail de confirmação chega, em português, enviado por "QueroAê"
 - [ ] Edge Function publicada com a versão mais recente
 - [ ] Cadastro, login, sair e "Esqueceu a senha?" funcionam
 - [ ] Criar grupo, copiar o código, entrar com o código (e aviso "Você já participa")
