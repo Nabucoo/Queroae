@@ -7,6 +7,7 @@ import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
 import Abas from '../components/Abas.jsx'
 import Avatar from '../components/Avatar.jsx'
 import Botao from '../components/Botao.jsx'
+import MinhaLista from '../components/MinhaLista.jsx'
 import ModalEditarGrupo from '../components/ModalEditarGrupo.jsx'
 import ModalConfirmar from '../components/ModalConfirmar.jsx'
 import { IconeVoltar, IconeCopiar, IconeSeta, IconeConfig } from '../components/Icones.jsx'
@@ -29,7 +30,7 @@ export default function Grupo() {
         // maybeSingle: devolve null (sem erro) se o grupo não existir ou não for seu
         supabase.from('grupo').select('id_grupo, nome, descricao, codigo_convite, id_admin')
           .eq('id_grupo', idGrupo).maybeSingle(),
-        supabase.from('usuario_grupo').select('id_usuario, usuario(nome)')
+        supabase.from('usuario_grupo').select('id_usuario_grupo, id_usuario, usuario(nome)')
           .eq('id_grupo', idGrupo).order('created_at'),
       ])
       const falha = resGrupo.error || resIntegrantes.error
@@ -97,6 +98,8 @@ export default function Grupo() {
   }
 
   const souAdmin = grupo.id_admin === usuario.id
+  // Minha "participação" neste grupo: é a ela que meus presentes ficam ligados
+  const minhaParticipacao = integrantes.find((p) => p.id_usuario === usuario.id)
   const acaoTopo = souAdmin ? (
     <BotaoIcone rotulo="Editar grupo" onClick={() => setModal('editar')}>
       <IconeConfig className="h-5 w-5" />
@@ -174,7 +177,7 @@ export default function Grupo() {
             ))}
           </ul>
         ) : (
-          <p className="mt-6 text-sm text-suave">Sua lista de presentes chega na próxima etapa.</p>
+          minhaParticipacao && <MinhaLista idUsuarioGrupo={minhaParticipacao.id_usuario_grupo} />
         )}
       </div>
     </Moldura>
