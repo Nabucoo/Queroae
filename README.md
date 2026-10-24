@@ -88,7 +88,7 @@ Use contas de teste. Dica: `seuemail+teste1@gmail.com`, `+teste2`… chegam toda
 - [x] Admin edita e exclui o grupo; integrante sai do grupo e seus presentes escolhidos ficam livres
 - [x] Apagar conta de admin: o grupo passa para o integrante mais antigo
 - [x] Apagar conta de admin sozinho no grupo: o grupo é excluído
-- [ ] Tudo funciona na largura de celular
+- [x] Tudo funciona na largura de celular
 
 ## Publicar na internet (futuro)
 
