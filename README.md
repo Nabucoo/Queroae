@@ -66,7 +66,7 @@ scripts/         testar-conexao.js
 Use contas de teste. Dica: `seuemail+teste1@gmail.com`, `+teste2`… chegam todas na mesma caixa.
 
 - [x] SMTP configurado: o e-mail de confirmação chega, em português, enviado por "QueroAê"
-- [ ] Edge Function publicada com a versão mais recente
+- [x] Edge Function publicada com a versão mais recente
 - [ ] Cadastro, login, sair e "Esqueceu a senha?" funcionam
 - [ ] Criar grupo, copiar o código, entrar com o código (e aviso "Você já participa")
 - [ ] Adicionar, editar e remover presentes; link `javascript:` é recusado
