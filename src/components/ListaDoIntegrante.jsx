@@ -4,6 +4,7 @@ import { mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Botao from './Botao.jsx'
 import CartaoPresente from './CartaoPresente.jsx'
+import { soltarConfetes } from '../lib/confete.js'
 import { IconeDesfazer, IconePresente } from './Icones.jsx'
 
 // Lista de presentes de OUTRA pessoa, com "Vou comprar" e "Desmarcar".
@@ -39,7 +40,8 @@ export default function ListaDoIntegrante({ idUsuarioGrupo, nome, onMudou }) {
     buscar()
   }, [buscar])
 
-  async function vouComprar(presente) {
+  // botao: o elemento clicado, de onde os confetes vão sair
+  async function vouComprar(presente, botao) {
     setAviso('')
     setOcupado(presente.id_presente)
     const { error } = await supabase
@@ -48,6 +50,8 @@ export default function ListaDoIntegrante({ idUsuarioGrupo, nome, onMudou }) {
     if (error) {
       // 23505 = duplicado: alguém marcou um pouco antes de você
       setAviso(error.code === '23505' ? 'Alguém já escolheu este presente.' : mensagemDeErro(error))
+    } else {
+      soltarConfetes(botao) // deu certo: festa!
     }
     await buscar() // atualiza a lista de qualquer jeito
     setOcupado(null)
@@ -95,7 +99,7 @@ export default function ListaDoIntegrante({ idUsuarioGrupo, nome, onMudou }) {
                   }
                   acoes={
                     !p.escolha ? (
-                      <Botao icone={IconePresente} onClick={() => vouComprar(p)} disabled={ocupado === p.id_presente}>
+                      <Botao icone={IconePresente} onClick={(e) => vouComprar(p, e.currentTarget)} disabled={ocupado === p.id_presente}>
                         {ocupado === p.id_presente ? 'Marcando…' : 'Vou comprar'}
                       </Botao>
                     ) : minha ? (
