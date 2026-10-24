@@ -9,15 +9,16 @@ const estilos = {
 }
 
 export default function Botao({
+  as: Componente = 'button', // as={Link} faz o botão virar um link com a mesma aparência
   variante = 'primario',
   larguraTotal = false,
   className = '',
   type = 'button',
-  ...props // o resto (onClick, disabled, children...) vai direto para o <button>
+  ...props // o resto (onClick, disabled, children...) vai direto para o elemento
 }) {
   return (
-    <button
-      type={type}
+    <Componente
+      type={Componente === 'button' ? type : undefined}
       className={[
         'inline-flex h-[38px] items-center justify-center gap-2 rounded-full px-4',
         'text-sm font-medium transition-colors active:scale-[0.98]',

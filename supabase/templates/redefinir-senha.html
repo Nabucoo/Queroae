@@ -1,0 +1,16 @@
+<!-- Assunto sugerido: Crie uma nova senha no QueroAê -->
+<!-- Cole em: Supabase > Authentication > Emails > Templates > Reset Password -->
+<div style="font-family: Helvetica, Arial, sans-serif; color: #1f201d; max-width: 480px; margin: 0 auto; padding: 24px;">
+  <p style="font-size: 18px; font-weight: 600; margin: 0 0 24px;">QueroAê</p>
+  <h1 style="font-size: 22px; margin: 0 0 12px;">Vamos criar uma nova senha</h1>
+  <p style="font-size: 15px; line-height: 1.5; color: #636361; margin: 0 0 24px;">
+    Recebemos um pedido para trocar a senha da sua conta. Clique no botão abaixo para escolher a nova.
+  </p>
+  <a href="{{ .ConfirmationURL }}"
+     style="display: inline-block; background: #1f201d; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 999px; font-size: 15px; font-weight: 500;">
+    Criar nova senha
+  </a>
+  <p style="font-size: 13px; line-height: 1.5; color: #636361; margin: 32px 0 0;">
+    Se não foi você que pediu, ignore este e-mail: sua senha continua a mesma.
+  </p>
+</div>

@@ -35,8 +35,9 @@ export default function Perfil() {
           </div>
         </div>
 
-        {/* key: quando o perfil carregar, o formulário começa com o nome certo */}
-        <EditarNome key={perfil?.nome} nomeAtual={perfil?.nome ?? ''} idUsuario={usuario.id} onSalvo={recarregarPerfil} />
+        {/* key: o formulário é recriado só quando o perfil termina de carregar
+            (não a cada nome salvo, senão a mensagem "Salvo" sumiria na hora) */}
+        <EditarNome key={perfil?.id_usuario ?? 'carregando'} nomeAtual={perfil?.nome ?? ''} idUsuario={usuario.id} onSalvo={recarregarPerfil} />
 
         <ApagarConta idUsuario={usuario.id} onApagada={async () => { await sair(); navegar('/login', { replace: true }) }} />
       </main>
