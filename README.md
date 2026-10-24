@@ -85,9 +85,9 @@ Use contas de teste. Dica: `seuemail+teste1@gmail.com`, `+teste2`… chegam toda
 - [x] Adicionar, editar e remover presentes; link `javascript:` é recusado
 - [x] Outra conta marca "Vou comprar" e desmarca; o presente aparece na Home dela
 - [x] **Surpresa:** o dono nunca vê seus presentes riscados
-- [ ] Admin edita e exclui o grupo; integrante sai do grupo e seus presentes escolhidos ficam livres
-- [ ] Apagar conta de admin: o grupo passa para o integrante mais antigo
-- [ ] Apagar conta de admin sozinho no grupo: o grupo é excluído
+- [x] Admin edita e exclui o grupo; integrante sai do grupo e seus presentes escolhidos ficam livres
+- [x] Apagar conta de admin: o grupo passa para o integrante mais antigo
+- [x] Apagar conta de admin sozinho no grupo: o grupo é excluído
 - [ ] Tudo funciona na largura de celular
 
 ## Publicar na internet (futuro)
