@@ -20,6 +20,8 @@ const porCodigo = {
 export function mensagemDeErro(erro) {
   if (!erro) return ''
   if (porCodigo[erro.code]) return porCodigo[erro.code]
+  // P0001 = mensagem escrita por nós nas funções do banco (já em português)
+  if (erro.code === 'P0001') return erro.message
   if (erro.message === 'Failed to fetch') return 'Sem conexão com o servidor. Verifique sua internet.'
   console.error(erro) // ajuda a investigar erros que ainda não traduzimos
   return 'Algo deu errado. Tente novamente.'
