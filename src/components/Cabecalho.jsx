@@ -7,7 +7,9 @@ export default function Cabecalho({ esquerda, direita }) {
     // mt-4/sm:mt-6: espaço acima da barra (logo e botão descem juntos, alinhados)
     <header className="mt-4 flex h-14 items-center justify-between gap-3 sm:mt-6">
       {esquerda ?? (
-        <Link to="/" aria-label="QueroAê, início">
+        // flex: sem isso o link se comporta como texto e a logo sobe uns pixels,
+        // desalinhando do botão da direita
+        <Link to="/" aria-label="QueroAê, início" className="flex">
           <Logo />
         </Link>
       )}
