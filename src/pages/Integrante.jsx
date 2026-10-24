@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useLocation, useParams } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
@@ -35,8 +35,15 @@ export default function Integrante() {
     buscar()
   }, [idGrupo, idUsuario])
 
+  // Se viemos da Home (pelo "bilhete" state do link), voltar leva para a Home;
+  // senão (ex.: endereço colado), leva para o grupo.
+  const veioDaHome = useLocation().state?.de === 'home'
   const voltar = (
-    <BotaoIcone as={Link} to={`/grupo/${idGrupo}`} rotulo="Voltar para o grupo">
+    <BotaoIcone
+      as={Link}
+      to={veioDaHome ? '/' : `/grupo/${idGrupo}`}
+      rotulo={veioDaHome ? 'Voltar para o início' : 'Voltar para o grupo'}
+    >
       <IconeVoltar className="h-5 w-5" />
     </BotaoIcone>
   )

@@ -118,7 +118,8 @@ export default function Home() {
                   const dono = presente.usuario_grupo
                   return (
                     <li key={id_escolha_presente}>
-                      <CartaoLink to={`/grupo/${dono.grupo.id_grupo}/integrante/${dono.id_usuario}`}>
+                      {/* state: avisa a página do integrante que viemos da Home (para o botão voltar) */}
+                      <CartaoLink to={`/grupo/${dono.grupo.id_grupo}/integrante/${dono.id_usuario}`} state={{ de: 'home' }}>
                         <Avatar nome={dono.usuario.nome} id={dono.id_usuario} tamanho="p" />
                         <div className="min-w-0">
                           <p className="truncate text-sm font-medium">{presente.nome}</p>
@@ -159,10 +160,11 @@ function Contagem({ n, carregando }) {
 }
 
 // Cartão clicável de uma linha (grupo ou presente)
-function CartaoLink({ to, children }) {
+function CartaoLink({ to, state, children }) {
   return (
     <Link
       to={to}
+      state={state}
       className="flex min-h-[63px] items-center gap-3 rounded-2xl border border-borda bg-elevado px-4 py-3 transition-colors hover:border-controle focus-visible:outline-2 focus-visible:outline-destaque"
     >
       {children}
