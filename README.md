@@ -82,9 +82,9 @@ Use contas de teste. Dica: `seuemail+teste1@gmail.com`, `+teste2`… chegam toda
 - [x] Edge Function publicada com a versão mais recente
 - [x] Cadastro, login, sair e "Esqueceu a senha?" funcionam
 - [x] Criar grupo, copiar o código, entrar com o código (e aviso "Você já participa")
-- [ ] Adicionar, editar e remover presentes; link `javascript:` é recusado
-- [ ] Outra conta marca "Vou comprar" e desmarca; o presente aparece na Home dela
-- [ ] **Surpresa:** o dono nunca vê seus presentes riscados
+- [x] Adicionar, editar e remover presentes; link `javascript:` é recusado
+- [x] Outra conta marca "Vou comprar" e desmarca; o presente aparece na Home dela
+- [x] **Surpresa:** o dono nunca vê seus presentes riscados
 - [ ] Admin edita e exclui o grupo; integrante sai do grupo e seus presentes escolhidos ficam livres
 - [ ] Apagar conta de admin: o grupo passa para o integrante mais antigo
 - [ ] Apagar conta de admin sozinho no grupo: o grupo é excluído
