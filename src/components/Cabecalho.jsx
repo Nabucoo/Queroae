@@ -4,7 +4,8 @@ import Logo from './Logo.jsx'
 // Barra do topo das telas logadas: à esquerda (voltar ou logo), à direita uma ação.
 export default function Cabecalho({ esquerda, direita }) {
   return (
-    <header className="flex h-14 items-center justify-between gap-3">
+    // mt-4/sm:mt-6: espaço acima da barra (logo e botão descem juntos, alinhados)
+    <header className="mt-4 flex h-14 items-center justify-between gap-3 sm:mt-6">
       {esquerda ?? (
         <Link to="/" aria-label="QueroAê, início">
           <Logo />
