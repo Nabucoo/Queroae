@@ -85,10 +85,14 @@ function ApagarConta({ idUsuario, onApagada }) {
   const [gruposAdmin, setGruposAdmin] = useState(null) // null = carregando
   const [confirmando, setConfirmando] = useState(false)
 
-  // Quem é admin de algum grupo precisa excluí-lo antes (regra do banco)
+  // Grupos em que sou admin, com os integrantes, para mostrar o que vai acontecer.
+  // (Quem decide de verdade é a Edge Function; aqui é só a prévia.)
   useEffect(() => {
-    supabase.from('grupo').select('id_grupo, nome').eq('id_admin', idUsuario)
-      .then(({ data }) => setGruposAdmin(data ?? []))
+    supabase
+      .from('grupo')
+      .select('id_grupo, nome, usuario_grupo(id_usuario_grupo, id_usuario, created_at, usuario(nome))')
+      .eq('id_admin', idUsuario)
+      .then(({ data }) => setGruposAdmin((data ?? []).map((g) => ({ ...g, sucessor: integranteMaisAntigo(g, idUsuario) }))))
   }, [idUsuario])
 
   async function apagar() {
@@ -102,8 +106,6 @@ function ApagarConta({ idUsuario, onApagada }) {
     await onApagada()
   }
 
-  const bloqueado = gruposAdmin === null || gruposAdmin.length > 0
-
   return (
     <section className="mt-10 border-t border-borda pt-8">
       <h2 className="text-sm font-semibold text-negativo">Apagar conta</h2>
@@ -111,20 +113,9 @@ function ApagarConta({ idUsuario, onApagada }) {
         Apaga seu login, seu perfil, suas listas de presentes e os presentes que você escolheu. Não dá para desfazer.
       </p>
 
-      {gruposAdmin?.length > 0 && (
-        <div className="mt-4 rounded-campo bg-negativo-claro px-4 py-3 text-sm text-negativo">
-          <p>Você é admin destes grupos. Exclua cada um antes de apagar sua conta:</p>
-          <ul className="mt-2 list-disc pl-5">
-            {gruposAdmin.map((g) => (
-              <li key={g.id_grupo}>
-                <Link to={`/grupo/${g.id_grupo}`} className="font-medium underline">{g.nome}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {gruposAdmin?.length > 0 && <ResumoGruposAdmin grupos={gruposAdmin} />}
 
-      <Botao variante="perigo" className="mt-4" disabled={bloqueado} onClick={() => setConfirmando(true)}>
+      <Botao variante="perigo" className="mt-4" disabled={gruposAdmin === null} onClick={() => setConfirmando(true)}>
         Apagar minha conta
       </Botao>
 
@@ -136,7 +127,36 @@ function ApagarConta({ idUsuario, onApagada }) {
         onConfirmar={apagar}
       >
         <p>Sua conta, suas listas e suas escolhas de presentes serão apagadas para sempre. Os presentes que você escolheu voltam a ficar livres.</p>
+        {gruposAdmin?.length > 0 && <ResumoGruposAdmin grupos={gruposAdmin} />}
       </ModalConfirmar>
     </section>
   )
+}
+
+// Mostra, para cada grupo em que sou admin, para quem ele passa (ou se será excluído)
+function ResumoGruposAdmin({ grupos }) {
+  return (
+    <div className="mt-4 rounded-campo bg-painel px-4 py-3 text-sm">
+      <p>Você é admin destes grupos. Ao apagar sua conta:</p>
+      <ul className="mt-2 flex flex-col gap-1">
+        {grupos.map((g) => (
+          <li key={g.id_grupo}>
+            <Link to={`/grupo/${g.id_grupo}`} className="font-medium hover:underline">{g.nome}</Link>
+            {g.sucessor ? (
+              <span className="text-suave"> → passa para {g.sucessor.usuario.nome}</span>
+            ) : (
+              <span className="text-negativo"> → será excluído (você é o único integrante)</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+// Mesma regra da Edge Function: quem entrou primeiro, sem contar eu
+function integranteMaisAntigo(grupo, idUsuario) {
+  const outros = grupo.usuario_grupo.filter((p) => p.id_usuario !== idUsuario)
+  outros.sort((a, b) => a.created_at.localeCompare(b.created_at) || a.id_usuario_grupo - b.id_usuario_grupo)
+  return outros[0] ?? null
 }
