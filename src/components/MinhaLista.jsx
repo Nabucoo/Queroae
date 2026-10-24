@@ -5,6 +5,7 @@ import CartaoPresente from './CartaoPresente.jsx'
 import ModalPresente from './ModalPresente.jsx'
 import ModalConfirmar from './ModalConfirmar.jsx'
 import Botao from './Botao.jsx'
+import { IconeLapis, IconeLixeira, IconeMais } from './Icones.jsx'
 
 // A aba "Minha lista de presentes" de um grupo.
 // REGRA DA SURPRESA: aqui nunca consultamos escolha_presente,
@@ -65,8 +66,8 @@ export default function MinhaLista({ idUsuarioGrupo }) {
                 presente={p}
                 acoes={
                   <>
-                    <Botao variante="secundario" onClick={() => setEditor({ presente: p })}>Editar</Botao>
-                    <Botao variante="perigo" onClick={() => setRemovendo(p)}>Remover</Botao>
+                    <Botao variante="secundario" icone={IconeLapis} onClick={() => setEditor({ presente: p })}>Editar</Botao>
+                    <Botao variante="perigo" icone={IconeLixeira} onClick={() => setRemovendo(p)}>Remover</Botao>
                   </>
                 }
               />
@@ -76,7 +77,7 @@ export default function MinhaLista({ idUsuarioGrupo }) {
       )}
 
       <div>
-        <Botao onClick={() => setEditor({ presente: null })}>Adicionar novo presente</Botao>
+        <Botao icone={IconeMais} onClick={() => setEditor({ presente: null })}>Adicionar novo presente</Botao>
       </div>
 
       {/* O modal só existe enquanto está aberto: assim os campos começam sempre do zero */}
@@ -95,6 +96,7 @@ export default function MinhaLista({ idUsuarioGrupo }) {
         onFechar={() => setRemovendo(null)}
         titulo="Remover presente?"
         rotuloConfirmar="Remover"
+        iconeConfirmar={IconeLixeira}
         onConfirmar={remover}
       >
         <p><strong>{removendo?.nome}</strong> vai sair da sua lista.</p>

@@ -6,6 +6,7 @@ import Modal from './Modal.jsx'
 import Campo from './Campo.jsx'
 import Botao from './Botao.jsx'
 import { Aviso } from './TelaAuth.jsx'
+import { IconeMais } from './Icones.jsx'
 
 export default function ModalCriarGrupo({ aberto, onFechar }) {
   const navegar = useNavigate()
@@ -38,7 +39,7 @@ export default function ModalCriarGrupo({ aberto, onFechar }) {
         <Aviso>{erro}</Aviso>
         <div className="mt-2 flex justify-end gap-3">
           <Botao variante="texto" onClick={onFechar}>Cancelar</Botao>
-          <Botao type="submit" disabled={enviando}>{enviando ? 'Criando…' : 'Criar grupo'}</Botao>
+          <Botao type="submit" icone={IconeMais} disabled={enviando}>{enviando ? 'Criando…' : 'Criar grupo'}</Botao>
         </div>
       </form>
     </Modal>

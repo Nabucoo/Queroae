@@ -9,7 +9,7 @@ import Botao from '../components/Botao.jsx'
 import Avatar from '../components/Avatar.jsx'
 import ModalCriarGrupo from '../components/ModalCriarGrupo.jsx'
 import ModalEntrarGrupo from '../components/ModalEntrarGrupo.jsx'
-import { IconeConfig, IconeSeta } from '../components/Icones.jsx'
+import { IconeChave, IconeConfig, IconeMais, IconeSeta } from '../components/Icones.jsx'
 
 export default function Home() {
   const { usuario, perfil } = useAuth()
@@ -78,8 +78,8 @@ export default function Home() {
             titulo={<>Grupos que estou participando <Contagem n={grupos.length} carregando={carregando} /></>}
           >
             <div className="mb-4 flex flex-wrap gap-3">
-              <Botao onClick={() => setModal('criar')}>Criar grupo novo</Botao>
-              <Botao variante="secundario" onClick={() => setModal('entrar')}>Entrar com código</Botao>
+              <Botao icone={IconeMais} onClick={() => setModal('criar')}>Criar grupo novo</Botao>
+              <Botao variante="secundario" icone={IconeChave} onClick={() => setModal('entrar')}>Entrar com código</Botao>
             </div>
             {carregando ? (
               <Esqueleto />

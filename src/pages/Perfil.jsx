@@ -9,7 +9,7 @@ import Campo from '../components/Campo.jsx'
 import Botao from '../components/Botao.jsx'
 import ModalConfirmar from '../components/ModalConfirmar.jsx'
 import { Aviso } from '../components/TelaAuth.jsx'
-import { IconeVoltar } from '../components/Icones.jsx'
+import { IconeConfirmar, IconeLixeira, IconeSair, IconeVoltar } from '../components/Icones.jsx'
 
 export default function Perfil() {
   const { usuario, perfil, recarregarPerfil, sair } = useAuth()
@@ -23,7 +23,7 @@ export default function Perfil() {
             <IconeVoltar className="h-5 w-5" />
           </BotaoIcone>
         }
-        direita={<Botao variante="texto" onClick={sair}>Sair</Botao>}
+        direita={<Botao variante="texto" icone={IconeSair} onClick={sair}>Sair</Botao>}
       />
 
       <main>
@@ -75,7 +75,7 @@ function EditarNome({ nomeAtual, idUsuario, onSalvo }) {
         <Aviso>{erro}</Aviso>
         <div className="flex items-center justify-end gap-3">
           {salvo && <span role="status" className="text-sm text-suave">Salvo</span>}
-          <Botao type="submit" disabled={!mudou || enviando}>{enviando ? 'Salvando…' : 'Salvar'}</Botao>
+          <Botao type="submit" icone={IconeConfirmar} disabled={!mudou || enviando}>{enviando ? 'Salvando…' : 'Salvar'}</Botao>
         </div>
       </form>
     </section>
@@ -116,7 +116,7 @@ function ApagarConta({ idUsuario, onApagada }) {
 
       {gruposAdmin?.length > 0 && <ResumoGruposAdmin grupos={gruposAdmin} />}
 
-      <Botao variante="perigo" className="mt-4" disabled={gruposAdmin === null} onClick={() => setConfirmando(true)}>
+      <Botao variante="perigo" icone={IconeLixeira} className="mt-4" disabled={gruposAdmin === null} onClick={() => setConfirmando(true)}>
         Apagar minha conta
       </Botao>
 
@@ -125,6 +125,7 @@ function ApagarConta({ idUsuario, onApagada }) {
         onFechar={() => setConfirmando(false)}
         titulo="Apagar sua conta?"
         rotuloConfirmar="Apagar para sempre"
+        iconeConfirmar={IconeLixeira}
         onConfirmar={apagar}
       >
         <p>Sua conta, suas listas e suas escolhas de presentes serão apagadas para sempre. Os presentes que você escolheu voltam a ficar livres.</p>

@@ -6,6 +6,7 @@ import Modal from './Modal.jsx'
 import Campo from './Campo.jsx'
 import Botao from './Botao.jsx'
 import { Aviso } from './TelaAuth.jsx'
+import { IconeChave, IconeSeta } from './Icones.jsx'
 
 // idsMeusGrupos: grupos em que a pessoa já está, para avisar "você já participa".
 export default function ModalEntrarGrupo({ aberto, onFechar, idsMeusGrupos = [] }) {
@@ -42,7 +43,7 @@ export default function ModalEntrarGrupo({ aberto, onFechar, idsMeusGrupos = [] 
           <Aviso tipo="info">Você já participa deste grupo.</Aviso>
           <div className="flex justify-end gap-3">
             <Botao variante="texto" onClick={fechar}>Fechar</Botao>
-            <Botao onClick={() => navegar(`/grupo/${jaParticipa}`)}>Abrir grupo</Botao>
+            <Botao icone={IconeSeta} onClick={() => navegar(`/grupo/${jaParticipa}`)}>Abrir grupo</Botao>
           </div>
         </div>
       ) : (
@@ -53,7 +54,7 @@ export default function ModalEntrarGrupo({ aberto, onFechar, idsMeusGrupos = [] 
           <Aviso>{erro}</Aviso>
           <div className="mt-2 flex justify-end gap-3">
             <Botao variante="texto" onClick={fechar}>Cancelar</Botao>
-            <Botao type="submit" disabled={enviando}>{enviando ? 'Entrando…' : 'Entrar no grupo'}</Botao>
+            <Botao type="submit" icone={IconeChave} disabled={enviando}>{enviando ? 'Entrando…' : 'Entrar no grupo'}</Botao>
           </div>
         </form>
       )}

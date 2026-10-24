@@ -10,7 +10,7 @@ import Botao from '../components/Botao.jsx'
 import MinhaLista from '../components/MinhaLista.jsx'
 import ModalEditarGrupo from '../components/ModalEditarGrupo.jsx'
 import ModalConfirmar from '../components/ModalConfirmar.jsx'
-import { IconeVoltar, IconeCopiar, IconeConfig } from '../components/Icones.jsx'
+import { IconeConfig, IconeConfirmar, IconeCopiar, IconeLixeira, IconeSair, IconeVoltar } from '../components/Icones.jsx'
 
 export default function Grupo() {
   const { idGrupo } = useParams() // o número que está no endereço /grupo/:idGrupo
@@ -106,7 +106,7 @@ export default function Grupo() {
       <IconeConfig className="h-5 w-5" />
     </BotaoIcone>
   ) : (
-    <Botao variante="texto" onClick={() => setModal('sair')}>Sair do grupo</Botao>
+    <Botao variante="texto" icone={IconeSair} onClick={() => setModal('sair')}>Sair do grupo</Botao>
   )
 
   return (
@@ -125,6 +125,7 @@ export default function Grupo() {
         onFechar={() => setModal(null)}
         titulo="Excluir grupo?"
         rotuloConfirmar="Excluir grupo"
+        iconeConfirmar={IconeLixeira}
         onConfirmar={excluirGrupo}
       >
         <p>O grupo <strong>{grupo.nome}</strong> será apagado para todos, junto com as listas de presentes e as escolhas. Não dá para desfazer.</p>
@@ -134,6 +135,7 @@ export default function Grupo() {
         onFechar={() => setModal(null)}
         titulo="Sair do grupo?"
         rotuloConfirmar="Sair do grupo"
+        iconeConfirmar={IconeSair}
         onConfirmar={sairDoGrupo}
       >
         <p>Você vai sair de <strong>{grupo.nome}</strong>. Sua lista de presentes deste grupo será apagada e os presentes que você escolheu voltam a ficar livres.</p>
@@ -221,8 +223,7 @@ function CodigoConvite({ codigo }) {
         <p className="text-xs text-suave">Código de convite</p>
         <p className="num mt-0.5 text-lg font-medium tracking-wide">{codigo}</p>
       </div>
-      <Botao variante="secundario" onClick={copiar} aria-live="polite">
-        <IconeCopiar />
+      <Botao variante="secundario" icone={copiado ? IconeConfirmar : IconeCopiar} onClick={copiar} aria-live="polite">
         {copiado ? 'Copiado!' : 'Copiar'}
       </Botao>
     </div>

@@ -6,6 +6,7 @@ import Modal from './Modal.jsx'
 import Campo from './Campo.jsx'
 import Botao from './Botao.jsx'
 import { Aviso } from './TelaAuth.jsx'
+import { IconeConfirmar, IconeLixeira, IconeMais } from './Icones.jsx'
 
 // Serve para ADICIONAR (presente = null) e para EDITAR (presente = o presente).
 export default function ModalPresente({ presente, idUsuarioGrupo, onFechar, onSalvo, onPedirRemocao }) {
@@ -52,11 +53,11 @@ export default function ModalPresente({ presente, idUsuarioGrupo, onFechar, onSa
         <Aviso>{erro}</Aviso>
         <div className="mt-2 flex justify-end gap-3">
           {editando ? (
-            <Botao variante="perigo" className="mr-auto" onClick={onPedirRemocao}>Remover</Botao>
+            <Botao variante="perigo" icone={IconeLixeira} className="mr-auto" onClick={onPedirRemocao}>Remover</Botao>
           ) : (
             <Botao variante="texto" onClick={onFechar}>Cancelar</Botao>
           )}
-          <Botao type="submit" disabled={enviando}>
+          <Botao type="submit" icone={editando ? IconeConfirmar : IconeMais} disabled={enviando}>
             {enviando ? 'Salvando…' : editando ? 'Salvar' : 'Adicionar'}
           </Botao>
         </div>

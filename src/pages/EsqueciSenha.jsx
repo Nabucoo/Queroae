@@ -5,6 +5,7 @@ import { mensagemDeErro } from '../lib/erros.js'
 import TelaAuth, { Aviso } from '../components/TelaAuth.jsx'
 import Campo from '../components/Campo.jsx'
 import Botao from '../components/Botao.jsx'
+import { IconeEnvelope } from '../components/Icones.jsx'
 
 export default function EsqueciSenha() {
   const [email, setEmail] = useState('')
@@ -46,7 +47,7 @@ export default function EsqueciSenha() {
       <form onSubmit={enviarLink} className="flex flex-col gap-4">
         <Campo rotulo="E-mail" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         <Aviso>{erro}</Aviso>
-        <Botao type="submit" larguraTotal disabled={enviando}>
+        <Botao type="submit" icone={IconeEnvelope} larguraTotal disabled={enviando}>
           {enviando ? 'Enviando…' : 'Enviar link'}
         </Botao>
       </form>

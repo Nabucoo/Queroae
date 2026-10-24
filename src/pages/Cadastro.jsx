@@ -5,6 +5,7 @@ import { mensagemDeErro } from '../lib/erros.js'
 import TelaAuth, { Aviso } from '../components/TelaAuth.jsx'
 import Campo from '../components/Campo.jsx'
 import Botao from '../components/Botao.jsx'
+import { IconePessoaMais } from '../components/Icones.jsx'
 
 export default function Cadastro() {
   const [nome, setNome] = useState('')
@@ -68,7 +69,7 @@ export default function Cadastro() {
           onChange={(e) => setSenha(e.target.value)}
         />
         <Aviso>{erro}</Aviso>
-        <Botao type="submit" larguraTotal disabled={enviando}>
+        <Botao type="submit" icone={IconePessoaMais} larguraTotal disabled={enviando}>
           {enviando ? 'Criando…' : 'Criar conta'}
         </Botao>
       </form>

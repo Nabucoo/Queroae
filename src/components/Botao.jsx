@@ -14,7 +14,9 @@ export default function Botao({
   larguraTotal = false,
   className = '',
   type = 'button',
-  ...props // o resto (onClick, disabled, children...) vai direto para o elemento
+  icone: Icone, // ex.: icone={IconeMais} — aparece à esquerda do texto
+  children,
+  ...props // o resto (onClick, disabled...) vai direto para o elemento
 }) {
   return (
     <Componente
@@ -29,6 +31,9 @@ export default function Botao({
         className,
       ].join(' ')}
       {...props}
-    />
+    >
+      {Icone && <Icone className="h-4 w-4 shrink-0" />}
+      {children}
+    </Componente>
   )
 }

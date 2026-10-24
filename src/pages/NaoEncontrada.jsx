@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import Logo from '../components/Logo.jsx'
 import Botao from '../components/Botao.jsx'
+import { IconeCasa } from '../components/Icones.jsx'
 
 // Aparece quando o endereço não existe (ex.: /qualquercoisa)
 export default function NaoEncontrada() {
@@ -12,7 +13,7 @@ export default function NaoEncontrada() {
         Esse endereço não existe ou mudou. Volte para o início e continue de lá.
       </p>
       <div className="mt-6">
-        <Botao as={Link} to="/">Ir para o início</Botao>
+        <Botao as={Link} to="/" icone={IconeCasa}>Ir para o início</Botao>
       </div>
     </main>
   )

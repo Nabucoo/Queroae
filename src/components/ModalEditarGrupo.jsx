@@ -5,6 +5,7 @@ import Modal from './Modal.jsx'
 import Campo from './Campo.jsx'
 import Botao from './Botao.jsx'
 import { Aviso } from './TelaAuth.jsx'
+import { IconeConfirmar, IconeLixeira } from './Icones.jsx'
 
 // Só o admin abre esta janela. onSalvo recebe o grupo atualizado.
 export default function ModalEditarGrupo({ aberto, onFechar, grupo, onSalvo, onPedirExclusao }) {
@@ -36,14 +37,14 @@ export default function ModalEditarGrupo({ aberto, onFechar, grupo, onSalvo, onP
         <Aviso>{erro}</Aviso>
         <div className="mt-2 flex justify-end gap-3">
           <Botao variante="texto" onClick={onFechar}>Cancelar</Botao>
-          <Botao type="submit" disabled={enviando}>{enviando ? 'Salvando…' : 'Salvar'}</Botao>
+          <Botao type="submit" icone={IconeConfirmar} disabled={enviando}>{enviando ? 'Salvando…' : 'Salvar'}</Botao>
         </div>
       </form>
 
       {/* Ação perigosa fica separada, no fim */}
       <div className="mt-6 flex items-center justify-between gap-3 border-t border-borda pt-5">
         <p className="text-sm text-suave">Apaga o grupo e todas as listas dele.</p>
-        <Botao variante="perigo" onClick={onPedirExclusao}>Excluir grupo</Botao>
+        <Botao variante="perigo" icone={IconeLixeira} onClick={onPedirExclusao}>Excluir grupo</Botao>
       </div>
     </Modal>
   )

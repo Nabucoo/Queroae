@@ -4,6 +4,7 @@ import { mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Botao from './Botao.jsx'
 import CartaoPresente from './CartaoPresente.jsx'
+import { IconeDesfazer, IconePresente } from './Icones.jsx'
 
 // Lista de presentes de OUTRA pessoa, com "Vou comprar" e "Desmarcar".
 // Usada na página do integrante e no card que expande da aba Integrantes.
@@ -94,11 +95,11 @@ export default function ListaDoIntegrante({ idUsuarioGrupo, nome, onMudou }) {
                   }
                   acoes={
                     !p.escolha ? (
-                      <Botao onClick={() => vouComprar(p)} disabled={ocupado === p.id_presente}>
+                      <Botao icone={IconePresente} onClick={() => vouComprar(p)} disabled={ocupado === p.id_presente}>
                         {ocupado === p.id_presente ? 'Marcando…' : 'Vou comprar'}
                       </Botao>
                     ) : minha ? (
-                      <Botao variante="secundario" onClick={() => desmarcar(p)} disabled={ocupado === p.id_presente}>
+                      <Botao variante="secundario" icone={IconeDesfazer} onClick={() => desmarcar(p)} disabled={ocupado === p.id_presente}>
                         {ocupado === p.id_presente ? 'Desmarcando…' : 'Desmarcar'}
                       </Botao>
                     ) : null
