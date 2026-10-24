@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
 import Avatar from '../components/Avatar.jsx'
-import Botao from '../components/Botao.jsx'
-import CartaoPresente from '../components/CartaoPresente.jsx'
+import ListaDoIntegrante from '../components/ListaDoIntegrante.jsx'
 import MinhaLista from '../components/MinhaLista.jsx'
 import { IconeVoltar } from '../components/Icones.jsx'
 
@@ -16,23 +15,9 @@ export default function Integrante() {
   const ehVoce = idUsuario === usuario.id
 
   const [integrante, setIntegrante] = useState(null)
-  const [presentes, setPresentes] = useState([])
+  const [presentes, setPresentes] = useState(null) // só para o resumo do topo
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState('')
-  const [aviso, setAviso] = useState('') // ex.: "Alguém já escolheu este presente."
-  const [ocupado, setOcupado] = useState(null) // id do presente sendo marcado/desmarcado
-
-  // Busca a lista com as escolhas (o RLS só deixa ver se você NÃO é o dono)
-  const buscarPresentes = useCallback(async (idUsuarioGrupo) => {
-    const { data, error } = await supabase
-      .from('presente')
-      .select('id_presente, nome, descricao, link, escolha_presente(id_escolha_presente, id_presenteador, usuario(nome))')
-      .eq('id_usuario_grupo', idUsuarioGrupo)
-      .order('created_at')
-    if (error) return setErro(mensagemDeErro(error))
-    // Cada presente tem no máximo uma escolha; deixamos como objeto ou null
-    setPresentes(data.map((p) => ({ ...p, escolha: [p.escolha_presente].flat()[0] ?? null })))
-  }, [])
 
   useEffect(() => {
     async function buscar() {
@@ -44,42 +29,11 @@ export default function Integrante() {
         .eq('id_usuario', idUsuario)
         .maybeSingle()
       if (error) setErro(mensagemDeErro(error))
-      else {
-        setIntegrante(data)
-        // Na sua própria página, a lista de dono (MinhaLista) busca sozinha
-        if (data && !ehVoce) await buscarPresentes(data.id_usuario_grupo)
-      }
+      else setIntegrante(data)
       setCarregando(false)
     }
     buscar()
-  }, [idGrupo, idUsuario, ehVoce, buscarPresentes])
-
-  async function vouComprar(presente) {
-    setAviso('')
-    setOcupado(presente.id_presente)
-    const { error } = await supabase
-      .from('escolha_presente')
-      .insert({ id_presente: presente.id_presente, id_presenteador: usuario.id })
-    if (error) {
-      // 23505 = duplicado: alguém marcou um pouco antes de você
-      setAviso(error.code === '23505' ? 'Alguém já escolheu este presente.' : mensagemDeErro(error))
-    }
-    await buscarPresentes(integrante.id_usuario_grupo) // atualiza a lista de qualquer jeito
-    setOcupado(null)
-  }
-
-  async function desmarcar(presente) {
-    setAviso('')
-    setOcupado(presente.id_presente)
-    const { error } = await supabase
-      .from('escolha_presente')
-      .delete()
-      .eq('id_escolha_presente', presente.escolha.id_escolha_presente)
-      .eq('id_presenteador', usuario.id) // só a própria escolha
-    if (error) setAviso(mensagemDeErro(error))
-    await buscarPresentes(integrante.id_usuario_grupo)
-    setOcupado(null)
-  }
+  }, [idGrupo, idUsuario])
 
   const voltar = (
     <BotaoIcone as={Link} to={`/grupo/${idGrupo}`} rotulo="Voltar para o grupo">
@@ -107,57 +61,22 @@ export default function Integrante() {
                   {integrante.usuario.nome}
                   {ehVoce && <span className="font-normal text-suave"> (você)</span>}
                 </h1>
-                {!ehVoce && <p className="mt-1 text-sm text-suave">{resumo(presentes)}</p>}
+                {!ehVoce && presentes && <p className="mt-1 text-sm text-suave">{resumo(presentes)}</p>}
               </div>
             </div>
 
-            <h2 className="mt-10 text-base font-semibold">Lista de presentes</h2>
+            <h2 className="mt-10 mb-4 text-base font-semibold">Lista de presentes</h2>
 
             {ehVoce ? (
               // Regra da surpresa: na sua própria página, nada de escolhas
               <MinhaLista idUsuarioGrupo={integrante.id_usuario_grupo} />
             ) : (
-              <div className="mt-4 flex flex-col gap-3">
-                {aviso && <p role="alert" className="rounded-campo bg-negativo-claro px-3 py-2 text-sm text-negativo">{aviso}</p>}
-
-                {presentes.length === 0 ? (
-                  <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-sm text-suave">
-                    {integrante.usuario.nome.split(' ')[0]} ainda não adicionou presentes à lista.
-                  </p>
-                ) : (
-                  <ul className="flex flex-col gap-2">
-                    {presentes.map((p) => {
-                      const minha = p.escolha?.id_presenteador === usuario.id
-                      return (
-                        <li key={p.id_presente}>
-                          <CartaoPresente
-                            presente={p}
-                            riscado={Boolean(p.escolha)}
-                            rodape={
-                              p.escolha && (
-                                <p className={`mt-2 text-xs ${minha ? 'font-medium text-destaque' : 'text-suave'}`}>
-                                  {minha ? 'Você vai comprar' : `${p.escolha.usuario?.nome ?? 'Alguém'} vai comprar`}
-                                </p>
-                              )
-                            }
-                            acoes={
-                              !p.escolha ? (
-                                <Botao onClick={() => vouComprar(p)} disabled={ocupado === p.id_presente}>
-                                  {ocupado === p.id_presente ? 'Marcando…' : 'Vou comprar'}
-                                </Botao>
-                              ) : minha ? (
-                                <Botao variante="secundario" onClick={() => desmarcar(p)} disabled={ocupado === p.id_presente}>
-                                  {ocupado === p.id_presente ? 'Desmarcando…' : 'Desmarcar'}
-                                </Botao>
-                              ) : null
-                            }
-                          />
-                        </li>
-                      )
-                    })}
-                  </ul>
-                )}
-              </div>
+              // setPresentes é estável (não muda entre desenhos), seguro como onMudou
+              <ListaDoIntegrante
+                idUsuarioGrupo={integrante.id_usuario_grupo}
+                nome={integrante.usuario.nome}
+                onMudou={setPresentes}
+              />
             )}
           </>
         )}

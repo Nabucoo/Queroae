@@ -5,12 +5,12 @@ import { mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
 import Abas from '../components/Abas.jsx'
-import Avatar from '../components/Avatar.jsx'
+import CartaoIntegrante from '../components/CartaoIntegrante.jsx'
 import Botao from '../components/Botao.jsx'
 import MinhaLista from '../components/MinhaLista.jsx'
 import ModalEditarGrupo from '../components/ModalEditarGrupo.jsx'
 import ModalConfirmar from '../components/ModalConfirmar.jsx'
-import { IconeVoltar, IconeCopiar, IconeSeta, IconeConfig } from '../components/Icones.jsx'
+import { IconeVoltar, IconeCopiar, IconeConfig } from '../components/Icones.jsx'
 
 export default function Grupo() {
   const { idGrupo } = useParams() // o número que está no endereço /grupo/:idGrupo
@@ -30,7 +30,8 @@ export default function Grupo() {
         // maybeSingle: devolve null (sem erro) se o grupo não existir ou não for seu
         supabase.from('grupo').select('id_grupo, nome, descricao, codigo_convite, id_admin')
           .eq('id_grupo', idGrupo).maybeSingle(),
-        supabase.from('usuario_grupo').select('id_usuario_grupo, id_usuario, usuario(nome)')
+        // presente(count): quantos presentes cada um tem (para o card fechado)
+        supabase.from('usuario_grupo').select('id_usuario_grupo, id_usuario, usuario(nome), presente(count)')
           .eq('id_grupo', idGrupo).order('created_at'),
       ])
       const falha = resGrupo.error || resIntegrantes.error
@@ -156,28 +157,23 @@ export default function Grupo() {
         />
 
         {aba === 'integrantes' ? (
-          <ul className="mt-2 flex flex-col">
+          <ul className="mt-4 flex flex-col gap-2">
             {integrantes.map((p) => (
               <li key={p.id_usuario}>
-                <Link
-                  to={`/grupo/${grupo.id_grupo}/integrante/${p.id_usuario}`}
-                  className="flex items-center gap-3 border-b border-linha py-3 transition-colors last:border-0 hover:bg-painel focus-visible:outline-2 focus-visible:outline-destaque"
-                >
-                  <Avatar nome={p.usuario.nome} id={p.id_usuario} />
-                  <span className="min-w-0 truncate text-sm font-medium">
-                    {p.usuario.nome}
-                    {p.id_usuario === usuario.id && <span className="font-normal text-suave"> (você)</span>}
-                  </span>
-                  {p.id_usuario === grupo.id_admin && (
-                    <span className="shrink-0 rounded-full bg-ativo px-2 py-0.5 text-xs text-suave">Admin</span>
-                  )}
-                  <IconeSeta className="ml-auto h-4 w-4 shrink-0 text-suave" />
-                </Link>
+                <CartaoIntegrante
+                  integrante={p}
+                  ehVoce={p.id_usuario === usuario.id}
+                  ehAdmin={p.id_usuario === grupo.id_admin}
+                />
               </li>
             ))}
           </ul>
         ) : (
-          minhaParticipacao && <MinhaLista idUsuarioGrupo={minhaParticipacao.id_usuario_grupo} />
+          minhaParticipacao && (
+            <div className="mt-6">
+              <MinhaLista idUsuarioGrupo={minhaParticipacao.id_usuario_grupo} />
+            </div>
+          )
         )}
       </div>
     </Moldura>
