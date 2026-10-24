@@ -9,6 +9,8 @@ const porCodigo = {
   over_email_send_rate_limit: 'Muitos e-mails enviados. Aguarde alguns minutos e tente de novo.',
   over_request_rate_limit: 'Muitas tentativas. Aguarde alguns minutos e tente de novo.',
   validation_failed: 'Confira os dados digitados.',
+  email_provider_disabled: 'Cadastro por e-mail desativado no momento. Tente mais tarde.',
+  signup_disabled: 'Novos cadastros estão desativados no momento. Tente mais tarde.',
   session_not_found: 'Sua sessão expirou. Entre novamente.',
   // Erros do banco (Postgres)
   23505: 'Esse registro já existe.',
