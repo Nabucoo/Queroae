@@ -42,7 +42,7 @@
 
   /* Tipografia */
   --font-sans: "Instrument Sans", Inter, system-ui, sans-serif;
-  --font-serif: "Instrument Serif", Georgia, serif;   /* só na saudação */
+  --font-serif: "Fraunces", Georgia, serif;   /* só na saudação (itálica) */
 
   /* Cantos arredondados → classes rounded-cartao, rounded-campo */
   --radius-cartao: 22px;

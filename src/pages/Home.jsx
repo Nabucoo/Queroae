@@ -65,7 +65,10 @@ export default function Home() {
 
       <main>
         <div className="mt-8 mb-10">
-          <h1 className="font-serif text-4xl sm:text-5xl">Olá{primeiroNome ? `, ${primeiroNome}` : ''}</h1>
+          {/* "Olá," fino; o nome em negrito na cor de destaque */}
+          <h1 className="font-serif text-4xl font-light tracking-[-0.01em] italic sm:text-5xl">
+            Olá{primeiroNome && <>, <span className="font-bold text-destaque">{primeiroNome}</span></>}
+          </h1>
           {!carregando && !erro && (
             <p className="mt-2 text-base text-suave">{fraseDoDia(grupos.length, escolhas.length)}</p>
           )}
