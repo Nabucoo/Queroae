@@ -12,7 +12,6 @@ import Grupo from './pages/Grupo.jsx'
 import Integrante from './pages/Integrante.jsx'
 import Perfil from './pages/Perfil.jsx'
 import NaoEncontrada from './pages/NaoEncontrada.jsx'
-import Vitrine from './pages/Vitrine.jsx'
 
 // Mapa do site: cada <Route> liga um endereço (path) a uma tela (element).
 // O AuthProvider "abraça" tudo, para todas as telas saberem quem está logado.
@@ -38,9 +37,6 @@ export default function App() {
             <Route path="/grupo/:idGrupo/integrante/:idUsuario" element={<Integrante />} />
             <Route path="/perfil" element={<Perfil />} />
           </Route>
-
-          {/* Provisória: vitrine do design base (etapa 3) */}
-          <Route path="/vitrine" element={<Vitrine />} />
 
           {/* Qualquer outro endereço */}
           <Route path="*" element={<NaoEncontrada />} />
