@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router'
 
+import { AuthProvider } from './contexts/AuthContext.jsx'
+import { RotaProtegida, RotaPublica } from './components/Rotas.jsx'
+
 import Login from './pages/Login.jsx'
 import Cadastro from './pages/Cadastro.jsx'
 import EsqueciSenha from './pages/EsqueciSenha.jsx'
@@ -12,28 +15,37 @@ import NaoEncontrada from './pages/NaoEncontrada.jsx'
 import Vitrine from './pages/Vitrine.jsx'
 
 // Mapa do site: cada <Route> liga um endereço (path) a uma tela (element).
+// O AuthProvider "abraça" tudo, para todas as telas saberem quem está logado.
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Telas públicas (sem login) */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/cadastro" element={<Cadastro />} />
-        <Route path="/esqueci-senha" element={<EsqueciSenha />} />
-        <Route path="/nova-senha" element={<NovaSenha />} />
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Só para quem NÃO está logado */}
+          <Route element={<RotaPublica />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/cadastro" element={<Cadastro />} />
+            <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+          </Route>
 
-        {/* Telas que vão exigir login (protegemos na etapa 4) */}
-        <Route path="/" element={<Home />} />
-        <Route path="/grupo/:idGrupo" element={<Grupo />} />
-        <Route path="/grupo/:idGrupo/integrante/:idUsuario" element={<Integrante />} />
-        <Route path="/perfil" element={<Perfil />} />
+          {/* Chega pelo link do e-mail (cuida sozinha do login) */}
+          <Route path="/nova-senha" element={<NovaSenha />} />
 
-        {/* Provisória: vitrine do design base (etapa 3) */}
-        <Route path="/vitrine" element={<Vitrine />} />
+          {/* Só para quem está logado */}
+          <Route element={<RotaProtegida />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/grupo/:idGrupo" element={<Grupo />} />
+            <Route path="/grupo/:idGrupo/integrante/:idUsuario" element={<Integrante />} />
+            <Route path="/perfil" element={<Perfil />} />
+          </Route>
 
-        {/* Qualquer outro endereço */}
-        <Route path="*" element={<NaoEncontrada />} />
-      </Routes>
-    </BrowserRouter>
+          {/* Provisória: vitrine do design base (etapa 3) */}
+          <Route path="/vitrine" element={<Vitrine />} />
+
+          {/* Qualquer outro endereço */}
+          <Route path="*" element={<NaoEncontrada />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }

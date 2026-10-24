@@ -20,8 +20,7 @@ export default function Modal({ aberto, onFechar, titulo, children }) {
       onClick={(e) => e.target === ref.current && onFechar()}
       className={[
         'm-auto w-[calc(100%-2rem)] max-w-md rounded-cartao bg-fundo p-0 text-texto',
-        // sombra permitida: o modal flutua sobre a tela  taste-skill-ignore
-        'shadow-[0_16px_48px_-8px_rgba(15,15,15,0.16)] backdrop:bg-texto/40',
+        'shadow-[0_16px_48px_-8px_rgba(15,15,15,0.16)] backdrop:bg-texto/40', // sombra ok: o modal flutua (taste-skill-ignore)
       ].join(' ')}
     >
       <div className="p-6">
