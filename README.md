@@ -46,6 +46,19 @@ supabase/
 scripts/         testar-conexao.js
 ```
 
+## Marca (logo)
+
+O balão do "Quero!" embrulhado como presente, com laço coral. Arquivos para reutilizar em `public/marca/`:
+
+| Arquivo | Para que usar |
+|---|---|
+| `queroae-simbolo.svg` | Símbolo simplificado (sem confetes), vetorial: ícones e tamanhos pequenos |
+| `queroae-simbolo-completo.svg` | Símbolo com confetes, vetorial: tamanhos grandes, impressão, Figma/Canva |
+| `queroae-simbolo-512.png` / `queroae-simbolo-completo-512.png` | Os mesmos em imagem 512×512, fundo transparente (redes sociais, WhatsApp) |
+| `queroae-logo-horizontal.png` | Símbolo + nome, 1200×400, fundo transparente (documentos, apresentações) |
+
+Cores: balão `#2552c4` (azul-cobalto), laço `#e8775a` (coral), confetes `#e0a526`, `#3fb39a`, `#e06a9e`. Fonte do nome: **Instrument Sans** (semibold), gratuita no Google Fonts. No app, a logo é o componente `src/components/Logo.jsx`; o ícone da aba é `public/favicon.svg`.
+
 ## Regras importantes
 
 - **Surpresa:** o dono não lê `escolha_presente` dos próprios presentes (garantido pelo RLS). No app, a lista do dono nunca consulta escolhas.

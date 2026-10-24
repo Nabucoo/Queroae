@@ -30,6 +30,7 @@
   --color-positivo: #2e7d32;
   --color-negativo: #b42318;    /* só para erro e ações perigosas */
   --color-negativo-claro: #fdecea;
+  --color-laco: #e8775a;        /* coral do laço da logo */
 
   /* Confetes: cor pastel fixa de cada pessoa (fundo + tinta do mesmo tom) */
   --color-confete-1: #fde4dc;  --color-confete-1-tinta: #7a2e17;  /* coral */
