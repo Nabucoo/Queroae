@@ -80,8 +80,8 @@ Use contas de teste. Dica: `seuemail+teste1@gmail.com`, `+teste2`… chegam toda
 
 - [x] SMTP configurado: o e-mail de confirmação chega, em português, enviado por "QueroAê"
 - [x] Edge Function publicada com a versão mais recente
-- [ ] Cadastro, login, sair e "Esqueceu a senha?" funcionam
-- [ ] Criar grupo, copiar o código, entrar com o código (e aviso "Você já participa")
+- [x] Cadastro, login, sair e "Esqueceu a senha?" funcionam
+- [x] Criar grupo, copiar o código, entrar com o código (e aviso "Você já participa")
 - [ ] Adicionar, editar e remover presentes; link `javascript:` é recusado
 - [ ] Outra conta marca "Vou comprar" e desmarca; o presente aparece na Home dela
 - [ ] **Surpresa:** o dono nunca vê seus presentes riscados
