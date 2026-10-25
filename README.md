@@ -56,6 +56,7 @@ O balão do "Quero!" embrulhado como presente, com laço coral. Arquivos para re
 | `queroae-simbolo-completo.svg` | Símbolo com confetes, vetorial: tamanhos grandes, impressão, Figma/Canva |
 | `queroae-simbolo-512.png` / `queroae-simbolo-completo-512.png` | Os mesmos em imagem 512×512, fundo transparente (redes sociais, WhatsApp) |
 | `queroae-logo-horizontal.png` | Símbolo + nome, 1200×400, fundo transparente (documentos, apresentações) |
+| `queroae-previa.png` | Prévia do link (1200×630) no WhatsApp, LinkedIn etc., com o slogan "O fim do “nossa… que lindo, obrigado”." |
 
 Cores: balão `#2552c4` (azul-cobalto), laço `#e8775a` (coral), confetes `#e0a526`, `#3fb39a`, `#e06a9e`. Fonte do nome: **Instrument Sans** (semibold), gratuita no Google Fonts. No app, a logo é o componente `src/components/Logo.jsx`; o ícone da aba é `public/favicon.svg`.
 

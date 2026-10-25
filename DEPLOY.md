@@ -35,7 +35,7 @@ Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Su
 | C | Religar "Confirm email" e senha mínima de 8 | ✅ **feito** (painel do Supabase + app atualizado para 8 caracteres) |
 | D | Não deixar o Supabase "dormir" (acesso semanal automático) | 🟡 **em andamento**: tarefa criada e testada; falta cadastrar os segredos no GitHub (Fase 2) |
 | E | Corrigir o botão "Copiar" | ❌ fora (raro: só em navegador sem HTTPS ou que bloqueia a área de transferência) |
-| F | Prévia bonita no WhatsApp | a decidir |
+| F | Prévia bonita no WhatsApp | 🟡 **em andamento**: imagem (arte P3 + slogan S4) e meta tags prontas; falta o endereço completo em `og:image`/`og:url` (Fase 3) e testar no WhatsApp |
 | G | README de portfólio | a decidir |
 | H | Separar o código por tela (code splitting) | a decidir |
 | I | E-mail remetente próprio do app | a decidir |
