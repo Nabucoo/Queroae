@@ -34,7 +34,7 @@ Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Su
 | B | Esconder as funções auxiliares do banco | ✅ **feito** (7 funções no esquema `privado`, testado pela API) + admin remove integrantes com dupla confirmação + trigger que libera os presentes de quem sai |
 | C | Religar "Confirm email" e senha mínima de 8 | ✅ **feito** (painel do Supabase + app atualizado para 8 caracteres) |
 | D | Não deixar o Supabase "dormir" (acesso semanal automático) | 🟡 **em andamento**: tarefa criada e testada; falta cadastrar os segredos no GitHub (Fase 2) |
-| E | Corrigir o botão "Copiar" | a decidir |
+| E | Corrigir o botão "Copiar" | ❌ fora (raro: só em navegador sem HTTPS ou que bloqueia a área de transferência) |
 | F | Prévia bonita no WhatsApp | a decidir |
 | G | README de portfólio | a decidir |
 | H | Separar o código por tela (code splitting) | a decidir |
