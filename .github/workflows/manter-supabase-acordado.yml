@@ -1,0 +1,29 @@
+# Mantém o Supabase "acordado": o plano gratuito pausa o projeto depois de
+# 7 dias sem uso. Duas vezes por semana, esta tarefa faz uma consulta
+# simples (só leitura) no banco, e isso conta como uso.
+#
+# Precisa de dois segredos no GitHub (Settings > Secrets and variables > Actions):
+#   SUPABASE_URL       -> a mesma VITE_SUPABASE_URL do .env
+#   SUPABASE_ANON_KEY  -> a mesma VITE_SUPABASE_ANON_KEY do .env
+name: Manter Supabase acordado
+
+on:
+  schedule:
+    - cron: '0 12 * * 1,4' # segunda e quinta, 12h UTC (9h em Brasília)
+  workflow_dispatch: # permite rodar na mão pelo botão "Run workflow"
+
+permissions:
+  contents: read # a tarefa não precisa mexer em nada do repositório
+
+jobs:
+  consulta:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consulta simples no banco
+        # --fail: se o Supabase não responder bem, a tarefa fica vermelha e o GitHub avisa por e-mail
+        run: |
+          curl --fail --silent --show-error \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/grupo?select=id_grupo&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
+          echo "Supabase respondeu: continua acordado."

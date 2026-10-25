@@ -74,6 +74,14 @@ Cores: balão `#2552c4` (azul-cobalto), laço `#e8775a` (coral), confetes `#e0a5
 5. **E-mails em português:** já configurados em Authentication › Emails › Templates (*Confirm signup* e *Reset Password*). Os modelos originais estão no histórico do Git (commit da etapa 9), caso precise colar de novo.
 6. **Edge Function:** Edge Functions › `apagar-conta` › cole o conteúdo de `supabase/functions/apagar-conta/index.ts` e faça o Deploy, com *Verify JWT* ligado. **Sempre que esse arquivo mudar, publique de novo.**
 
+## Manter o Supabase acordado
+
+O plano gratuito do Supabase pausa o projeto depois de 7 dias sem uso. A tarefa `.github/workflows/manter-supabase-acordado.yml` (GitHub Actions) faz uma consulta só de leitura toda segunda e quinta, o que conta como uso.
+
+- Precisa dos segredos `SUPABASE_URL` e `SUPABASE_ANON_KEY` em **Settings › Secrets and variables › Actions** do repositório.
+- O GitHub desliga tarefas agendadas em repositórios sem commits há **60 dias** (e avisa por e-mail): é só reativar em **Actions** ou fazer qualquer commit.
+- Se o projeto pausar mesmo assim: painel do Supabase › **Restore project**.
+
 ## Checklist final de testes
 
 Use contas de teste. Dica: `seuemail+teste1@gmail.com`, `+teste2`… chegam todas na mesma caixa.
