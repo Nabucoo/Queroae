@@ -28,5 +28,5 @@ dist-ssr
 .env.*
 !.env.example
 
-# Prints gerados pela taste-skill (a ficha direction.json fica no Git)
-.taste-skill/inspect/
+# Arquivos de trabalho da taste-skill (ficha de design e prints)
+.taste-skill/
