@@ -1,10 +1,12 @@
 # Plano de deploy do QueroAê
 
+Repositório: https://github.com/Nabucoo/Queroae
+
 Objetivo: colocar o site no ar **sem gastar nada**, **seguro o bastante para a família** e servindo de **portfólio**.
 
 Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Supabase** (banco e login, já em uso), **Gmail** (e-mails, já em uso).
 
-**Estamos em:** Fase 2 · GitHub
+**Estamos em:** Fase 3 · Vercel
 
 ---
 
@@ -12,7 +14,7 @@ Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Su
 
 - [x] **Fase 0 · Decidir:** escolher o que arrumar antes de subir
 - [x] **Fase 1 · Ajustar:** fazer as correções escolhidas (código e, com autorização, banco)
-- [ ] **Fase 2 · GitHub:** enviar o código para o GitHub (portfólio e fonte do deploy)
+- [x] **Fase 2 · GitHub:** enviar o código para o GitHub (portfólio e fonte do deploy)
 - [ ] **Fase 3 · Vercel:** conectar o GitHub, cadastrar as chaves e publicar
 - [ ] **Fase 4 · Supabase:** apontar o login e os e-mails para o endereço do site no ar
 - [ ] **Fase 5 · Testar no ar:** checklist curto no site publicado
