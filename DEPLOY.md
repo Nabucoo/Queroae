@@ -38,7 +38,7 @@ Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Su
 | F | Prévia bonita no WhatsApp | 🟡 **em andamento**: imagem (arte P3 + slogan S4) e meta tags prontas; falta o endereço completo em `og:image`/`og:url` (Fase 3) e testar no WhatsApp |
 | G | README de portfólio | 🟡 **em andamento**: README reescrito (sem prints, por escolha); falta o link do site (Fase 3) e a revisão final (Fase 6) |
 | H | Separar o código por tela (code splitting) | ❌ fora (ganho imperceptível para a família) |
-| I | E-mail remetente próprio do app | a decidir |
+| I | E-mail remetente próprio do app | ✅ **feito** (Gmail próprio do app no SMTP, feito pelo Lucas) |
 | J | Arquivos internos no repositório público | a decidir |
 | K | Política de privacidade | a decidir |
 | — | Backup automático e apagar conta "tudo ou nada" | fora do plano (backup é pago; risco baixo) |
