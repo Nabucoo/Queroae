@@ -30,7 +30,7 @@ Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Su
 ### Opcionais (a decidir, um por um)
 | # | Item | Decisão |
 |---|---|---|
-| A | Limite de tamanho dos textos no banco | ✅ sim, pelo painel (Table Editor › Edit column › CHECK constraint) + limite no nome do cadastro |
+| A | Limite de tamanho dos textos no banco | ✅ **feito** (6 regras CHECK pelo painel, conferidas; nome do cadastro ≤ 60; link na tela ≤ 2000) |
 | B | Esconder as funções auxiliares do banco | a decidir |
 | C | Religar "Confirm email" e senha mínima de 8 | a decidir |
 | D | Não deixar o Supabase "dormir" (acesso semanal automático) | a decidir |
