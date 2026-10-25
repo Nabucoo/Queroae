@@ -7,6 +7,7 @@ import Login from './pages/Login.jsx'
 import Cadastro from './pages/Cadastro.jsx'
 import EsqueciSenha from './pages/EsqueciSenha.jsx'
 import NovaSenha from './pages/NovaSenha.jsx'
+import Privacidade from './pages/Privacidade.jsx'
 import Home from './pages/Home.jsx'
 import Grupo from './pages/Grupo.jsx'
 import Integrante from './pages/Integrante.jsx'
@@ -29,6 +30,9 @@ export default function App() {
 
           {/* Chega pelo link do e-mail (cuida sozinha do login) */}
           <Route path="/nova-senha" element={<NovaSenha />} />
+
+          {/* Aberta para todos, logados ou não */}
+          <Route path="/privacidade" element={<Privacidade />} />
 
           {/* Só para quem está logado */}
           <Route element={<RotaProtegida />}>

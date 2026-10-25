@@ -51,9 +51,15 @@ export default function Cadastro() {
     <TelaAuth
       titulo="Criar conta"
       rodape={
-        <p className="text-suave">
-          Já tem conta? <Link to="/login" className="font-medium text-destaque hover:underline">Entrar</Link>
-        </p>
+        <>
+          <p className="text-suave">
+            Já tem conta? <Link to="/login" className="font-medium text-destaque hover:underline">Entrar</Link>
+          </p>
+          <p className="text-xs text-suave">
+            Veja como cuidamos dos seus dados na{' '}
+            <Link to="/privacidade" className="font-medium text-destaque hover:underline">política de privacidade</Link>.
+          </p>
+        </>
       }
     >
       <form onSubmit={cadastrar} className="flex flex-col gap-4">

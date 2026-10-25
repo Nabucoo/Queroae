@@ -40,6 +40,10 @@ export default function Perfil() {
         <EditarNome key={perfil?.id_usuario ?? 'carregando'} nomeAtual={perfil?.nome ?? ''} idUsuario={usuario.id} onSalvo={recarregarPerfil} />
 
         <ApagarConta idUsuario={usuario.id} onApagada={async () => { await sair(); navegar('/login', { replace: true }) }} />
+
+        <p className="mt-10 text-sm">
+          <Link to="/privacidade" className="font-medium text-destaque hover:underline">Política de privacidade</Link>
+        </p>
       </main>
     </div>
   )
