@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import Cabecalho from '../components/Cabecalho.jsx'
 
 // E-mail do app para dúvidas sobre dados. Enquanto vazio, a seção "Contato" não aparece.
-const EMAIL_CONTATO = ''
+const EMAIL_CONTATO = 'queroae.app@gmail.com'
 
 // Política de privacidade em linguagem simples (LGPD).
 // Aberta para todos, logados ou não.

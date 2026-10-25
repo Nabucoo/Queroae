@@ -40,5 +40,5 @@ Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Su
 | H | Separar o código por tela (code splitting) | ❌ fora (ganho imperceptível para a família) |
 | I | E-mail remetente próprio do app | ✅ **feito** (Gmail próprio do app no SMTP, feito pelo Lucas) |
 | J | Arquivos internos no repositório público | ✅ **feito** (prompt inicial e pasta `.taste-skill/` apagados; `.taste-skill/` no `.gitignore`) |
-| K | Política de privacidade | 🟡 **quase pronto**: página `/privacidade` com links no cadastro e no Perfil; falta o e-mail de contato do app |
+| K | Política de privacidade | ✅ **feito** (página `/privacidade` com contato queroae.app@gmail.com; links no cadastro e no Perfil) |
 | — | Backup automático e apagar conta "tudo ou nada" | fora do plano (backup é pago; risco baixo) |

@@ -55,10 +55,7 @@ export default function Cadastro() {
           <p className="text-suave">
             Já tem conta? <Link to="/login" className="font-medium text-destaque hover:underline">Entrar</Link>
           </p>
-          <p className="text-xs text-suave">
-            Veja como cuidamos dos seus dados na{' '}
-            <Link to="/privacidade" className="font-medium text-destaque hover:underline">política de privacidade</Link>.
-          </p>
+          <Link to="/privacidade" className="text-xs font-medium text-destaque hover:underline">Política de privacidade</Link>
         </>
       }
     >
