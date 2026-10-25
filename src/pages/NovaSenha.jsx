@@ -21,7 +21,7 @@ export default function NovaSenha() {
   async function salvar(e) {
     e.preventDefault()
     setErro('')
-    if (senha.length < 6) return setErro('A senha precisa ter pelo menos 6 caracteres.')
+    if (senha.length < 8) return setErro('A senha precisa ter pelo menos 8 caracteres.')
     if (senha !== repetir) return setErro('As senhas não são iguais.')
 
     setEnviando(true)

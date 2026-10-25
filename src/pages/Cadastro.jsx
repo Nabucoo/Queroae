@@ -18,7 +18,7 @@ export default function Cadastro() {
   async function cadastrar(e) {
     e.preventDefault()
     setErro('')
-    if (senha.length < 6) return setErro('A senha precisa ter pelo menos 6 caracteres.')
+    if (senha.length < 8) return setErro('A senha precisa ter pelo menos 8 caracteres.')
 
     setEnviando(true)
     // O nome vai junto; um trigger no banco cria a linha na tabela usuario.
@@ -64,7 +64,7 @@ export default function Cadastro() {
           type="password"
           autoComplete="new-password"
           required
-          placeholder="Pelo menos 6 caracteres"
+          placeholder="Pelo menos 8 caracteres"
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
         />
