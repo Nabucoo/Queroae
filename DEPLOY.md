@@ -4,14 +4,14 @@ Objetivo: colocar o site no ar **sem gastar nada**, **seguro o bastante para a f
 
 Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Supabase** (banco e login, já em uso), **Gmail** (e-mails, já em uso).
 
-**Estamos em:** Fase 0 · Decidir
+**Estamos em:** Fase 2 · GitHub
 
 ---
 
 ## Fases
 
-- [ ] **Fase 0 · Decidir:** escolher o que arrumar antes de subir
-- [ ] **Fase 1 · Ajustar:** fazer as correções escolhidas (código e, com autorização, banco)
+- [x] **Fase 0 · Decidir:** escolher o que arrumar antes de subir
+- [x] **Fase 1 · Ajustar:** fazer as correções escolhidas (código e, com autorização, banco)
 - [ ] **Fase 2 · GitHub:** enviar o código para o GitHub (portfólio e fonte do deploy)
 - [ ] **Fase 3 · Vercel:** conectar o GitHub, cadastrar as chaves e publicar
 - [ ] **Fase 4 · Supabase:** apontar o login e os e-mails para o endereço do site no ar
@@ -23,9 +23,9 @@ Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Su
 ## Fase 0 · Decisões
 
 ### Obrigatórios (fazem parte do deploy)
-- [ ] Rotas sem erro 404 ao apertar F5 (Fase 1)
+- [x] Rotas sem erro 404 ao apertar F5 (`vercel.json`; confirmar na Fase 5)
 - [ ] "Site URL" e "Redirect URLs" do Supabase com o endereço do site (Fase 4)
-- [ ] Chaves `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` e Node 22 na Vercel (Fase 3)
+- [ ] Chaves `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` na Vercel (Fase 3). Node 22 já fixado em `package.json` (`engines`)
 
 ### Opcionais (a decidir, um por um)
 | # | Item | Decisão |
