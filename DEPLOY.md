@@ -6,7 +6,7 @@ Objetivo: colocar o site no ar **sem gastar nada**, **seguro o bastante para a f
 
 Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Supabase** (banco e login, já em uso), **Gmail** (e-mails, já em uso).
 
-**Estamos em:** Fase 4 · Supabase
+**Estamos em:** Fase 5 · Testar no ar
 
 ---
 
@@ -16,7 +16,7 @@ Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Su
 - [x] **Fase 1 · Ajustar:** fazer as correções escolhidas (código e, com autorização, banco)
 - [x] **Fase 2 · GitHub:** enviar o código para o GitHub (portfólio e fonte do deploy)
 - [x] **Fase 3 · Vercel:** conectar o GitHub, cadastrar as chaves e publicar
-- [ ] **Fase 4 · Supabase:** apontar o login e os e-mails para o endereço do site no ar
+- [x] **Fase 4 · Supabase:** apontar o login e os e-mails para o endereço do site no ar
 - [ ] **Fase 5 · Testar no ar:** checklist curto no site publicado
 - [ ] **Fase 6 · Manter de graça:** impedir que o Supabase "durma" e finalizar o README de portfólio
 
@@ -26,7 +26,7 @@ Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Su
 
 ### Obrigatórios (fazem parte do deploy)
 - [x] Rotas sem erro 404 ao apertar F5 (`vercel.json`; confirmar na Fase 5)
-- [ ] "Site URL" e "Redirect URLs" do Supabase com o endereço do site (Fase 4)
+- [x] "Site URL" = `https://queroae.vercel.app` e "Redirect URLs" com `https://queroae.vercel.app/**` (e localhost para desenvolver)
 - [x] Chaves `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` na Vercel e Node 22 (`engines` no `package.json`)
 
 ### Opcionais (a decidir, um por um)
