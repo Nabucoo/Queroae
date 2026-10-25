@@ -31,7 +31,7 @@ Serviços (todos gratuitos): **GitHub** (código), **Vercel** (site no ar), **Su
 | # | Item | Decisão |
 |---|---|---|
 | A | Limite de tamanho dos textos no banco | ✅ **feito** (6 regras CHECK pelo painel, conferidas; nome do cadastro ≤ 60; link na tela ≤ 2000) |
-| B | Esconder as funções auxiliares do banco | a decidir |
+| B | Esconder as funções auxiliares do banco | ✅ **feito** (7 funções no esquema `privado`, testado pela API) + admin remove integrantes com dupla confirmação + trigger que libera os presentes de quem sai |
 | C | Religar "Confirm email" e senha mínima de 8 | a decidir |
 | D | Não deixar o Supabase "dormir" (acesso semanal automático) | a decidir |
 | E | Corrigir o botão "Copiar" | a decidir |
