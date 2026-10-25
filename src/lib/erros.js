@@ -14,6 +14,7 @@ const porCodigo = {
   session_not_found: 'Sua sessão expirou. Entre novamente.',
   // Erros do banco (Postgres)
   23505: 'Esse registro já existe.',
+  23514: 'Algum texto ficou longo demais. Encurte e tente de novo.', // limite de tamanho do banco
   42501: 'Você não tem permissão para fazer isso.',
 }
 

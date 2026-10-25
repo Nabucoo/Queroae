@@ -57,7 +57,7 @@ export default function Cadastro() {
       }
     >
       <form onSubmit={cadastrar} className="flex flex-col gap-4">
-        <Campo rotulo="Nome" autoComplete="name" required value={nome} onChange={(e) => setNome(e.target.value)} />
+        <Campo rotulo="Nome" autoComplete="name" required maxLength={60} value={nome} onChange={(e) => setNome(e.target.value)} />
         <Campo rotulo="E-mail" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         <Campo
           rotulo="Senha"

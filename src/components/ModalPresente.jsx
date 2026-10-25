@@ -48,7 +48,7 @@ export default function ModalPresente({ presente, idUsuarioGrupo, onFechar, onSa
           value={nome} onChange={(e) => setNome(e.target.value)} />
         <Campo rotulo="Descrição" opcional multilinha maxLength={500} placeholder="Cor, tamanho, modelo…"
           value={descricao} onChange={(e) => setDescricao(e.target.value)} />
-        <Campo rotulo="Link de referência" opcional inputMode="url" autoComplete="off" maxLength={500}
+        <Campo rotulo="Link de referência" opcional inputMode="url" autoComplete="off" maxLength={2000}
           placeholder="https://" value={link} onChange={(e) => setLink(e.target.value)} />
         <Aviso>{erro}</Aviso>
         <div className="mt-2 flex justify-end gap-3">
