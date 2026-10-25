@@ -6,8 +6,7 @@
 
 Listas de presentes para grupos de família e amigos, com a surpresa garantida.
 
-<!-- O link do site entra na Fase 3 do DEPLOY.md, quando a Vercel der o endereço. -->
-**🔗 Site:** _em breve_
+**🔗 Acesse: [queroae.vercel.app](https://queroae.vercel.app)**
 
 ![React](https://img.shields.io/badge/React-19-2552c4?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8-2552c4?logo=vite&logoColor=white)
