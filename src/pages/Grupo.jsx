@@ -10,7 +10,8 @@ import Botao from '../components/Botao.jsx'
 import MinhaLista from '../components/MinhaLista.jsx'
 import ModalEditarGrupo from '../components/ModalEditarGrupo.jsx'
 import ModalConfirmar from '../components/ModalConfirmar.jsx'
-import { IconeConfig, IconeConfirmar, IconeCopiar, IconeLixeira, IconeSair, IconeVoltar } from '../components/Icones.jsx'
+import ModalIntegrantes from '../components/ModalIntegrantes.jsx'
+import { IconeConfig, IconeConfirmar, IconeCopiar, IconeLixeira, IconePessoaMenos, IconeSair, IconeVoltar } from '../components/Icones.jsx'
 
 export default function Grupo() {
   const { idGrupo } = useParams() // o número que está no endereço /grupo/:idGrupo
@@ -20,7 +21,8 @@ export default function Grupo() {
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState('')
   const [aba, setAba] = useState('integrantes')
-  const [modal, setModal] = useState(null) // 'editar' | 'excluir' | 'sair' | null
+  const [modal, setModal] = useState(null) // 'editar' | 'integrantes' | 'remover' | 'excluir' | 'sair' | null
+  const [removendo, setRemovendo] = useState(null) // integrante que o admin quer remover
   const navegar = useNavigate()
 
   useEffect(() => {
@@ -53,25 +55,9 @@ export default function Grupo() {
     navegar('/', { replace: true })
   }
 
-  // Integrante: libera os presentes que escolheu neste grupo e depois sai
+  // Integrante sai do grupo. Sua lista é apagada junto, e um trigger no banco
+  // libera os presentes que ele tinha escolhido aqui (vale também para remoção).
   async function sairDoGrupo() {
-    // 1. Acha minhas escolhas em presentes deste grupo
-    //    (!inner = só traz as que batem com o filtro do grupo)
-    const { data: minhas, error: erroBusca } = await supabase
-      .from('escolha_presente')
-      .select('id_escolha_presente, presente!inner(usuario_grupo!inner(id_grupo))')
-      .eq('id_presenteador', usuario.id)
-      .eq('presente.usuario_grupo.id_grupo', idGrupo)
-    if (erroBusca) return mensagemDeErro(erroBusca)
-
-    // 2. Desmarca essas escolhas
-    if (minhas.length > 0) {
-      const ids = minhas.map((e) => e.id_escolha_presente)
-      const { error } = await supabase.from('escolha_presente').delete().in('id_escolha_presente', ids)
-      if (error) return mensagemDeErro(error)
-    }
-
-    // 3. Sai do grupo (minha lista de presentes é apagada junto)
     const { data, error } = await supabase
       .from('usuario_grupo').delete()
       .eq('id_grupo', idGrupo).eq('id_usuario', usuario.id)
@@ -79,6 +65,20 @@ export default function Grupo() {
     if (error) return mensagemDeErro(error)
     if (data.length === 0) return 'Não foi possível sair do grupo.'
     navegar('/', { replace: true })
+  }
+
+  // Admin remove outra pessoa. O banco só permite se você for o admin
+  // e não for você mesmo; o trigger libera os presentes que ela escolheu.
+  async function removerIntegrante() {
+    const { data, error } = await supabase
+      .from('usuario_grupo').delete()
+      .eq('id_usuario_grupo', removendo.id_usuario_grupo)
+      .select('id_usuario')
+    if (error) return mensagemDeErro(error)
+    if (data.length === 0) return 'Não foi possível remover. Só o admin pode remover integrantes.'
+    setIntegrantes((atual) => atual.filter((p) => p.id_usuario_grupo !== removendo.id_usuario_grupo))
+    setRemovendo(null)
+    setModal('integrantes') // volta para a lista, caso queira remover mais alguém
   }
 
   const voltar = (
@@ -119,9 +119,33 @@ export default function Grupo() {
           onFechar={() => setModal(null)}
           grupo={grupo}
           onSalvo={(atualizado) => { setGrupo(atualizado); setModal(null) }}
+          onGerenciarIntegrantes={() => setModal('integrantes')}
           onPedirExclusao={() => setModal('excluir')}
         />
       )}
+      {souAdmin && (
+        <ModalIntegrantes
+          aberto={modal === 'integrantes'}
+          onFechar={() => setModal(null)}
+          onVoltar={() => setModal('editar')}
+          integrantes={outros}
+          onPedirRemocao={(p) => { setRemovendo(p); setModal('remover') }}
+        />
+      )}
+      {/* Segunda confirmação antes de remover (prevenção de erros) */}
+      <ModalConfirmar
+        aberto={modal === 'remover'}
+        onFechar={() => { setRemovendo(null); setModal('integrantes') }}
+        titulo="Remover do grupo?"
+        rotuloConfirmar="Remover"
+        iconeConfirmar={IconePessoaMenos}
+        onConfirmar={removerIntegrante}
+      >
+        <p>
+          <strong>{removendo?.usuario.nome}</strong> vai sair de <strong>{grupo.nome}</strong>. A lista de presentes
+          dessa pessoa neste grupo será apagada, e os presentes que ela escolheu voltam a ficar livres.
+        </p>
+      </ModalConfirmar>
       <ModalConfirmar
         aberto={modal === 'excluir'}
         onFechar={() => setModal(null)}

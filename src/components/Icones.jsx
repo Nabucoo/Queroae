@@ -150,3 +150,22 @@ export function IconeCasa(props) {
     </Icone>
   )
 }
+
+export function IconePessoas(props) {
+  return (
+    <Icone {...props}>
+      <circle cx="6" cy="5.5" r="2.3" />
+      <path d="M1.5 13.5a4.5 4.5 0 0 1 9 0" />
+      <path d="M10.5 3.4a2.3 2.3 0 0 1 0 4.4M12 9.4a4.5 4.5 0 0 1 2.5 4.1" />
+    </Icone>
+  )
+}
+
+export function IconePessoaMenos(props) {
+  return (
+    <Icone {...props}>
+      <circle cx="6.5" cy="5" r="2.5" />
+      <path d="M1.5 13.5a5 5 0 0 1 10 0M11 7h4" />
+    </Icone>
+  )
+}

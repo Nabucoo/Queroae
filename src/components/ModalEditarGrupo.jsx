@@ -5,10 +5,10 @@ import Modal from './Modal.jsx'
 import Campo from './Campo.jsx'
 import Botao from './Botao.jsx'
 import { Aviso } from './TelaAuth.jsx'
-import { IconeConfirmar, IconeLixeira } from './Icones.jsx'
+import { IconeConfirmar, IconeLixeira, IconePessoas } from './Icones.jsx'
 
 // Só o admin abre esta janela. onSalvo recebe o grupo atualizado.
-export default function ModalEditarGrupo({ aberto, onFechar, grupo, onSalvo, onPedirExclusao }) {
+export default function ModalEditarGrupo({ aberto, onFechar, grupo, onSalvo, onGerenciarIntegrantes, onPedirExclusao }) {
   const [nome, setNome] = useState(grupo.nome)
   const [descricao, setDescricao] = useState(grupo.descricao ?? '')
   const [erro, setErro] = useState('')
@@ -40,6 +40,12 @@ export default function ModalEditarGrupo({ aberto, onFechar, grupo, onSalvo, onP
           <Botao type="submit" icone={IconeConfirmar} disabled={enviando}>{enviando ? 'Salvando…' : 'Salvar'}</Botao>
         </div>
       </form>
+
+      {/* Integrantes: abre outra janela com a lista para remover pessoas */}
+      <div className="mt-6 flex items-center justify-between gap-3 border-t border-borda pt-5">
+        <p className="text-sm text-suave">Remover pessoas do grupo.</p>
+        <Botao variante="secundario" icone={IconePessoas} onClick={onGerenciarIntegrantes}>Gerenciar integrantes</Botao>
+      </div>
 
       {/* Ação perigosa fica separada, no fim */}
       <div className="mt-6 flex items-center justify-between gap-3 border-t border-borda pt-5">
