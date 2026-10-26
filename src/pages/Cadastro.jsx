@@ -5,7 +5,7 @@ import { mensagemDeErro } from '../lib/erros.js'
 import TelaAuth, { Aviso } from '../components/TelaAuth.jsx'
 import Campo from '../components/Campo.jsx'
 import Botao from '../components/Botao.jsx'
-import { IconePessoaMais } from '../components/Icones.jsx'
+import { IconeCadeado, IconeEnvelope, IconePessoa, IconePessoaMais } from '../components/Icones.jsx'
 
 export default function Cadastro() {
   const [nome, setNome] = useState('')
@@ -60,10 +60,11 @@ export default function Cadastro() {
       }
     >
       <form onSubmit={cadastrar} className="flex flex-col gap-4">
-        <Campo rotulo="Nome" autoComplete="name" required maxLength={60} value={nome} onChange={(e) => setNome(e.target.value)} />
-        <Campo rotulo="E-mail" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Campo rotulo="Nome" icone={IconePessoa} autoComplete="name" required maxLength={60} value={nome} onChange={(e) => setNome(e.target.value)} />
+        <Campo rotulo="E-mail" icone={IconeEnvelope} type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         <Campo
           rotulo="Senha"
+          icone={IconeCadeado}
           type="password"
           autoComplete="new-password"
           required

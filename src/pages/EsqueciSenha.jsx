@@ -45,7 +45,7 @@ export default function EsqueciSenha() {
       rodape={voltar}
     >
       <form onSubmit={enviarLink} className="flex flex-col gap-4">
-        <Campo rotulo="E-mail" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Campo rotulo="E-mail" icone={IconeEnvelope} type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         <Aviso>{erro}</Aviso>
         <Botao type="submit" icone={IconeEnvelope} larguraTotal disabled={enviando}>
           {enviando ? 'Enviando…' : 'Enviar link'}

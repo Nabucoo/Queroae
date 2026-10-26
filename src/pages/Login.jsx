@@ -5,7 +5,7 @@ import { mensagemDeErro } from '../lib/erros.js'
 import TelaAuth, { Aviso } from '../components/TelaAuth.jsx'
 import Campo from '../components/Campo.jsx'
 import Botao from '../components/Botao.jsx'
-import { IconeEntrar } from '../components/Icones.jsx'
+import { IconeCadeado, IconeEntrar, IconeEnvelope } from '../components/Icones.jsx'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -40,8 +40,8 @@ export default function Login() {
       }
     >
       <form onSubmit={entrar} className="flex flex-col gap-4">
-        <Campo rotulo="E-mail" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-        <Campo rotulo="Senha" type="password" autoComplete="current-password" required value={senha} onChange={(e) => setSenha(e.target.value)} />
+        <Campo rotulo="E-mail" icone={IconeEnvelope} type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Campo rotulo="Senha" icone={IconeCadeado} type="password" autoComplete="current-password" required value={senha} onChange={(e) => setSenha(e.target.value)} />
         <Aviso>{erro}</Aviso>
         <Botao type="submit" icone={IconeEntrar} larguraTotal disabled={enviando}>
           {enviando ? 'Entrando…' : 'Entrar'}

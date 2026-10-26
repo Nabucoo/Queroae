@@ -169,3 +169,39 @@ export function IconePessoaMenos(props) {
     </Icone>
   )
 }
+
+export function IconePessoa(props) {
+  return (
+    <Icone {...props}>
+      <circle cx="8" cy="5" r="2.6" />
+      <path d="M2.5 13.5a5.5 5.5 0 0 1 11 0" />
+    </Icone>
+  )
+}
+
+export function IconeCadeado(props) {
+  return (
+    <Icone {...props}>
+      <rect x="3" y="7" width="10" height="7" rx="1.5" />
+      <path d="M5 7V5a3 3 0 0 1 6 0v2" />
+    </Icone>
+  )
+}
+
+export function IconeOlho(props) {
+  return (
+    <Icone {...props}>
+      <path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z" />
+      <circle cx="8" cy="8" r="2" />
+    </Icone>
+  )
+}
+
+export function IconeOlhoFechado(props) {
+  return (
+    <Icone {...props}>
+      <path d="M6.2 3.8A6.4 6.4 0 0 1 8 3.5c4 0 6.5 4.5 6.5 4.5a11 11 0 0 1-1.9 2.4M10.1 11.9a6 6 0 0 1-2.1.6C4 12.5 1.5 8 1.5 8a11 11 0 0 1 2.6-3" />
+      <path d="M6.6 6.6a2 2 0 0 0 2.8 2.8M2 2l12 12" />
+    </Icone>
+  )
+}

@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext.jsx'
 import TelaAuth, { Aviso } from '../components/TelaAuth.jsx'
 import Campo from '../components/Campo.jsx'
 import Botao from '../components/Botao.jsx'
-import { IconeConfirmar } from '../components/Icones.jsx'
+import { IconeCadeado, IconeConfirmar } from '../components/Icones.jsx'
 
 // A pessoa chega aqui pelo link do e-mail. O Supabase lê o link
 // e cria uma sessão temporária, que permite trocar a senha.
@@ -46,8 +46,8 @@ export default function NovaSenha() {
   return (
     <TelaAuth titulo="Nova senha" subtitulo="Escolha a senha que você vai usar daqui em diante.">
       <form onSubmit={salvar} className="flex flex-col gap-4">
-        <Campo rotulo="Nova senha" type="password" autoComplete="new-password" required value={senha} onChange={(e) => setSenha(e.target.value)} />
-        <Campo rotulo="Repita a nova senha" type="password" autoComplete="new-password" required value={repetir} onChange={(e) => setRepetir(e.target.value)} />
+        <Campo rotulo="Nova senha" icone={IconeCadeado} type="password" autoComplete="new-password" required value={senha} onChange={(e) => setSenha(e.target.value)} />
+        <Campo rotulo="Repita a nova senha" icone={IconeCadeado} type="password" autoComplete="new-password" required value={repetir} onChange={(e) => setRepetir(e.target.value)} />
         <Aviso>{erro}</Aviso>
         <Botao type="submit" icone={IconeConfirmar} larguraTotal disabled={enviando}>
           {enviando ? 'Salvando…' : 'Salvar nova senha'}
