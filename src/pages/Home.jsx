@@ -76,7 +76,10 @@ export default function Home() {
 
         {erro && <p role="alert" className="mb-4 rounded-campo bg-negativo-claro px-3 py-2 text-sm text-negativo">{erro}</p>}
 
-        <div className="grid items-start gap-4 md:grid-cols-2">
+        {/* grid-cols-1 = minmax(0, 1fr): deixa a coluna encolher até a largura da tela.
+            Sem isso, a grade se alarga para caber o nome de grupo mais longo inteiro
+            (antes de cortar com "…") e o painel vaza no celular. */}
+        <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
           <Painel
             titulo={<>Grupos que estou participando <Contagem n={grupos.length} carregando={carregando} /></>}
           >
