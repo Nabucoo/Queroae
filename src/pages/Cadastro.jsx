@@ -11,6 +11,7 @@ export default function Cadastro() {
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [confirmar, setConfirmar] = useState('')
   const [erro, setErro] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [confirmarEmail, setConfirmarEmail] = useState(false)
@@ -19,6 +20,8 @@ export default function Cadastro() {
     e.preventDefault()
     setErro('')
     if (senha.length < 8) return setErro('A senha precisa ter pelo menos 8 caracteres.')
+    // Pega erro de digitação antes de criar a conta (a senha aparece como bolinhas)
+    if (senha !== confirmar) return setErro('As senhas não são iguais.')
 
     setEnviando(true)
     // O nome vai junto; um trigger no banco cria a linha na tabela usuario.
@@ -71,6 +74,15 @@ export default function Cadastro() {
           placeholder="Pelo menos 8 caracteres"
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
+        />
+        <Campo
+          rotulo="Confirmar senha"
+          icone={IconeCadeado}
+          type="password"
+          autoComplete="new-password"
+          required
+          value={confirmar}
+          onChange={(e) => setConfirmar(e.target.value)}
         />
         <Aviso>{erro}</Aviso>
         <Botao type="submit" icone={IconePessoaMais} larguraTotal disabled={enviando}>
