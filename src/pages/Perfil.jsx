@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
@@ -13,7 +13,6 @@ import { IconeConfirmar, IconeLixeira, IconeSair, IconeVoltar } from '../compone
 
 export default function Perfil() {
   const { usuario, perfil, recarregarPerfil, sair } = useAuth()
-  const navegar = useNavigate()
 
   return (
     <div className="mx-auto max-w-2xl px-4 pb-16">
@@ -23,7 +22,7 @@ export default function Perfil() {
             <IconeVoltar className="h-5 w-5" />
           </BotaoIcone>
         }
-        direita={<Botao variante="texto" icone={IconeSair} onClick={sair}>Sair</Botao>}
+        direita={<Botao variante="texto" icone={IconeSair} onClick={() => sair('/login')}>Sair</Botao>}
       />
 
       <main>
@@ -39,7 +38,8 @@ export default function Perfil() {
             (não a cada nome salvo, senão a mensagem "Salvo" sumiria na hora) */}
         <EditarNome key={perfil?.id_usuario ?? 'carregando'} nomeAtual={perfil?.nome ?? ''} idUsuario={usuario.id} onSalvo={recarregarPerfil} />
 
-        <ApagarConta idUsuario={usuario.id} onApagada={async () => { await sair(); navegar('/login', { replace: true }) }} />
+        {/* Conta apagada: a pessoa não tem mais conta, então vai para as boas-vindas */}
+        <ApagarConta idUsuario={usuario.id} onApagada={() => sair('/boas-vindas')} />
 
         <p className="mt-10 text-sm">
           <Link to="/privacidade" className="font-medium text-destaque hover:underline">Política de privacidade</Link>

@@ -9,6 +9,9 @@ export function AuthProvider({ children }) {
   const [sessao, setSessao] = useState(null) // login do Supabase (ou null)
   const [perfil, setPerfil] = useState(null) // linha da tabela usuario (nome...)
   const [carregando, setCarregando] = useState(true)
+  // Para onde mandar quem não está logado: boas-vindas por padrão;
+  // depois de "Sair", vai para o login (a pessoa claramente já tem conta).
+  const [destinoSemLogin, setDestinoSemLogin] = useState('/boas-vindas')
 
   // 1. Descobre se já existe login salvo e fica "ouvindo" entradas e saídas
   useEffect(() => {
@@ -40,7 +43,9 @@ export function AuthProvider({ children }) {
     if (idUsuario) recarregarPerfil()
   }, [idUsuario, recarregarPerfil])
 
-  async function sair() {
+  // destino: para onde ir depois de sair ('/login' ou '/boas-vindas')
+  async function sair(destino = '/login') {
+    setDestinoSemLogin(destino)
     await supabase.auth.signOut()
   }
 
@@ -48,7 +53,7 @@ export function AuthProvider({ children }) {
   // (evita mostrar por um instante o nome de quem saiu).
   const perfilAtual = perfil?.id_usuario === idUsuario ? perfil : null
 
-  const valor = { sessao, usuario: sessao?.user ?? null, perfil: perfilAtual, carregando, sair, recarregarPerfil }
+  const valor = { sessao, usuario: sessao?.user ?? null, perfil: perfilAtual, carregando, destinoSemLogin, sair, recarregarPerfil }
   return <AuthContext.Provider value={valor}>{children}</AuthContext.Provider>
 }
 

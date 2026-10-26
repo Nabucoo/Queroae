@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 import { RotaProtegida, RotaPublica } from './components/Rotas.jsx'
 
+import BoasVindas from './pages/BoasVindas.jsx'
 import Login from './pages/Login.jsx'
 import Cadastro from './pages/Cadastro.jsx'
 import EsqueciSenha from './pages/EsqueciSenha.jsx'
@@ -23,6 +24,7 @@ export default function App() {
         <Routes>
           {/* Só para quem NÃO está logado */}
           <Route element={<RotaPublica />}>
+            <Route path="/boas-vindas" element={<BoasVindas />} />
             <Route path="/login" element={<Login />} />
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/esqueci-senha" element={<EsqueciSenha />} />

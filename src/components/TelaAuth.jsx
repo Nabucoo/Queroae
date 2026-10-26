@@ -1,10 +1,14 @@
+import { Link } from 'react-router'
 import Logo from './Logo.jsx'
 
 // Moldura comum das telas de login, cadastro e senha.
 export default function TelaAuth({ titulo, subtitulo, children, rodape }) {
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-4 py-10">
-      <Logo />
+      {/* A logo leva de volta à porta de entrada */}
+      <Link to="/boas-vindas" aria-label="QueroAê, início" className="flex w-fit">
+        <Logo />
+      </Link>
       <h1 className="mt-8 text-2xl font-semibold">{titulo}</h1>
       {subtitulo && <p className="mt-2 text-sm text-suave">{subtitulo}</p>}
       <div className="mt-6">{children}</div>
