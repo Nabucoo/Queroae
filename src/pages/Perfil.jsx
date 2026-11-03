@@ -22,7 +22,6 @@ export default function Perfil() {
             <IconeVoltar className="h-5 w-5" />
           </BotaoIcone>
         }
-        direita={<Botao variante="textoPerigo" icone={IconeSair} onClick={() => sair('/login')}>Sair</Botao>}
       />
 
       <main>
@@ -37,6 +36,13 @@ export default function Perfil() {
         {/* key: o formulário é recriado só quando o perfil termina de carregar
             (não a cada nome salvo, senão a mensagem "Salvo" sumiria na hora) */}
         <EditarNome key={perfil?.id_usuario ?? 'carregando'} nomeAtual={perfil?.nome ?? ''} idUsuario={usuario.id} onSalvo={recarregarPerfil} />
+
+        {/* Sair fica junto das ações da conta (não no cabeçalho), em vermelho como
+            todo "sair" do app. Largura total e ícone de porta: não se confunde com
+            o "Apagar minha conta" logo abaixo, que tem seção própria e confirmação. */}
+        <Botao variante="perigo" icone={IconeSair} larguraTotal className="mt-6" onClick={() => sair('/login')}>
+          Sair da conta
+        </Botao>
 
         {/* Conta apagada: a pessoa não tem mais conta, então vai para as boas-vindas */}
         <ApagarConta idUsuario={usuario.id} onApagada={() => sair('/boas-vindas')} />

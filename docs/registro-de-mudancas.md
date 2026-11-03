@@ -6,6 +6,53 @@ Entradas da mais recente para a mais antiga.
 
 <!-- Novas entradas entram logo abaixo desta linha. -->
 
+## Mudança 6: "Sair da conta" sai do cabeçalho e vira botão no Perfil
+
+**Data:** 2026-11-03
+**Telas/arquivos alterados:** `src/pages/Perfil.jsx`, `src/components/Botao.jsx`
+**Revê:** parte da Mudança 5 (o "Sair" vermelho no cabeçalho do Perfil e a variante `textoPerigo`).
+
+### Problema (antes)
+Depois da Mudança 5, o "Sair" da conta ficava no canto direito do cabeçalho do Perfil, como um texto vermelho pequeno. Isso tinha três problemas:
+- **H4 – Consistência:** o canto direito do cabeçalho é usado para ações *da tela* (⚙ "Editar grupo"). Sair da conta é uma ação da *conta*, que já tem seu lugar no corpo do Perfil (nome, apagar conta).
+- **H8 – Design minimalista:** no cabeçalho, o "Sair" competia com a navegação (seta e logo) e era a única ação de texto num cabeçalho só de ícones.
+- **H6 – Reconhecer em vez de lembrar:** um texto pequeno no canto é fácil de não ver. Quem procura "como saio?" olha primeiro para a lista de opções da conta.
+
+### O que foi alterado (depois)
+- O cabeçalho do Perfil ficou só com a seta de voltar e a logo centralizada.
+- No corpo da página, logo abaixo do painel "Seu nome", entrou o botão **"Sair da conta"**: largura total, variante `perigo` (vermelho com borda) e `IconeSair`. O comportamento não mudou: desloga e leva ao login.
+- A variante `textoPerigo` do `Botao`, criada na Mudança 5 só para o "Sair" do cabeçalho, ficou sem uso e foi removida. O comentário do `Botao` agora diz que a variante `perigo` serve para ações destrutivas e para "sair".
+
+Ordem do Perfil, de cima para baixo: cabeçalho (← · logo) → foto, nome e e-mail → painel "Seu nome" → **Sair da conta** → linha divisória → "Apagar conta" (título vermelho, explicação, botão "Apagar minha conta") → Política de privacidade.
+
+### Heurísticas e princípios considerados
+- **H4 – Consistência e padrões:** o cabeçalho fica só com a navegação e as ações da tela. As ações da conta ficam juntas no corpo do Perfil. O botão continua vermelho, como todo "sair" do app (Mudança 5). Na consistência externa, "sair da conta" dentro da página de perfil ou configurações é o padrão de muitos apps.
+- **H6 – Reconhecer em vez de lembrar:** um botão grande e com texto, junto das outras opções da conta, é encontrado sem procurar.
+- **H2 – Correspondência com o mundo real:** "Sair da conta" diz exatamente o que acontece, melhor que só "Sair".
+- **H8 – Design estético e minimalista:** o cabeçalho fica mais limpo (seta e logo), e a hierarquia da página fica clara: editar o nome, sair, e por fim a zona de perigo.
+- **H5 – Prevenção de erros:** "Sair da conta" e "Apagar minha conta" são vermelhos e ficam perto, mas não se confundem:
+  - **tamanho:** sair ocupa a largura toda, e apagar é um botão menor;
+  - **ícone:** sair tem a porta com seta, e apagar tem a lixeira;
+  - **separação:** apagar fica numa seção própria, depois de uma linha divisória, com título vermelho e explicação;
+  - **confirmação:** apagar pede confirmação antes de qualquer efeito.
+- **Acessibilidade:** o alvo de toque é maior que o do texto no cabeçalho, e o texto "Sair da conta" é lido pelo leitor de tela sem depender de `aria-label`.
+
+### Trade-offs / heurísticas em tensão
+- **Dois botões vermelhos próximos:** existe um risco pequeno de a pessoa confundir "sair" com "apagar" (H5). Foi aceito pelas diferenças listadas acima e porque "apagar" exige confirmação. Se em testes ainda parecer confuso, uma opção é deixar "Sair da conta" com a variante `secundario` (neutra), abrindo mão da cor única para todo "sair" (Mudança 5).
+- **Mais um passo para sair?** Não: o "Sair" continua na mesma tela (Perfil), só em outro lugar, e ainda sem confirmação, porque é fácil de desfazer (basta entrar de novo).
+- **Borda do botão `perigo`:** a borda vermelha clara (`negativo/40`) tem pouco contraste (pendência da Mudança 1). O botão é reconhecido pelo texto e pelo ícone vermelhos (6,6:1), mas a borda fica para uma mudança futura.
+
+### Regra da surpresa
+A mudança é só no lugar e na aparência do botão de sair. Nenhum dado de presentes ou de escolhas é exibido ou alterado.
+
+### Como testar
+1. Rodar `npm run dev` e abrir no DevTools com a largura de celular.
+2. Perfil: o cabeçalho tem só a seta e a logo centralizada.
+3. Abaixo do painel "Seu nome", o botão vermelho de largura total "Sair da conta". Ao tocar, desloga e leva ao login.
+4. Conferir que "Sair da conta" e "Apagar minha conta" ficam bem distintos.
+
+---
+
 ## Mudança 5: Botões de sair em vermelho e "Sair do grupo" só com ícone
 
 **Data:** 2026-11-03

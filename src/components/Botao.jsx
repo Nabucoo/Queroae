@@ -1,13 +1,12 @@
 // Botão reutilizável.
 // variante: "primario" (quase preto), "secundario" (branco com borda),
-//           "texto" (só o texto), "perigo" (vermelho com borda, para ações
-//           destrutivas) ou "textoPerigo" (só o texto, em vermelho; ex.: "Sair").
+//           "texto" (só o texto) ou "perigo" (vermelho com borda, para ações
+//           destrutivas e para "sair").
 const estilos = {
   primario: 'bg-primario text-fundo hover:bg-texto/85',
   secundario: 'bg-fundo text-texto border border-contorno hover:bg-painel',
   texto: 'text-texto hover:bg-ativo',
   perigo: 'bg-fundo text-negativo border border-negativo/40 hover:bg-negativo-claro',
-  textoPerigo: 'text-negativo hover:bg-negativo-claro',
 }
 
 export default function Botao({
