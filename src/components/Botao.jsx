@@ -3,7 +3,7 @@
 //           "texto" (só o texto) ou "perigo" (vermelho, para ações destrutivas).
 const estilos = {
   primario: 'bg-primario text-fundo hover:bg-texto/85',
-  secundario: 'bg-fundo text-texto border border-controle hover:bg-painel',
+  secundario: 'bg-fundo text-texto border border-contorno hover:bg-painel',
   texto: 'text-texto hover:bg-ativo',
   perigo: 'bg-fundo text-negativo border border-negativo/40 hover:bg-negativo-claro',
 }

@@ -18,7 +18,8 @@
   /* Linhas */
   --color-borda: #eaeaea;       /* borda de cartões */
   --color-linha: #f3f3f3;       /* divisória entre linhas de lista */
-  --color-controle: #d9d9d6;    /* borda de campos e botões */
+  --color-controle: #d9d9d6;    /* borda de campos */
+  --color-contorno: #8a8a87;    /* borda do botão secundário (3.5:1 no branco, WCAG 1.4.11) */
 
   /* Texto */
   --color-texto: #1f201d;       /* texto principal */
