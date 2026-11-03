@@ -1,15 +1,35 @@
-import { Link } from 'react-router'
-import Cabecalho from '../components/Cabecalho.jsx'
+import { Link, useLocation } from 'react-router'
+import { useAuth } from '../contexts/AuthContext.jsx'
+import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
+import { IconeVoltar } from '../components/Icones.jsx'
 
 // E-mail do app para dúvidas sobre dados. Enquanto vazio, a seção "Contato" não aparece.
 const EMAIL_CONTATO = 'queroae.app@gmail.com'
 
+// De onde se pode abrir a política (os links mandam state={{ de: '...' }}).
+const ORIGENS = {
+  'boas-vindas': { para: '/boas-vindas', rotulo: 'Voltar para o início' },
+  cadastro: { para: '/cadastro', rotulo: 'Voltar para o cadastro' },
+  perfil: { para: '/perfil', rotulo: 'Voltar para o perfil' },
+}
+
 // Política de privacidade em linguagem simples (LGPD).
 // Aberta para todos, logados ou não.
 export default function Privacidade() {
+  const { sessao } = useAuth()
+  const de = useLocation().state?.de
+  // Volta para a tela de onde veio; sem origem (endereço digitado), vai para o início
+  const voltar = ORIGENS[de] ?? { para: sessao ? '/' : '/boas-vindas', rotulo: 'Voltar para o início' }
+
   return (
     <div className="mx-auto max-w-2xl px-4 pb-16">
-      <Cabecalho />
+      <Cabecalho
+        voltar={
+          <BotaoIcone as={Link} to={voltar.para} rotulo={voltar.rotulo}>
+            <IconeVoltar className="h-5 w-5" />
+          </BotaoIcone>
+        }
+      />
       <main className="mt-6">
         <h1 className="text-2xl font-semibold">Política de privacidade</h1>
         <p className="mt-2 text-sm text-suave">Atualizada em 25 de outubro de 2026.</p>
@@ -82,7 +102,7 @@ export default function Privacidade() {
         )}
 
         <p className="mt-10 text-sm">
-          <Link to="/" className="font-medium text-destaque hover:underline">Voltar para o início</Link>
+          <Link to={voltar.para} className="font-medium text-destaque hover:underline">{voltar.rotulo}</Link>
         </p>
       </main>
     </div>

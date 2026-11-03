@@ -6,6 +6,155 @@ Entradas da mais recente para a mais antiga.
 
 <!-- Novas entradas entram logo abaixo desta linha. -->
 
+## Mudança 9: Seta de voltar na Política de privacidade, de volta para a origem
+
+**Data:** 2026-11-03
+**Telas/arquivos alterados:** `src/pages/Privacidade.jsx`, `src/pages/BoasVindas.jsx`, `src/pages/Cadastro.jsx`, `src/pages/Perfil.jsx`
+
+### Problema (antes)
+A Política de privacidade era a única tela interna sem a seta de voltar ao lado da logo. Ela pode ser aberta das Boas-vindas, do Cadastro e do Perfil, mas a única saída era um link "Voltar para o início" no **fim** da página (depois de todo o texto), que apontava para `/`. Para quem estava deslogado depois de "Sair da conta", esse link levava ao Login, o mesmo defeito que a logo tinha antes da Mudança 7. Isso fere:
+- **H3 – Controle e liberdade do usuário:** não havia saída visível no topo, e a saída do fim não voltava para a tela de origem;
+- **H4 – Consistência e padrões:** todas as outras telas internas têm a seta no mesmo lugar.
+
+### O que foi alterado (depois)
+- Os três links "Política de privacidade" passaram a avisar de onde vieram (`state={{ de: 'boas-vindas' | 'cadastro' | 'perfil' }}`), o mesmo padrão que a Home já usa para a lista do integrante.
+- A Política ganhou a seta no cabeçalho, com destino e dica de acordo com a origem. O link do fim da página usa o mesmo destino e o mesmo texto:
+
+| Veio de | A seta (e o link do fim) leva para | Dica |
+|---|---|---|
+| Boas-vindas | Boas-vindas | Voltar para o início |
+| Cadastro | Cadastro | Voltar para o cadastro |
+| Perfil | Perfil | Voltar para o perfil |
+| Endereço digitado / sem origem | Home (logado) ou boas-vindas (deslogado) | Voltar para o início |
+
+### Heurísticas e princípios considerados
+- **H3 – Controle e liberdade do usuário:** saída visível no topo, que volta para a tela de origem (o guia pede "botão voltar coerente com a origem").
+- **H4 – Consistência e padrões:** a Política tem a mesma seta, no mesmo lugar, das outras telas. O link do fim e a seta fazem a mesma coisa.
+- **Previsibilidade (Dix) / H1:** a dica diz exatamente para onde a seta vai ("Voltar para o cadastro"). Por isso foi usado um destino fixo por origem, e não o "voltar" do histórico do navegador, que poderia tirar a pessoa do app quando ela abre a página por um link externo.
+
+### Trade-offs / heurísticas em tensão
+- **Dados do Cadastro perdidos (pendente, H5):** quem está preenchendo o Cadastro, abre a Política e volta encontra o formulário vazio, porque ele é recriado. A seta não causou isso (o problema já existia com o link), mas ele fica mais visível agora que a volta é fácil. Fica para uma mudança futura (ex.: abrir a política sem sair do Cadastro ou guardar o que foi digitado).
+
+### Regra da surpresa
+A mudança é só de navegação na página de política. Nenhum dado de presentes ou de escolhas é exibido.
+
+### Como testar
+1. Boas-vindas → Política: seta e link do fim dizem "Voltar para o início" e levam às boas-vindas.
+2. Cadastro → Política: "Voltar para o cadastro".
+3. Perfil (logado) → Política: "Voltar para o perfil".
+4. Digitar `/privacidade` na barra de endereço: "Voltar para o início" (Home se logado, boas-vindas se não).
+
+---
+
+## Mudança 8: Erros do cadastro junto do campo, com solução e sem o balão do navegador
+
+**Data:** 2026-11-03
+**Telas/arquivos alterados:** `src/pages/Cadastro.jsx`, `src/components/Campo.jsx`, `src/lib/erros.js`
+
+### Problema (antes)
+- **Erro longe do campo:** todos os erros do Cadastro (senha curta, senhas diferentes, e-mail já cadastrado) apareciam num aviso único em cima do botão "Criar conta", e não embaixo do campo com problema. A pessoa precisava ler o aviso e procurar qual campo corrigir. O `Campo` já sabia mostrar erro embaixo do input (prop `erro`), mas o Cadastro não usava.
+- **Balão do navegador:** se o nome ou o e-mail ficassem vazios (ou o e-mail sem formato de e-mail), aparecia o balão nativo do navegador (atributos `required` e `type="email"`). Ele tem um visual diferente em cada navegador, fora do estilo do app, com mensagem genérica, e some sozinho em segundos.
+- **Mensagens sem solução:** várias diziam só o problema ("As senhas não são iguais.", "Confira os dados digitados.", "Algo deu errado. Tente novamente.").
+
+Isso fere a **H9 – Ajudar a reconhecer, diagnosticar e recuperar-se de erros** (o erro deve ficar junto do campo e sugerir a solução) e a **H4 – Consistência** (o balão do navegador tem cara diferente dos outros erros).
+
+### O que foi alterado (depois)
+- **Erro em cada campo:** o Cadastro guarda um erro por campo e passa cada um para o seu `Campo` (borda vermelha, mensagem embaixo, `aria-invalid`). O aviso em cima do botão ficou só para erros que não são de nenhum campo (sem internet, muitas tentativas).
+- **Sem o balão do navegador:** o formulário ganhou `noValidate`. A nova função `validar()` confere os quatro campos de uma vez. `required` e `type="email"` continuam nos campos (o leitor de tela anuncia "obrigatório" e o celular abre o teclado com @).
+- **Foco no primeiro campo com erro**, na ordem da tela. Quando há vários erros, todos aparecem juntos.
+- **O erro de um campo some quando a pessoa digita nele.**
+- **Acessibilidade:** a mensagem de erro do `Campo` ficou ligada ao input por `aria-describedby`; quando o foco chega no campo, o leitor de tela lê o rótulo e o erro juntos.
+- **Erros do servidor no campo certo:** nova função `campoDoErro()` em `lib/erros.js` (lugar único dos erros): "e-mail já existe" e "e-mail inválido" (`validation_failed`) vão para o E-mail; "senha fraca" vai para a Senha.
+- **E-mail sem espaços nas pontas** no envio, igual ao que a validação confere.
+- **Mensagens no formato "o que aconteceu + o que fazer":**
+
+| Campo | Situação | Mensagem |
+|---|---|---|
+| Nome | vazio | Digite seu nome. É assim que você aparece para sua família. |
+| E-mail | vazio | Digite seu e-mail. Você vai usá-lo para entrar no app. |
+| E-mail | formato inválido | Este e-mail não parece válido. Confira se está escrito certo (ex.: nome@exemplo.com). |
+| E-mail | já tem conta | Já existe uma conta com este e-mail. Entre pela tela de login ou use outro e-mail. |
+| Senha | vazia | Crie uma senha com pelo menos 8 caracteres. |
+| Senha | curta | A senha está curta. Use pelo menos 8 caracteres. |
+| Confirmar | vazio | Repita a senha para confirmar. |
+| Confirmar | diferente | As senhas não são iguais. Toque no olho para conferir o que digitou. |
+| (geral) | erro desconhecido | Não foi possível concluir agora. Espere um instante e tente de novo. |
+
+### Heurísticas e princípios considerados
+- **H9 – Ajudar a reconhecer, diagnosticar e recuperar-se de erros:** o erro aparece junto do campo, em linguagem simples, sem código, dizendo o problema e a solução. O foco leva a pessoa direto ao que precisa corrigir.
+- **H4 – Consistência e padrões:** todos os erros do formulário têm a mesma aparência (os do app), e não mais dois estilos (o aviso do app e o balão do navegador).
+- **H1 – Visibilidade do status do sistema:** a borda vermelha mostra quais campos têm problema, e o erro some quando a pessoa corrige, sem deixar um aviso desatualizado na tela.
+- **H6 – Reconhecer em vez de lembrar:** a dica "Toque no olho para conferir o que digitou" usa o botão de mostrar a senha que já existe, para a pessoa ver o que digitou em vez de tentar lembrar.
+- **H2 – Correspondência com o mundo real:** as mensagens explicam o porquê com palavras do app ("É assim que você aparece para sua família").
+- **Recuperabilidade (Dix):** corrigir é direto: o foco está no campo e o erro some ao digitar.
+- **Acessibilidade:** `aria-invalid` e `aria-describedby` ligam o erro ao campo; o erro não depende só da cor (há texto).
+
+### Trade-offs / heurísticas em tensão
+- **`role="alert"` × `aria-describedby`:** o guia sugere `role="alert"` nos erros. Como o foco vai até o campo com erro, o `aria-describedby` já faz o leitor de tela ler a mensagem; com os dois, o erro seria lido duas vezes.
+- **Login continua com o aviso geral:** "E-mail ou senha incorretos." não diz qual dos dois está errado, de propósito (segurança: não confirma a um estranho que o e-mail tem conta). Por isso ele não foi movido para um campo.
+- **Outras telas ainda com o balão do navegador (pendente, H4):** Login, Esqueci a senha, Nova senha, Perfil e os modais ainda mostram o balão nativo quando um campo obrigatório fica vazio. Fica para uma próxima mudança levar o mesmo padrão a elas.
+- **Mensagens compartilhadas:** as mensagens de "e-mail já existe", "e-mail inválido" e erro desconhecido ficam no `lib/erros.js` e valem para o app inteiro (no "Esqueci a senha", o e-mail inválido aparece no aviso geral, que lá faz sentido porque só existe o campo de e-mail).
+
+### Regra da surpresa
+A mudança é só no formulário de cadastro, antes do login. Nenhum dado de presentes ou de escolhas é exibido.
+
+### Como testar
+1. Cadastro, tudo vazio → "Criar conta": os 4 erros aparecem embaixo de cada campo, sem balão do navegador, e o cursor vai para Nome.
+2. E-mail `lucas` ou `lucas@gmail`: "Este e-mail não parece válido…" embaixo do E-mail.
+3. Senha `123`: "A senha está curta…" embaixo de Senha. Senhas diferentes: erro embaixo de Confirmar senha.
+4. Digitar num campo com erro: a mensagem dele some.
+5. E-mail já cadastrado: "Já existe uma conta com este e-mail…" embaixo do E-mail.
+6. Sem internet (DevTools → Network → Offline): a mensagem aparece no aviso em cima do botão.
+
+---
+
+## Mudança 7: A logo leva sempre ao início
+
+**Data:** 2026-11-03
+**Telas/arquivos alterados:** `src/components/Cabecalho.jsx` (efeito em todas as telas com cabeçalho)
+
+### Problema (antes)
+A logo do cabeçalho apontava para `/`. Para quem estava logado, isso era a Home. Para quem não estava, `/` é uma tela protegida, e o app redirecionava para um destino que dependia de **como a pessoa tinha saído**:
+- se nunca tinha entrado (ou apagou a conta): `/` → boas-vindas;
+- se tinha clicado em "Sair da conta": o app guardava "depois de sair, vá para o login", e `/` → login.
+
+Com isso, depois de sair da conta, **tocar na logo na tela de Login não fazia nada** (mandava para a própria tela), e no Cadastro levava ao Login em vez da capa. O mesmo elemento tinha resultados diferentes e, num caso, nenhum resultado. Isso fere:
+- **H4 – Consistência e padrões:** a mesma logo levava a lugares diferentes;
+- **H1 – Visibilidade do status do sistema:** um toque sem resposta visível parece defeito;
+- **Previsibilidade (Dix):** não dava para prever o resultado do toque.
+
+### O que foi alterado (depois)
+- O `Cabecalho` passou a consultar se há alguém logado (`useAuth`) e escolhe o destino da logo diretamente, sem depender do redirecionamento de `/`:
+
+| Situação | A logo leva para |
+|---|---|
+| Logado (Home, Grupo, Perfil, Integrante, Privacidade) | Home (`/`) |
+| Deslogado (Login, Cadastro, Esqueci a senha, Privacidade, Página não encontrada) | Boas-vindas (`/boas-vindas`) |
+
+- O redirecionamento depois de "Sair da conta" (ir para o login) não mudou; só a logo deixou de depender dele.
+
+### Heurísticas e princípios considerados
+- **H4 – Consistência e padrões:** a logo tem um significado só, "ir para o início", em todas as telas. Isso completa a Mudança 3, que colocou a logo no mesmo lugar em todas as telas: agora ela também faz sempre a mesma coisa. Na consistência externa, "logo leva à página inicial" é a convenção da web.
+- **Previsibilidade (Dix):** o resultado do toque não depende mais do histórico (como a pessoa saiu).
+- **H1 – Visibilidade do status do sistema:** todo toque na logo agora tem um resultado visível; não existe mais o caso em que nada acontece.
+- **H3 – Controle e liberdade do usuário:** a logo funciona como saída de emergência confiável para o início, inclusive nas telas de acesso.
+- **H2 – Correspondência com o mundo real:** para quem não tem conta ou saiu, o "início" do app é a capa de boas-vindas (a "porta de entrada"), onde estão as duas opções: criar conta ou entrar.
+
+### Trade-offs / heurísticas em tensão
+- **Deslogado: boas-vindas ou login?** Depois de "Sair da conta", a pessoa cai no Login; se tocar na logo, vai para as boas-vindas, que estão um passo antes. Foi escolhido assim porque as boas-vindas são o início de quem não está logado, e o destino da logo fica igual para todos os deslogados (H4). Quem quer entrar de novo tem o "Já tenho conta" na capa.
+- **Redundância com a seta:** em várias telas, a seta e a logo levam ao mesmo lugar. Já tinha sido aceito na Mudança 3 (Facilidade de substituir, Dix).
+
+### Regra da surpresa
+A mudança é só no destino do link da logo. Nenhum dado de presentes ou de escolhas é exibido ou alterado.
+
+### Como testar
+1. Rodar `npm run dev`.
+2. Logado: tocar na logo no Grupo, no Perfil e na lista de um integrante. Deve ir sempre para a Home.
+3. Clicar em "Sair da conta" no Perfil. No Login, tocar na logo: deve ir para as boas-vindas (antes não acontecia nada).
+4. Deslogado: tocar na logo no Cadastro, no Esqueci a senha e na Página não encontrada. Deve ir para as boas-vindas.
+
+---
+
 ## Mudança 6: "Sair da conta" sai do cabeçalho e vira botão no Perfil
 
 **Data:** 2026-11-03

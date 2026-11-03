@@ -48,7 +48,7 @@ export default function Perfil() {
         <ApagarConta idUsuario={usuario.id} onApagada={() => sair('/boas-vindas')} />
 
         <p className="mt-10 text-sm">
-          <Link to="/privacidade" className="font-medium text-destaque hover:underline">Política de privacidade</Link>
+          <Link to="/privacidade" state={{ de: 'perfil' }} className="font-medium text-destaque hover:underline">Política de privacidade</Link>
         </p>
       </main>
     </div>

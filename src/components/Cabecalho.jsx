@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { useAuth } from '../contexts/AuthContext.jsx'
 import Logo from './Logo.jsx'
 
 // Barra do topo de todas as telas (menos a capa de boas-vindas), em 3 colunas:
@@ -6,14 +7,17 @@ import Logo from './Logo.jsx'
 // As colunas dos lados têm a mesma largura (1fr), então a logo fica no mesmo
 // ponto em todas as telas, com ou sem seta, qualquer que seja a ação.
 export default function Cabecalho({ voltar, direita }) {
+  const { sessao } = useAuth()
   return (
     // mt-4/sm:mt-6: espaço acima da barra (logo e botões descem juntos, alinhados)
     <header className="mt-4 grid h-14 grid-cols-[1fr_auto_1fr] items-center gap-3 sm:mt-6">
       {/* -ml-2: alinha a seta (e não o círculo do hover) com o texto abaixo */}
       <div className="-ml-2 flex">{voltar}</div>
-      {/* A logo leva ao início: a Home, ou as boas-vindas para quem não está logado.
+      {/* A logo leva sempre ao início: a Home para quem está logado, e as
+          boas-vindas para quem não está. O destino é escolhido aqui, e não pelo
+          redirecionamento de "/", que depois de "Sair" mandaria para o login.
           flex: sem isso o link se comporta como texto e a logo sobe uns pixels */}
-      <Link to="/" aria-label="QueroAê, início" className="flex">
+      <Link to={sessao ? '/' : '/boas-vindas'} aria-label="QueroAê, início" className="flex">
         <Logo />
       </Link>
       <div className="flex justify-end">{direita}</div>

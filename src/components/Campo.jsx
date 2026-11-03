@@ -7,6 +7,7 @@ import { IconeOlho, IconeOlhoFechado } from './Icones.jsx'
 // Campos type="password" ganham sozinhos o botão "olhinho" (mostrar/ocultar).
 export default function Campo({ rotulo, erro, multilinha = false, opcional = false, icone: Icone, type, ...props }) {
   const id = useId() // liga o <label> ao campo (bom para acessibilidade)
+  const idErro = `${id}-erro` // liga a mensagem de erro ao campo (o leitor de tela lê junto)
   const [senhaVisivel, setSenhaVisivel] = useState(false)
   const Elemento = multilinha ? 'textarea' : 'input'
   const ehSenha = type === 'password' && !multilinha
@@ -27,6 +28,7 @@ export default function Campo({ rotulo, erro, multilinha = false, opcional = fal
           id={id}
           type={ehSenha && senhaVisivel ? 'text' : type}
           aria-invalid={erro ? true : undefined}
+          aria-describedby={erro ? idErro : undefined}
           className={[
             'w-full rounded-campo border bg-fundo text-sm text-texto',
             'placeholder:text-suave focus:outline-2 focus:outline-offset-0 focus:outline-destaque',
@@ -49,7 +51,7 @@ export default function Campo({ rotulo, erro, multilinha = false, opcional = fal
           </button>
         )}
       </div>
-      {erro && <p className="text-xs text-negativo">{erro}</p>}
+      {erro && <p id={idErro} className="text-xs text-negativo">{erro}</p>}
     </div>
   )
 }
