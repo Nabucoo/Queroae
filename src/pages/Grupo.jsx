@@ -213,7 +213,7 @@ export default function Grupo() {
 function Moldura({ voltar, direita, children }) {
   return (
     <div className="mx-auto max-w-2xl px-4 pb-16">
-      <Cabecalho esquerda={voltar} direita={direita} />
+      <Cabecalho voltar={voltar} direita={direita} />
       <main>{children}</main>
     </div>
   )

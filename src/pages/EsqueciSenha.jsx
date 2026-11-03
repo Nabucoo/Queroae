@@ -32,6 +32,7 @@ export default function EsqueciSenha() {
     return (
       <TelaAuth
         titulo="Confira seu e-mail"
+        voltar={{ para: '/login', rotulo: 'Voltar para o login' }}
         subtitulo={`Se existir uma conta com ${email}, você vai receber um link para criar uma nova senha.`}
         rodape={voltar}
       />
@@ -41,6 +42,7 @@ export default function EsqueciSenha() {
   return (
     <TelaAuth
       titulo="Esqueceu a senha?"
+      voltar={{ para: '/login', rotulo: 'Voltar para o login' }}
       subtitulo="Digite seu e-mail e enviaremos um link para você criar uma nova."
       rodape={voltar}
     >

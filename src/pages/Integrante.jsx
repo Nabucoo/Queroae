@@ -50,7 +50,7 @@ export default function Integrante() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 pb-16">
-      <Cabecalho esquerda={voltar} />
+      <Cabecalho voltar={voltar} />
       <main>
         {carregando ? (
           <p className="mt-8 text-sm text-suave">Carregando…</p>

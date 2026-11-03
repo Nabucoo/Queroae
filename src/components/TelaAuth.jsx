@@ -1,19 +1,30 @@
 import { Link } from 'react-router'
-import Logo from './Logo.jsx'
+import Cabecalho, { BotaoIcone } from './Cabecalho.jsx'
+import { IconeVoltar } from './Icones.jsx'
 
-// Moldura comum das telas de login, cadastro e senha.
-export default function TelaAuth({ titulo, subtitulo, children, rodape }) {
+// Moldura comum das telas de login, cadastro, senha e "página não encontrada".
+// voltar={{ para: '/login', rotulo: 'Voltar para o login' }} mostra a seta de
+// voltar no topo: a saída visível para quem entrou na tela errada.
+// O cabeçalho fica preso no topo (igual às telas logadas) e o conteúdo vem logo
+// abaixo, com um espaço fixo: assim ele não fica solto no meio de celulares altos
+// e continua visível quando o teclado abre (o teclado cobre a parte de baixo).
+export default function TelaAuth({ titulo, subtitulo, children, rodape, voltar }) {
   return (
-    <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-4 py-10">
-      {/* A logo leva de volta à porta de entrada */}
-      <Link to="/boas-vindas" aria-label="QueroAê, início" className="flex w-fit">
-        <Logo />
-      </Link>
-      <h1 className="mt-8 text-2xl font-semibold">{titulo}</h1>
-      {subtitulo && <p className="mt-2 text-sm text-suave">{subtitulo}</p>}
-      <div className="mt-6">{children}</div>
-      {rodape && <div className="mt-6 flex flex-col gap-3 text-sm">{rodape}</div>}
-    </main>
+    <div className="mx-auto flex min-h-dvh max-w-sm flex-col px-4">
+      <Cabecalho
+        voltar={voltar && (
+          <BotaoIcone as={Link} to={voltar.para} rotulo={voltar.rotulo}>
+            <IconeVoltar className="h-5 w-5" />
+          </BotaoIcone>
+        )}
+      />
+      <main className="pt-8 pb-10">
+        <h1 className="text-2xl font-semibold">{titulo}</h1>
+        {subtitulo && <p className="mt-2 text-sm text-suave">{subtitulo}</p>}
+        {children && <div className="mt-6">{children}</div>}
+        {rodape && <div className="mt-6 flex flex-col gap-3 text-sm">{rodape}</div>}
+      </main>
+    </div>
   )
 }
 

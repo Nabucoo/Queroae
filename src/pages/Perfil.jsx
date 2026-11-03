@@ -17,7 +17,7 @@ export default function Perfil() {
   return (
     <div className="mx-auto max-w-2xl px-4 pb-16">
       <Cabecalho
-        esquerda={
+        voltar={
           <BotaoIcone as={Link} to="/" rotulo="Voltar para o início">
             <IconeVoltar className="h-5 w-5" />
           </BotaoIcone>

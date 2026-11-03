@@ -44,6 +44,7 @@ export default function Cadastro() {
     return (
       <TelaAuth
         titulo="Confira seu e-mail"
+        voltar={{ para: '/boas-vindas', rotulo: 'Voltar para o início' }}
         subtitulo={`Enviamos um link de confirmação para ${email}. Clique nele e depois entre com sua senha.`}
         rodape={<Link to="/login" className="font-medium text-destaque hover:underline">Voltar para o login</Link>}
       />
@@ -53,6 +54,7 @@ export default function Cadastro() {
   return (
     <TelaAuth
       titulo="Criar conta"
+      voltar={{ para: '/boas-vindas', rotulo: 'Voltar para o início' }}
       rodape={
         <>
           <p className="text-suave">

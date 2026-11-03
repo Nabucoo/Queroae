@@ -27,6 +27,7 @@ export default function Login() {
   return (
     <TelaAuth
       titulo="Entrar"
+      voltar={{ para: '/boas-vindas', rotulo: 'Voltar para o início' }}
       subtitulo="Listas de presentes do seu grupo, com a surpresa garantida."
       rodape={
         <>
