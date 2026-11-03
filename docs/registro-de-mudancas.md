@@ -6,6 +6,54 @@ Entradas da mais recente para a mais antiga.
 
 <!-- Novas entradas entram logo abaixo desta linha. -->
 
+## Mudança 5: Botões de sair em vermelho e "Sair do grupo" só com ícone
+
+**Data:** 2026-11-03
+**Telas/arquivos alterados:** `src/components/Cabecalho.jsx` (`BotaoIcone`), `src/components/Botao.jsx`, `src/pages/Grupo.jsx`, `src/pages/Perfil.jsx`
+
+### Problema (antes)
+- **"Sair do grupo" tirava a logo do centro.** No cabeçalho do Grupo, quem não é admin via um botão de texto "Sair do grupo" (cerca de 135 px, estimativa) à direita. Num celular de 360 a 390 px de largura, ele era mais largo que o espaço de um dos lados, e a logo centralizada (Mudança 3) deslizava para a esquerda. Isso quebra a **H4 – Consistência**, porque a logo deixa de ficar no mesmo ponto em todas as telas.
+- **O mesmo lugar fazia coisas diferentes com a mesma aparência neutra.** No canto direito do Grupo, o admin via a ⚙ "Editar grupo" e os outros viam "Sair do grupo", ambos em cinza ou preto. Uma ação de configuração e uma ação que tira a pessoa do grupo (e apaga a lista dela) tinham o mesmo peso visual (H4, ponto já levantado no guia).
+- **Os "sair" do app não tinham a mesma aparência.** O "Sair" da conta, no Perfil, era um texto preto, e o "Sair do grupo" da confirmação era vermelho.
+
+### O que foi alterado (depois)
+- O `BotaoIcone` ganhou a prop `perigo`: ícone vermelho (`text-negativo`) e hover vermelho-claro (`hover:bg-negativo-claro`). Sem a prop, ele continua cinza.
+- O `Botao` ganhou a variante `textoPerigo`: igual à `texto` (sem borda), mas com texto e ícone vermelhos e hover vermelho-claro.
+- No Grupo, para quem não é admin, o botão de texto "Sair do grupo" virou um `BotaoIcone perigo` com o `IconeSair` (40 × 40 px, o mesmo tamanho da ⚙). O `aria-label` e a dica (`title`) continuam dizendo "Sair do grupo".
+- No Perfil, o "Sair" da conta passou para `variante="textoPerigo"`, mantendo o texto.
+
+| Botão | Antes | Depois |
+|---|---|---|
+| "Sair do grupo" no cabeçalho do Grupo (não-admin) | Texto + ícone, preto | Só o ícone, vermelho |
+| "Sair" no cabeçalho do Perfil | Texto + ícone, preto | Texto + ícone, vermelho |
+| "Sair do grupo" na confirmação | Vermelho (`perigo`) | Igual |
+| ⚙ "Editar grupo" (admin) | Ícone cinza | Igual |
+
+### Heurísticas e princípios considerados
+- **H4 – Consistência e padrões:** todas as ações de sair têm a mesma cor, em todas as telas. No canto direito do Grupo, a ação destrutiva (vermelha) agora se diferencia da configuração (cinza). E, com o botão do mesmo tamanho da ⚙, a logo fica no centro em qualquer largura de celular.
+- **H2 – Correspondência com o mundo real / Familiaridade (Dix):** vermelho é a convenção de "atenção, ação com consequência", e é a mesma cor que o projeto já usa no botão `perigo` e nas confirmações.
+- **H5 – Prevenção de erros:** a cor pede atenção antes do toque. No "Sair do grupo", um toque errado não tem efeito, porque a confirmação "Sair do grupo?" (que explica que a lista será apagada) continua antes da ação.
+- **H8 – Design estético e minimalista:** o cabeçalho do Grupo fica mais limpo, com dois ícones nos cantos e a logo no centro.
+- **Acessibilidade:**
+  - O vermelho `#b42318` tem contraste de **6,6:1** sobre o branco e de 5,7:1 sobre o fundo do hover, acima de 4,5:1.
+  - O significado não depende só da cor: o "Sair do grupo" usa um ícone diferente da ⚙ e tem `aria-label`/`title`, e o "Sair" do Perfil mantém o texto.
+
+### Trade-offs / heurísticas em tensão
+- **Ícone sem texto × H6 (Reconhecer em vez de lembrar):** "Sair do grupo" só com ícone é menos explícito que o texto. Foi aceito porque o ícone de sair é uma convenção conhecida, porque a dica e o `aria-label` dizem o nome da ação, e porque a confirmação explica o que vai acontecer antes de qualquer efeito.
+- **Vermelho no "Sair" da conta:** pelo `index.css`, o vermelho é "só para erro e ações perigosas", e sair da conta não apaga nada (basta entrar de novo). A escolha foi deixar vermelho mesmo assim, para que todo "sair" do app tenha a mesma aparência (H4) e porque é uma ação que interrompe o uso. O "Sair" da conta continua sem confirmação, porque é fácil de desfazer.
+- **Mesmo ícone para duas ações:** "Sair do grupo" e "Sair" da conta usam o mesmo `IconeSair`. O contexto (tela de Grupo × tela de Perfil) e o texto/dica diferenciam as duas. Se gerar confusão em testes, dá para usar outro desenho no grupo.
+
+### Regra da surpresa
+A mudança é só na aparência dos botões de sair. Nenhum dado de presentes ou de escolhas é exibido ou alterado.
+
+### Como testar
+1. Rodar `npm run dev` e abrir no DevTools com a largura de celular (testar também com 360 px).
+2. Grupo como **não-admin:** seta à esquerda, logo no centro (no mesmo ponto da Home) e ícone vermelho à direita. Passando o mouse, aparece "Sair do grupo" e um fundo vermelho-claro. Ao tocar, abre a confirmação.
+3. Grupo como **admin:** a ⚙ cinza continua igual.
+4. Perfil: "Sair" em vermelho. Ao tocar, desloga e leva ao login.
+
+---
+
 ## Mudança 4: Topo fixo e conteúdo logo abaixo nas telas de acesso
 
 **Data:** 2026-11-03

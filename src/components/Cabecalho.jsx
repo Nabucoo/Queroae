@@ -21,13 +21,17 @@ export default function Cabecalho({ voltar, direita }) {
   )
 }
 
-// Botão redondo só com ícone (ex.: configurações, voltar)
-export function BotaoIcone({ rotulo, as: Componente = 'button', className = '', ...props }) {
+// Botão redondo só com ícone (ex.: configurações, voltar).
+// perigo: ícone vermelho, para ações destrutivas (ex.: sair do grupo).
+export function BotaoIcone({ rotulo, as: Componente = 'button', perigo = false, className = '', ...props }) {
+  const cores = perigo
+    ? 'text-negativo hover:bg-negativo-claro'
+    : 'text-suave hover:bg-ativo hover:text-texto'
   return (
     <Componente
       aria-label={rotulo}
       title={rotulo}
-      className={`flex h-10 w-10 items-center justify-center rounded-full text-suave transition-colors hover:bg-ativo hover:text-texto focus-visible:outline-2 focus-visible:outline-destaque ${className}`}
+      className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-destaque ${cores} ${className}`}
       {...props}
     />
   )

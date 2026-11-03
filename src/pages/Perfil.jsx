@@ -22,7 +22,7 @@ export default function Perfil() {
             <IconeVoltar className="h-5 w-5" />
           </BotaoIcone>
         }
-        direita={<Botao variante="texto" icone={IconeSair} onClick={() => sair('/login')}>Sair</Botao>}
+        direita={<Botao variante="textoPerigo" icone={IconeSair} onClick={() => sair('/login')}>Sair</Botao>}
       />
 
       <main>

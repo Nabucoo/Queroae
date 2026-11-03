@@ -108,7 +108,11 @@ export default function Grupo() {
       <IconeConfig className="h-5 w-5" />
     </BotaoIcone>
   ) : (
-    <Botao variante="texto" icone={IconeSair} onClick={() => setModal('sair')}>Sair do grupo</Botao>
+    // Só o ícone, em vermelho: cabe ao lado da logo centralizada e se diferencia
+    // da engrenagem do admin. A confirmação "Sair do grupo?" evita toque errado.
+    <BotaoIcone perigo rotulo="Sair do grupo" onClick={() => setModal('sair')}>
+      <IconeSair className="h-5 w-5" />
+    </BotaoIcone>
   )
 
   return (
