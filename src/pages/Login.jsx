@@ -2,12 +2,15 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
+import { lerConvitePendente } from '../lib/convitePendente.js'
 import TelaAuth, { Aviso } from '../components/TelaAuth.jsx'
 import Campo from '../components/Campo.jsx'
 import Botao from '../components/Botao.jsx'
 import { IconeCadeado, IconeEntrar, IconeEnvelope } from '../components/Icones.jsx'
 
 export default function Login() {
+  // Quem veio de um convite volta para ele, e não para as boas-vindas
+  const convite = lerConvitePendente()
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [erro, setErro] = useState('')
@@ -27,7 +30,7 @@ export default function Login() {
   return (
     <TelaAuth
       titulo="Entrar"
-      voltar={{ para: '/boas-vindas', rotulo: 'Voltar para o início' }}
+      voltar={convite ? { para: `/convite/${convite}`, rotulo: 'Voltar para o convite' } : { para: '/boas-vindas', rotulo: 'Voltar para o início' }}
       subtitulo="Listas de presentes do seu grupo, com a surpresa garantida."
       rodape={
         <>

@@ -6,6 +6,140 @@ Entradas da mais recente para a mais antiga.
 
 <!-- Novas entradas entram logo abaixo desta linha. -->
 
+## Mudança 14: Tela "Você recebeu um convite" para quem abre o link sem login
+
+**Data:** 2026-11-04
+**Telas/arquivos alterados:** `src/pages/Convite.jsx`, `src/pages/Login.jsx`, `src/pages/Cadastro.jsx`, `src/pages/Home.jsx`, `src/lib/convitePendente.js`
+
+### Problema (antes)
+Quem recebia um convite e ainda não tinha conta precisava criar a conta, achar "Tenho um código" e lembrar do código recebido. O caminho não era explicado (**H10**) e dependia da memória da pessoa (**H6**).
+
+### O que foi alterado (depois)
+- Nova tela em `/convite/:codigo` para quem não está logado, com três passos: criar a conta, pedir para entrar e montar a lista. A logo aparece só no topo.
+- O código fica guardado no aparelho durante login, cadastro e troca de senha. Ao chegar na Home, abre a janela do pedido, uma única vez.
+- No cadastro, o endereço do convite vai no link de confirmação por e-mail, que pode abrir em outro navegador.
+- Em login e cadastro, a seta volta para o convite quando a pessoa veio dele.
+- O nome do grupo fica oculto até o login.
+
+A proposta foi apresentada em mockups, e o Lucas escolheu a "Variação A" (ícones coloridos com uma linha ligando os passos).
+
+### Heurísticas e princípios considerados
+- **H1 – Visibilidade do status:** a pessoa vê todo o caminho antes de começar, inclusive que precisará de aprovação.
+- **H10 – Ajuda e documentação:** a explicação é curta e aparece no ponto de uso, e já ensina a regra da surpresa.
+- **H6 – Reconhecer em vez de lembrar:** ninguém precisa guardar o código durante o cadastro.
+- **H3 – Controle e liberdade:** a seta de volta leva ao convite.
+- **H4 – Consistência:** os ícones usam os mesmos quadradinhos de "Tenho um código" e "Criar um grupo".
+
+### Trade-offs / heurísticas em tensão
+- **Conveniência × aparelho compartilhado:** o convite guardado abre para quem entrar em seguida no mesmo aparelho. Foi aceito porque essa pessoa vê só o nome do grupo e primeiros nomes, e ainda depende da aprovação.
+- **Mais texto × H8:** a tela tem três passos explicados. Foi aceito porque é a tela que orienta quem nunca viu o app.
+
+### Regra da surpresa
+A tela não mostra presentes nem escolhas, e a terceira etapa reforça que ninguém sabe quem vai dar o quê.
+
+### Como testar
+1. Numa janela anônima, abrir `/convite/CODIGO`: aparece a tela com os três passos, sem o nome do grupo.
+2. Tocar em "Já tenho conta" e na seta: volta para o convite.
+3. Entrar: a Home abre "Entrar neste grupo?". Fechar e recarregar: a janela não volta.
+4. Criar uma conta nova pelo convite e confirmar o e-mail, também em outro navegador: chega à mesma janela, depois do login se for pedido.
+
+---
+
+## Mudança 13: Entrada nos grupos com aprovação do admin
+
+**Data:** 2026-11-04
+**Telas/arquivos alterados:** `src/components/ModalConvite.jsx`, `src/components/ModalEntrarGrupo.jsx`, `src/components/PedidosEntrada.jsx`, `src/pages/Home.jsx`, `src/pages/Grupo.jsx`, `src/pages/Privacidade.jsx`, `src/lib/useAoVoltarParaApp.js`, `supabase/migrations/20261104000000_convite_por_link.sql`, `supabase/migrations/20261104000100_fechar_entrada_direta.sql`
+
+### Problema (antes)
+Quem tivesse o código entrava no grupo na hora, mesmo que o código tivesse sido repassado por outra pessoa. Dentro do grupo, essa pessoa via as listas e quem vai comprar o quê, e poderia contar ao dono de uma lista. O admin não era avisado e só podia remover a pessoa depois, se percebesse (**H5 – Prevenção de erros**).
+
+### O que foi alterado (depois)
+- **Link e código criam um pedido.** A janela "Entrar neste grupo?" mostra o grupo, até 4 rostos com primeiros nomes, o aviso de que o admin verá nome e e-mail, e o botão "Pedir para entrar".
+- **Depois de pedir:** a pessoa vê "Pedido enviado" e a orientação de avisar quem a convidou, porque o app não manda notificação.
+- **Na Home de quem pediu:** cartão "Aguardando aprovação", com "Cancelar pedido", ou "Pedido não aprovado", com "Dispensar". Depois de dispensar, é possível pedir de novo.
+- **Na Home do admin:** selo com o número de pedidos no grupo.
+- **No grupo, só para o admin:** bloco "Pedidos para entrar", com nome, e-mail, "Recusar" e "Aprovar". Ao aprovar, a pessoa já aparece em Integrantes.
+- **"Tenho um código"** confere o código, mostra o erro junto do campo e leva para a mesma janela.
+- **Link inválido:** pop-up sobre a tela atual, a Home para quem está logado e as boas-vindas para quem não está.
+- **Atualização:** Home e pedidos se atualizam quando a pessoa volta para o app.
+- **Banco:** tabela `pedido_entrada`, acessível só por funções que conferem quem está chamando. A entrada direta é fechada por uma migration à parte, rodada depois da publicação.
+- **Política de privacidade:** informa o que o admin e quem abre um convite podem ver.
+
+### Heurísticas e princípios considerados
+- **H5 – Prevenção de erros:** ninguém acessa as listas sem o admin aceitar, e um toque por engano só cria um pedido.
+- **H1 – Visibilidade do status:** quem pediu sempre sabe em que situação está, e o admin vê que há pedidos sem abrir cada grupo.
+- **H2 – Correspondência com o mundo real:** "Pedir para entrar" descreve o que realmente acontece.
+- **H3 – Controle e liberdade:** é possível cancelar o pedido e dispensar a recusa; aprovar por engano se resolve removendo a pessoa.
+- **H4 – Consistência:** código e link usam a mesma janela, com a ordem de botões das outras janelas.
+- **H6 – Reconhecer em vez de lembrar:** rostos ajudam a confirmar o grupo; nome e e-mail ajudam o admin a reconhecer quem pede.
+- **H8 – Design minimalista:** o bloco de pedidos só existe quando há pedidos.
+- **H9 – Erros:** código errado é explicado junto do campo, e falha de conexão não é apresentada como convite inválido.
+- **Acessibilidade:** a situação do pedido vem escrita, e não só na cor.
+
+### Trade-offs / heurísticas em tensão
+- **Segurança × eficiência (H5 × H7):** toda pessoa convidada espera o admin, e por isso pode desistir no caminho. O Lucas escolheu priorizar a proteção da surpresa.
+- **Sem notificação:** o admin só vê o pedido ao abrir o app. A mensagem pede para avisar quem convidou.
+- **Rostos × privacidade:** quem tem o link vê até 4 primeiros nomes sem ser aprovado. Foi aceito porque ajuda a confirmar o grupo e revela pouco; a Política informa isso.
+- **E-mail × privacidade:** o admin vê o e-mail de quem pede, para não aprovar alguém só por um nome parecido. A janela avisa antes do pedido, e a Política informa isso.
+- **Consulta sem login:** `convite_existe` responde só sim ou não, para avisar de um link inválido antes de a pessoa criar uma conta.
+
+### Regra da surpresa
+Reforçada. Quem está aguardando não acessa listas nem escolhas, e nenhuma função nova consulta `presente` ou `escolha_presente`.
+
+### Como testar
+1. Com uma conta fora do grupo, abrir o link e tocar em "Pedir para entrar": aparece "Pedido enviado", e o grupo não abre.
+2. Na Home, conferir "Aguardando aprovação" e testar "Cancelar pedido".
+3. Com o admin, conferir o selo na Home e o bloco no grupo. Com um integrante comum, o bloco não aparece.
+4. Recusar: quem pediu vê "Pedido não aprovado" e pode dispensar e pedir de novo.
+5. Aprovar: a pessoa aparece em Integrantes e consegue abrir o grupo.
+6. Abrir `/convite/abc`, logado e sem login: pop-up de convite inválido, na Home e nas boas-vindas.
+7. "Tenho um código" com código errado: erro embaixo do campo.
+8. Depois de rodar a migration final, conferir que `entrar_no_grupo` é recusada.
+
+---
+
+## Mudança 12: Convidar por link, com botão Compartilhar no grupo
+
+**Data:** 2026-11-04
+**Telas/arquivos alterados:** `src/pages/Grupo.jsx`, `src/pages/Convite.jsx`, `src/pages/BoasVindas.jsx`, `src/components/ModalConviteInvalido.jsx`, `src/components/Icones.jsx`, `src/App.jsx`
+
+### Problema (antes)
+Para convidar, era preciso copiar o código, escrever a mensagem e explicar onde colar. Quem recebia precisava encontrar "Tenho um código" e digitar ou colar (**H6** e **H7**).
+
+### O que foi alterado (depois)
+- O cartão "Código de convite" virou **"Convidar pessoas"**, com o botão principal **Compartilhar** e o código menor ao lado.
+- Compartilhar abre a janela do próprio aparelho com uma mensagem pronta contendo o nome do grupo e o link. Onde essa janela não existe, copia a mensagem. Se a cópia falhar, o link aparece na tela.
+- Tocar no código copia só o código.
+- Novo endereço `/convite/:codigo`.
+- O cartão mantém praticamente a altura do antigo, e o texto do grupo vazio passou a falar de Compartilhar.
+
+A proposta foi apresentada em mockups, e o Lucas escolheu a "Opção A", a mais compacta.
+
+### Heurísticas e princípios considerados
+- **H7 – Flexibilidade e eficiência:** um toque substitui copiar, escrever e explicar.
+- **H6 – Reconhecer em vez de lembrar:** quem recebe toca num link, sem decorar código.
+- **H2 – Correspondência com o mundo real / Familiaridade (Dix):** mandar um link por mensagem é um gesto conhecido.
+- **H8 – Design minimalista:** a lista de integrantes não desce para dar lugar ao convite.
+- **H9 – Erros:** se a cópia falhar, a pessoa recebe o link para enviar à mão.
+- **Facilidade de substituir (Dix):** link e código levam ao mesmo lugar.
+- **Acessibilidade:** o resultado de copiar é anunciado a leitores de tela.
+
+### Trade-offs / heurísticas em tensão
+- **Altura do cartão × alvo de toque:** o código tem 24px de altura, o mínimo do WCAG, abaixo dos 44px recomendados pela Apple. Foi mantido para preservar o tamanho do cartão.
+- **Prévia do link:** a imagem é a mesma para todos os grupos, e o nome do grupo vai no texto da mensagem.
+
+### Regra da surpresa
+O convite não mostra presentes nem escolhas.
+
+### Como testar
+1. Abrir um grupo: conferir "Convidar pessoas", o código e Compartilhar.
+2. Tocar no código: "Código copiado!", e colar traz só o código.
+3. Tocar em Compartilhar no iPhone, em HTTPS: abre a janela do sistema com a mensagem pronta.
+4. No computador sem essa janela: "Copiado!", e colar traz a mensagem com o link.
+5. Abrir o link em outra conta: chega à janela do convite.
+
+---
+
 ## Mudança 11: Criar e entrar em grupo explicados, com "+ Adicionar" dentro da aba Grupos
 
 **Data:** 2026-11-03

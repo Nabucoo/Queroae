@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
@@ -11,7 +11,15 @@ import MinhaLista from '../components/MinhaLista.jsx'
 import ModalEditarGrupo from '../components/ModalEditarGrupo.jsx'
 import ModalConfirmar from '../components/ModalConfirmar.jsx'
 import ModalIntegrantes from '../components/ModalIntegrantes.jsx'
-import { IconeConfig, IconeConfirmar, IconeCopiar, IconeLixeira, IconePessoaMenos, IconeSair, IconeVoltar } from '../components/Icones.jsx'
+import PedidosEntrada from '../components/PedidosEntrada.jsx'
+import { Aviso } from '../components/TelaAuth.jsx'
+import { IconeCompartilhar, IconeConfig, IconeConfirmar, IconeCopiar, IconeLixeira, IconePessoaMenos, IconeSair, IconeVoltar } from '../components/Icones.jsx'
+
+// presente(count): quantos presentes cada um tem (para o card fechado)
+function pedirIntegrantes(idGrupo) {
+  return supabase.from('usuario_grupo').select('id_usuario_grupo, id_usuario, usuario(nome), presente(count)')
+    .eq('id_grupo', idGrupo).order('created_at')
+}
 
 export default function Grupo() {
   const { idGrupo } = useParams() // o número que está no endereço /grupo/:idGrupo
@@ -32,9 +40,7 @@ export default function Grupo() {
         // maybeSingle: devolve null (sem erro) se o grupo não existir ou não for seu
         supabase.from('grupo').select('id_grupo, nome, descricao, codigo_convite, id_admin')
           .eq('id_grupo', idGrupo).maybeSingle(),
-        // presente(count): quantos presentes cada um tem (para o card fechado)
-        supabase.from('usuario_grupo').select('id_usuario_grupo, id_usuario, usuario(nome), presente(count)')
-          .eq('id_grupo', idGrupo).order('created_at'),
+        pedirIntegrantes(idGrupo),
       ])
       const falha = resGrupo.error || resIntegrantes.error
       if (falha) setErro(mensagemDeErro(falha))
@@ -45,6 +51,12 @@ export default function Grupo() {
       setCarregando(false)
     }
     buscar()
+  }, [idGrupo])
+
+  // Depois de aprovar um pedido: a pessoa já aparece na lista, sem recarregar a tela
+  const atualizarIntegrantes = useCallback(async () => {
+    const { data, error } = await pedirIntegrantes(idGrupo)
+    if (!error) setIntegrantes(data)
   }, [idGrupo])
 
   // Admin: apaga o grupo (o banco apaga junto integrantes, listas e escolhas)
@@ -176,7 +188,10 @@ export default function Grupo() {
         {grupo.descricao && <Descricao texto={grupo.descricao} />}
       </div>
 
-      <CodigoConvite codigo={grupo.codigo_convite} />
+      {/* Acima do convite: tem alguém esperando. Some quando não há pedidos. */}
+      {souAdmin && <PedidosEntrada idGrupo={grupo.id_grupo} onAprovado={atualizarIntegrantes} />}
+
+      <CartaoConvite nomeGrupo={grupo.nome} codigo={grupo.codigo_convite} />
 
       <div className="mt-8">
         <Abas
@@ -191,7 +206,7 @@ export default function Grupo() {
         {aba === 'integrantes' ? (
           outros.length === 0 ? (
             <p className="mt-4 rounded-2xl border border-dashed border-controle px-4 py-3 text-sm text-suave">
-              Por enquanto, só você está no grupo. Copie o código de convite acima e mande para quem você quer chamar.
+              Por enquanto, só você está no grupo. Toque em Compartilhar e mande o convite para quem você quer chamar.
             </p>
           ) : (
             <ul className="mt-4 flex flex-col gap-2">
@@ -239,25 +254,65 @@ function Descricao({ texto }) {
   )
 }
 
-// Mostra o código de convite com botão de copiar
-function CodigoConvite({ codigo }) {
-  const [copiado, setCopiado] = useState(false)
+// Cartão de convite: Compartilhar manda a mensagem com o link, e o código fica
+// menor, para quem preferir digitar. Ocupa a mesma altura do cartão antigo, então
+// a lista de integrantes não desce.
+function CartaoConvite({ nomeGrupo, codigo }) {
+  const [copiado, setCopiado] = useState(null) // 'convite' | 'codigo' | null
+  const [falhaAoCopiar, setFalhaAoCopiar] = useState(false)
 
-  async function copiar() {
-    await navigator.clipboard.writeText(codigo)
-    setCopiado(true)
-    setTimeout(() => setCopiado(false), 2000) // volta ao normal depois de 2s
+  const link = `${window.location.origin}/convite/${codigo}`
+  const mensagem = `Entra no nosso grupo “${nomeGrupo}” no QueroAê: ${link}`
+
+  async function copiar(texto, qual) {
+    setFalhaAoCopiar(false)
+    try {
+      await navigator.clipboard.writeText(texto)
+      setCopiado(qual)
+      setTimeout(() => setCopiado(null), 2000) // volta ao normal depois de 2s
+    } catch {
+      setFalhaAoCopiar(true) // sem permissão: mostra o link para copiar à mão
+    }
+  }
+
+  async function compartilhar() {
+    // Sem a janela de compartilhar do aparelho, copia a mensagem
+    if (!navigator.share) return copiar(mensagem, 'convite')
+    try {
+      // O link vai dentro do texto: alguns apps ignoram o campo "url" separado
+      await navigator.share({ text: mensagem })
+    } catch (falha) {
+      // AbortError = a pessoa só fechou a janela: não é um erro
+      if (falha.name !== 'AbortError') copiar(mensagem, 'convite')
+    }
   }
 
   return (
-    <div className="mt-6 flex items-center justify-between gap-3 rounded-cartao bg-painel px-5 py-4">
-      <div>
-        <p className="text-xs text-suave">Código de convite</p>
-        <p className="num mt-0.5 text-lg font-medium tracking-wide">{codigo}</p>
+    <div className="mt-6 rounded-cartao bg-painel px-5 py-4">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold">Convidar pessoas</p>
+          <button
+            type="button"
+            onClick={() => copiar(codigo, 'codigo')}
+            aria-label={`Copiar o código ${codigo}`}
+            className="num flex min-h-6 items-center gap-1 rounded text-xs text-suave hover:text-texto focus-visible:outline-2 focus-visible:outline-destaque"
+          >
+            {copiado === 'codigo' ? 'Código copiado!' : <>Código {codigo}</>}
+            {copiado === 'codigo' ? <IconeConfirmar className="h-3 w-3" /> : <IconeCopiar className="h-3 w-3" />}
+          </button>
+        </div>
+        <Botao icone={copiado === 'convite' ? IconeConfirmar : IconeCompartilhar} className="shrink-0" onClick={compartilhar}>
+          {copiado === 'convite' ? 'Copiado!' : 'Compartilhar'}
+        </Botao>
       </div>
-      <Botao variante="secundario" icone={copiado ? IconeConfirmar : IconeCopiar} onClick={copiar} aria-live="polite">
-        {copiado ? 'Copiado!' : 'Copiar'}
-      </Botao>
+      {/* Anuncia o resultado de copiar para quem usa leitor de tela */}
+      <p role="status" className="sr-only">{copiado && 'Copiado.'}</p>
+      {falhaAoCopiar && (
+        <div className="mt-3">
+          <Aviso>Não conseguimos copiar. Selecione e envie este link: <span className="break-all">{link}</span></Aviso>
+        </div>
+      )}
     </div>
   )
 }

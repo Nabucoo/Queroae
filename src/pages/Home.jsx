@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router'
+import { useCallback, useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
+import { useAoVoltarParaApp } from '../lib/useAoVoltarParaApp.js'
+import { lerConvitePendente, limparConvitePendente } from '../lib/convitePendente.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
 import Painel from '../components/Painel.jsx'
@@ -11,12 +13,16 @@ import Avatar from '../components/Avatar.jsx'
 import Modal from '../components/Modal.jsx'
 import ModalCriarGrupo from '../components/ModalCriarGrupo.jsx'
 import ModalEntrarGrupo from '../components/ModalEntrarGrupo.jsx'
+import ModalConvite from '../components/ModalConvite.jsx'
 import { IconeChave, IconeConfig, IconeMais, IconeSeta } from '../components/Icones.jsx'
 
 export default function Home() {
   const { usuario, perfil } = useAuth()
   const [grupos, setGrupos] = useState([])
   const [escolhas, setEscolhas] = useState([])
+  const [pedidos, setPedidos] = useState([]) // meus pedidos para entrar em grupos
+  const [contagens, setContagens] = useState({}) // { idGrupo: nº de pedidos } dos grupos em que sou admin
+  const [versao, setVersao] = useState(0) // somar 1 busca tudo de novo, sem piscar a tela
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState('')
   const [modal, setModal] = useState(null) // 'adicionar' | 'criar' | 'entrar' | null
@@ -26,6 +32,26 @@ export default function Home() {
   const aba = params.get('aba') === 'presentes' ? 'presentes' : 'grupos'
   // replace: trocar de aba não cria um passo a mais no "voltar" do navegador
   const trocarAba = (id) => setParams(id === 'presentes' ? { aba: 'presentes' } : {}, { replace: true })
+  // Quem chega por um link de convite (/convite/:codigo) vem para cá com o código
+  // no "bilhete" da navegação. Quem abriu o link sem login e entrou depois tem o
+  // código guardado no aparelho. Fechar a janela limpa os dois e fica na Home.
+  const bilheteConvite = useLocation().state?.convite
+  const [conviteGuardado, setConviteGuardado] = useState(lerConvitePendente)
+  const codigoConvite = bilheteConvite ?? conviteGuardado
+  const navegar = useNavigate()
+
+  // O convite já chegou aqui: não precisa abrir de novo na próxima vez
+  useEffect(() => {
+    if (codigoConvite) limparConvitePendente()
+  }, [codigoConvite])
+
+  function fecharConvite() {
+    setConviteGuardado(null)
+    navegar('/', { replace: true })
+  }
+
+  const atualizar = useCallback(() => setVersao((v) => v + 1), [])
+  useAoVoltarParaApp(atualizar)
 
   // Busca os dados quando a tela abre
   useEffect(() => {
@@ -46,18 +72,34 @@ export default function Home() {
         .eq('id_presenteador', usuario.id)
         .order('created_at', { ascending: false })
 
-      // Promise.all faz os dois pedidos ao mesmo tempo
-      const [resGrupos, resEscolhas] = await Promise.all([pedidoGrupos, pedidoEscolhas])
-      const falha = resGrupos.error || resEscolhas.error
+      // Promise.all faz todos os pedidos ao mesmo tempo
+      const [resGrupos, resEscolhas, resPedidos, resContagens] = await Promise.all([
+        pedidoGrupos,
+        pedidoEscolhas,
+        supabase.rpc('meus_pedidos'),
+        supabase.rpc('contagem_pedidos'),
+      ])
+      const falha = resGrupos.error || resEscolhas.error || resPedidos.error || resContagens.error
       if (falha) setErro(mensagemDeErro(falha))
       else {
         setGrupos(resGrupos.data.map((linha) => linha.grupo))
         setEscolhas(resEscolhas.data)
+        setPedidos(resPedidos.data)
+        setContagens(Object.fromEntries(resContagens.data.map((c) => [c.id_grupo, c.total])))
+        setErro('')
       }
       setCarregando(false)
     }
     buscar()
-  }, [usuario.id])
+  }, [usuario.id, versao])
+
+  // Cancelar um pedido pendente ou dispensar o aviso de recusa
+  async function descartarPedido(idPedido) {
+    const { error } = await supabase.rpc('descartar_pedido', { p_id_pedido: idPedido })
+    if (error) return setErro(mensagemDeErro(error))
+    setErro('')
+    setPedidos((atual) => atual.filter((p) => p.id_pedido !== idPedido))
+  }
 
   const primeiroNome = perfil?.nome?.split(' ')[0]
 
@@ -95,6 +137,9 @@ export default function Home() {
             {aba === 'grupos' ? (
               <ListaGrupos
                 grupos={grupos}
+                pedidos={pedidos}
+                contagens={contagens}
+                onDescartarPedido={descartarPedido}
                 carregando={carregando}
                 idUsuario={usuario.id}
                 onAdicionar={() => setModal('adicionar')}
@@ -113,23 +158,30 @@ export default function Home() {
         <OpcoesDeGrupo onEntrar={() => setModal('entrar')} onCriar={() => setModal('criar')} />
       </Modal>
       <ModalCriarGrupo aberto={modal === 'criar'} onFechar={() => setModal(null)} />
-      <ModalEntrarGrupo
-        aberto={modal === 'entrar'}
-        onFechar={() => setModal(null)}
-        idsMeusGrupos={grupos.map((g) => g.id_grupo)}
-      />
+      <ModalEntrarGrupo aberto={modal === 'entrar'} onFechar={() => setModal(null)} />
+      {codigoConvite && <ModalConvite codigo={codigoConvite} onFechar={fecharConvite} onPedido={atualizar} />}
     </div>
   )
 }
 
-function ListaGrupos({ grupos, carregando, idUsuario, onAdicionar, onCriar, onEntrar }) {
+function ListaGrupos({ grupos, pedidos, contagens, onDescartarPedido, carregando, idUsuario, onAdicionar, onCriar, onEntrar }) {
   if (carregando) return <Esqueleto />
+
+  // Pedidos ficam antes dos grupos, separados: eles ainda não abrem nada
+  const blocoPedidos = pedidos.length > 0 && (
+    <ul className="mb-4 flex flex-col gap-2">
+      {pedidos.map((p) => (
+        <li key={p.id_pedido}><CartaoPedido pedido={p} onDescartar={onDescartarPedido} /></li>
+      ))}
+    </ul>
+  )
 
   // Sem grupos, escolher "entrar ou criar" é a tarefa da tela: as duas opções
   // aparecem direto, cada uma explicando para que serve.
   if (grupos.length === 0) {
     return (
       <>
+        {blocoPedidos}
         <p className="mb-3 text-sm text-suave">Você ainda não participa de nenhum grupo. Como quer começar?</p>
         <OpcoesDeGrupo onEntrar={onEntrar} onCriar={onCriar} />
       </>
@@ -139,6 +191,7 @@ function ListaGrupos({ grupos, carregando, idUsuario, onAdicionar, onCriar, onEn
   // Com grupos, a lista é o principal; criar e entrar viram um "+ Adicionar" no título.
   return (
     <>
+      {blocoPedidos}
       <div className="mb-3 flex items-center justify-between gap-3">
         <h2 className="text-sm font-semibold">Seus grupos</h2>
         <Botao variante="secundario" icone={IconeMais} onClick={onAdicionar}>Adicionar</Botao>
@@ -154,12 +207,45 @@ function ListaGrupos({ grupos, carregando, idUsuario, onAdicionar, onCriar, onEn
                   {g.usuario_grupo[0].count === 1 ? 'integrante' : 'integrantes'}
                   {g.id_admin === idUsuario && ' · você é admin'}
                 </p>
+                {contagens[g.id_grupo] > 0 && (
+                  <span className="num mt-1 inline-block rounded-full bg-destaque px-2 py-0.5 text-xs font-medium text-fundo">
+                    {contagens[g.id_grupo] === 1 ? '1 pedido' : `${contagens[g.id_grupo]} pedidos`}
+                  </span>
+                )}
               </div>
             </CartaoLink>
           </li>
         ))}
       </ul>
     </>
+  )
+}
+
+// Um pedido meu para entrar em um grupo: aguardando ou recusado.
+// A situação vem escrita, e não só na cor (acessibilidade).
+function CartaoPedido({ pedido, onDescartar }) {
+  const [enviando, setEnviando] = useState(false)
+  const recusado = pedido.situacao === 'recusado'
+
+  async function descartar() {
+    setEnviando(true)
+    await onDescartar(pedido.id_pedido)
+    setEnviando(false)
+  }
+
+  return (
+    <article className="flex flex-col items-start gap-2 rounded-2xl border border-dashed border-contorno bg-elevado p-4">
+      <h3 className="text-sm font-semibold break-words">{pedido.nome_grupo}</h3>
+      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${recusado ? 'bg-negativo-claro text-negativo' : 'bg-ativo text-texto'}`}>
+        {recusado ? 'Pedido não aprovado' : 'Aguardando aprovação'}
+      </span>
+      <div className="flex w-full items-center justify-between gap-3">
+        <p className="text-xs text-suave">{recusado ? 'Se foi engano, fale com quem te convidou.' : 'Avise quem te convidou.'}</p>
+        <Botao variante={recusado ? 'secundario' : 'texto'} className="shrink-0" disabled={enviando} onClick={descartar}>
+          {recusado ? 'Dispensar' : enviando ? 'Cancelando…' : 'Cancelar pedido'}
+        </Botao>
+      </div>
+    </article>
   )
 }
 

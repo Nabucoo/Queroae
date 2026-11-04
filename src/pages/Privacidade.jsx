@@ -32,7 +32,7 @@ export default function Privacidade() {
       />
       <main className="mt-6">
         <h1 className="text-2xl font-semibold">Política de privacidade</h1>
-        <p className="mt-2 text-sm text-suave">Atualizada em 25 de outubro de 2026.</p>
+        <p className="mt-2 text-sm text-suave">Atualizada em 4 de novembro de 2026.</p>
 
         <p className="mt-6 text-base">
           O QueroAê é um projeto pessoal para organizar listas de presentes entre família e amigos. Aqui explicamos,
@@ -42,7 +42,7 @@ export default function Privacidade() {
         <Secao titulo="O que guardamos">
           <ul className="list-disc space-y-1 pl-5">
             <li>Seu <strong>nome</strong> e seu <strong>e-mail</strong>, informados no cadastro.</li>
-            <li>Os <strong>grupos</strong> de que você participa.</li>
+            <li>Os <strong>grupos</strong> de que você participa e os <strong>pedidos para entrar</strong> em um grupo.</li>
             <li>Sua <strong>lista de presentes</strong> em cada grupo (nome, descrição e link).</li>
             <li>Os presentes que você <strong>marcou para comprar</strong>.</li>
           </ul>
@@ -59,12 +59,14 @@ export default function Privacidade() {
 
         <Secao titulo="Quem vê o quê">
           <ul className="list-disc space-y-1 pl-5">
-            <li>Seu nome e sua lista aparecem <strong>só para os integrantes dos seus grupos</strong>.</li>
+            <li>Sua lista aparece <strong>só para os integrantes dos seus grupos</strong>.</li>
+            <li>Seu nome aparece para os integrantes dos seus grupos. Além disso, quem abrir um convite de um grupo seu pode ver seu primeiro nome antes de pedir para entrar.</li>
+            <li>Quando você pede para entrar em um grupo, o <strong>admin daquele grupo</strong> vê seu nome e seu e-mail para decidir.</li>
             <li>
               <strong>Ninguém</strong> vê quem escolheu os seus presentes: essa é a surpresa, e ela é protegida pelo
               próprio banco de dados.
             </li>
-            <li>Seu e-mail não aparece para os outros integrantes.</li>
+            <li>Fora isso, seu e-mail não aparece para os outros integrantes.</li>
           </ul>
         </Secao>
 
@@ -88,6 +90,7 @@ export default function Privacidade() {
               listas e suas escolhas são apagadas na hora, e os presentes que você tinha escolhido voltam a ficar livres.
             </li>
             <li><strong>Um grupo:</strong> ao sair de um grupo, sua lista daquele grupo é apagada.</li>
+            <li><strong>Um pedido:</strong> cancele um pedido pendente ou dispense o aviso de recusa na tela inicial.</li>
             <li><strong>Um presente:</strong> remova da sua lista quando quiser.</li>
           </ul>
         </Secao>

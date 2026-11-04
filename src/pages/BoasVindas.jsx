@@ -1,10 +1,15 @@
-import { Link } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 import Botao from '../components/Botao.jsx'
+import ModalConviteInvalido from '../components/ModalConviteInvalido.jsx'
 import { IconeEntrar, IconePessoaMais } from '../components/Icones.jsx'
 
 // Porta de entrada para quem não está logado. Quase todo mundo chega pela
 // primeira vez por um convite da família, então "Criar conta" é a ação principal.
 export default function BoasVindas() {
+  // Quem abriu um link de convite inválido chega aqui com este aviso
+  const conviteInvalido = useLocation().state?.conviteInvalido
+  const navegar = useNavigate()
+
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-4 py-10 text-center">
       {/* Decorativa: o nome logo abaixo já diz o que é */}
@@ -23,6 +28,8 @@ export default function BoasVindas() {
       <Link to="/privacidade" state={{ de: 'boas-vindas' }} className="mt-8 text-xs font-medium text-destaque hover:underline">
         Política de privacidade
       </Link>
+
+      {conviteInvalido && <ModalConviteInvalido onFechar={() => navegar('/boas-vindas', { replace: true })} />}
     </main>
   )
 }

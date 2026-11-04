@@ -2,12 +2,18 @@ import { useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { campoDoErro, mensagemDeErro } from '../lib/erros.js'
+import { lerConvitePendente } from '../lib/convitePendente.js'
 import TelaAuth, { Aviso } from '../components/TelaAuth.jsx'
 import Campo from '../components/Campo.jsx'
 import Botao from '../components/Botao.jsx'
 import { IconeCadeado, IconeEnvelope, IconePessoa, IconePessoaMais } from '../components/Icones.jsx'
 
 export default function Cadastro() {
+  // Quem veio de um convite volta para ele, e não para as boas-vindas
+  const convite = lerConvitePendente()
+  const voltar = convite
+    ? { para: `/convite/${convite}`, rotulo: 'Voltar para o convite' }
+    : { para: '/boas-vindas', rotulo: 'Voltar para o início' }
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
@@ -50,7 +56,12 @@ export default function Cadastro() {
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password: senha,
-      options: { data: { nome: nome.trim() } },
+      options: {
+        data: { nome: nome.trim() },
+        // O link do e-mail pode abrir em outro navegador, que não lembra o convite;
+        // por isso o endereço do convite vai dentro dele.
+        ...(convite && { emailRedirectTo: `${window.location.origin}/convite/${convite}` }),
+      },
     })
     setEnviando(false)
 
@@ -69,8 +80,10 @@ export default function Cadastro() {
     return (
       <TelaAuth
         titulo="Confira seu e-mail"
-        voltar={{ para: '/boas-vindas', rotulo: 'Voltar para o início' }}
-        subtitulo={`Enviamos um link de confirmação para ${email}. Clique nele e depois entre com sua senha.`}
+        voltar={voltar}
+        subtitulo={convite
+          ? `Enviamos um link de confirmação para ${email}. Clique nele para continuar seu convite. Se o app pedir, entre com sua senha.`
+          : `Enviamos um link de confirmação para ${email}. Clique nele e depois entre com sua senha.`}
         rodape={<Link to="/login" className="font-medium text-destaque hover:underline">Voltar para o login</Link>}
       />
     )
@@ -79,7 +92,7 @@ export default function Cadastro() {
   return (
     <TelaAuth
       titulo="Criar conta"
-      voltar={{ para: '/boas-vindas', rotulo: 'Voltar para o início' }}
+      voltar={voltar}
       rodape={
         <>
           <p className="text-suave">

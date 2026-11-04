@@ -9,6 +9,7 @@ import Cadastro from './pages/Cadastro.jsx'
 import EsqueciSenha from './pages/EsqueciSenha.jsx'
 import NovaSenha from './pages/NovaSenha.jsx'
 import Privacidade from './pages/Privacidade.jsx'
+import Convite from './pages/Convite.jsx'
 import Home from './pages/Home.jsx'
 import Grupo from './pages/Grupo.jsx'
 import Integrante from './pages/Integrante.jsx'
@@ -35,6 +36,7 @@ export default function App() {
 
           {/* Aberta para todos, logados ou não */}
           <Route path="/privacidade" element={<Privacidade />} />
+          <Route path="/convite/:codigo" element={<Convite />} />
 
           {/* Só para quem está logado */}
           <Route element={<RotaProtegida />}>

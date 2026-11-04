@@ -27,6 +27,15 @@ export function IconeVoltar(props) {
   )
 }
 
+export function IconeCompartilhar(props) {
+  return (
+    <Icone {...props}>
+      <path d="M8 10V2M5 4.5l3-3 3 3" />
+      <path d="M5 7H3.5a1 1 0 0 0-1 1v5.500a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H11" />
+    </Icone>
+  )
+}
+
 export function IconeCopiar(props) {
   return (
     <Icone {...props}>
