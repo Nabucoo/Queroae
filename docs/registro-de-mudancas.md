@@ -6,6 +6,111 @@ Entradas da mais recente para a mais antiga.
 
 <!-- Novas entradas entram logo abaixo desta linha. -->
 
+## Mudança 11: Criar e entrar em grupo explicados, com "+ Adicionar" dentro da aba Grupos
+
+**Data:** 2026-11-03
+**Telas/arquivos alterados:** `src/pages/Home.jsx`
+**Revisa:** a aba "Grupos" da Mudança 10.
+
+### Problema (antes)
+No topo da aba "Grupos" havia dois botões lado a lado: "Criar grupo novo" e "Entrar com código".
+- **Eles não explicavam para que serve cada um.** Quem recebeu um convite não sabia se devia "criar" ou "entrar", e quem queria organizar a família não sabia o que era o "código". Isso fere a **H2 – Correspondência com o mundo real** (os rótulos falam do sistema, não da situação da pessoa) e a **H10 – Ajuda e documentação** (nenhuma dica no ponto de uso).
+- **Os botões sempre ocupavam o topo da aba**, mesmo para quem já tinha vários grupos e só queria abrir um deles. A lista, que é o mais usado, ficava abaixo de duas ações raras (**H8 – Design minimalista**).
+- **A ordem favorecia criar**, embora quase todo mundo chegue ao app por um convite.
+
+### O que foi alterado (depois)
+- **Sem grupos:** a aba mostra "Você ainda não participa de nenhum grupo. Como quer começar?" e **dois cartões explicados**, lado a lado:
+  - **Tenho um código** (ícone de chave): "Recebi um convite de alguém da família ou da turma."
+  - **Criar um grupo** (ícone de +): "Para organizar o Natal, um aniversário ou um amigo secreto."
+  Cada cartão abre direto o modal que já existia (entrar com código ou criar grupo).
+- **Com grupos:** a lista vem primeiro, com o título "Seus grupos" e um botão secundário **"+ Adicionar"** à direita. Ele abre a janela **"Adicionar grupo"** com os mesmos dois cartões.
+- **"Tenho um código" vem primeiro** nos dois casos, por ser o caminho mais comum.
+- Os botões "Criar grupo novo" e "Entrar com código" foram removidos.
+- Os dois cartões são o mesmo componente (`OpcoesDeGrupo`) nos dois lugares, com as cores de ícone do próprio app.
+
+A proposta foi apresentada antes numa página com mockups de várias alternativas. O Lucas escolheu a combinação "B" (cartões explicados no estado vazio) com "F1" ("+" no título da lista).
+
+### Heurísticas e princípios considerados
+- **H2 – Correspondência com o mundo real:** os cartões falam da situação da pessoa ("Recebi um convite", "Para organizar o Natal") e não da operação do sistema.
+- **H10 – Ajuda e documentação:** a explicação fica no próprio botão, no momento da escolha, sem precisar de uma tela de ajuda.
+- **H6 – Reconhecer em vez de lembrar:** a pessoa reconhece seu caso no texto do cartão, em vez de lembrar o que significa "entrar com código".
+- **H8 – Design estético e minimalista:** com grupos, as duas ações raras viram um só botão discreto, e a lista fica em primeiro plano.
+- **H7 – Flexibilidade e eficiência:** quem não tem grupos vê as opções direto, sem passo a mais; quem já tem grupos não é atrapalhado por elas.
+- **H4 – Consistência e padrões:** "+ Adicionar" usa o botão secundário do app, e a janela "Adicionar grupo" é o mesmo `Modal` centralizado das outras janelas.
+- **Visibilidade de afordância (Dix):** o cartão inteiro é clicável, com borda, ícone e contorno de foco no teclado.
+
+### Trade-offs / heurísticas em tensão
+- **Um toque a mais × H8:** com grupos, criar ou entrar passou a exigir dois toques ("+ Adicionar" e depois a opção). Foi aceito porque são ações raras para quem já participa de grupos, e a lista ganhou destaque.
+- **Janela centralizada × folha que sobe de baixo:** o mockup mostrava uma folha subindo do rodapé, mais comum no celular. Foi usado o `Modal` centralizado que o app já tem, para não criar um segundo tipo de janela (H4).
+- **Texto curto × explicação completa:** as descrições cabem em duas ou três linhas num celular estreito. Detalhes como "quem é admin" ficam para o modal de criar.
+
+### Regra da surpresa
+Nada muda. A mudança só reorganiza como se chega aos modais de criar e entrar; nenhuma informação sobre quem escolheu presentes é mostrada.
+
+### Como testar
+1. Rodar `npm run dev`, entrar e abrir a Home na largura de celular.
+2. **Com grupos:** a aba Grupos mostra "Seus grupos" com "+ Adicionar" à direita. Tocar nele abre "Adicionar grupo" com os dois cartões.
+3. Tocar em "Tenho um código": abre o modal de código. Fechar, abrir de novo e tocar em "Criar um grupo": abre o modal de criar.
+4. Fechar a janela pelo X, pelo Esc e tocando fora.
+5. **Sem grupos** (conta nova): os dois cartões aparecem direto na aba, sem o "+ Adicionar".
+6. **Teclado:** Tab passa pelos cartões com o contorno de foco visível, e Enter abre o modal certo.
+7. **Celular estreito (360 px):** os textos dos cartões quebram em linhas sem serem cortados.
+
+---
+
+## Mudança 10: Home com um card e duas abas, presentes por grupo e sem a frase abaixo da saudação
+
+**Data:** 2026-11-03
+**Telas/arquivos alterados:** `src/pages/Home.jsx`, `src/pages/Integrante.jsx`
+
+### Problema (antes)
+A Home tinha a saudação, uma frase de resumo e **dois painéis**: "Grupos que estou participando" e "Presentes que escolhi comprar".
+- **No celular, os painéis ficavam empilhados.** Quem tinha vários grupos precisava rolar a tela para descobrir que existia a lista de presentes embaixo. Isso fere a **H6 – Reconhecer em vez de lembrar** (uma das duas tarefas principais da tela ficava fora da vista) e a **H8 – Design minimalista** (duas listas longas competindo pela atenção).
+- **A lista de presentes era corrida**, com o grupo repetido em cada linha ("Para Ana · Família Silva"). Era difícil ver o que já estava resolvido em cada grupo (**Facilidade de sintetizar, Dix**).
+- **A frase abaixo da saudação** ("Você vai dar 5 presentes.") repetia números que já apareciam nos painéis (**H8**).
+- **No computador**, a Home tinha até 1100 px de largura, com duas colunas, diferente das outras telas (Grupo, Perfil), que usam uma coluna mais estreita (**H4**).
+
+### O que foi alterado (depois)
+- Os dois painéis viraram **um card só**, com o componente `Abas` (o mesmo da tela do Grupo):
+  - **"Grupos (n)"**: botões "Criar grupo novo" e "Entrar com código" e a lista de grupos, como antes.
+  - **"Vou comprar (n)"**: os presentes que escolhi comprar, **separados por grupo**. Cada grupo tem um título com o nome e a contagem ("3 presentes"), e cada presente mostra só "Para Ana" (o grupo já está no título). O grupo com a escolha mais recente vem primeiro.
+- O número de cada aba aparece entre parênteses, no mesmo formato das abas do Grupo ("Integrantes (3)"). Enquanto a página carrega, os números não aparecem.
+- **A aba aberta fica no endereço:** `/` para "Grupos" e `/?aba=presentes` para "Vou comprar". Trocar de aba substitui o endereço (`replace`), para não criar um passo a mais no "voltar" do navegador.
+- Na lista de um integrante aberta a partir da Home, a seta de voltar leva para `/?aba=presentes`, ou seja, de volta para a aba "Vou comprar".
+- **A frase abaixo da saudação foi removida** (função `fraseDoDia`). Ela só existia na Home.
+- A Home passou a ter a **mesma largura das outras telas** (`max-w-2xl`), numa coluna só.
+
+A proposta foi apresentada antes numa página com mockups de antes e depois (celular, fluxo da volta e computador).
+
+### Heurísticas e princípios considerados
+- **H6 – Reconhecer em vez de lembrar:** as duas listas ficam visíveis logo no topo, como abas, sem rolar. O número em cada aba mostra o que tem na outra sem precisar abri-la.
+- **H8 – Design estético e minimalista:** uma lista por vez; os botões de criar e entrar aparecem só na aba Grupos, onde fazem sentido; a frase repetida saiu; o nome do grupo deixou de se repetir em cada presente.
+- **H4 – Consistência e padrões:** mesmo componente e mesmo formato de contagem das abas do Grupo; mesma largura das outras telas. O nome "Vou comprar" é o mesmo do botão que marca um presente na lista de alguém.
+- **Facilidade de generalizar (Dix):** quem aprendeu as abas do Grupo já sabe usar as da Home.
+- **Facilidade de sintetizar (Dix):** com os presentes separados por grupo, a pessoa vê o que já resolveu em cada família ou turma.
+- **H3 – Controle e liberdade do usuário:** a volta da lista de um integrante cai na mesma aba de onde a pessoa saiu (o guia pede "botão voltar coerente com a origem").
+- **H2 – Correspondência com o mundo real:** "Vou comprar" usa a linguagem da própria ação do app, em vez de "Presentes que escolhi comprar", que não caberia numa aba no celular.
+
+### Trade-offs / heurísticas em tensão
+- **Uma lista escondida × H6:** com abas, uma das listas fica fora da vista. Foi compensado com o número em cada aba. No computador, onde antes as duas apareciam lado a lado, a perda é maior, mas foi aceita para ter um layout só e a mesma largura das outras telas (H4).
+- **Contagem entre parênteses × pílula:** o mockup mostrava o número numa pílula cinza; na implementação foi usado o formato do Grupo, "(3)", para os números das abas terem a mesma aparência nas duas telas (H4).
+- **Ordem dos grupos na aba "Vou comprar":** segue a escolha mais recente, e não a ordem da aba Grupos. Assim, o que a pessoa acabou de escolher aparece no topo.
+
+### Regra da surpresa
+A aba "Vou comprar" mostra só os presentes que **eu** escolhi para os **outros**, como a Home já mostrava. Nenhuma informação sobre quem escolheu os meus presentes aparece; a consulta ao banco não mudou.
+
+### Como testar
+1. Rodar `npm run dev`, entrar e abrir a Home no DevTools com a largura de celular.
+2. Ver "Olá, Lucas" sem a frase embaixo e o card com "Grupos (n)" e "Vou comprar (n)". A aba Grupos vem aberta.
+3. Trocar para "Vou comprar": presentes separados por grupo, e o endereço vira `/?aba=presentes`.
+4. Tocar num presente e, na lista da pessoa, tocar na seta: volta para a aba "Vou comprar".
+5. Recarregar `/?aba=presentes`: abre direto na aba de presentes.
+6. Com uma conta sem grupos ou sem presentes: as mensagens de lista vazia aparecem na aba certa.
+7. No computador: a Home fica numa coluna, na largura do Grupo e do Perfil.
+8. Com o teclado: Tab chega nas abas e Enter troca de aba.
+
+---
+
 ## Mudança 9: Seta de voltar na Política de privacidade, de volta para a origem
 
 **Data:** 2026-11-03

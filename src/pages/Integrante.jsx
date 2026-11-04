@@ -35,13 +35,14 @@ export default function Integrante() {
     buscar()
   }, [idGrupo, idUsuario])
 
-  // Se viemos da Home (pelo "bilhete" state do link), voltar leva para a Home;
-  // senão (ex.: endereço colado), leva para o grupo.
+  // Se viemos da Home (pelo "bilhete" state do link), voltar leva para a Home,
+  // na aba "Vou comprar" (de onde o link saiu); senão (ex.: endereço colado),
+  // leva para o grupo.
   const veioDaHome = useLocation().state?.de === 'home'
   const voltar = (
     <BotaoIcone
       as={Link}
-      to={veioDaHome ? '/' : `/grupo/${idGrupo}`}
+      to={veioDaHome ? '/?aba=presentes' : `/grupo/${idGrupo}`}
       rotulo={veioDaHome ? 'Voltar para o início' : 'Voltar para o grupo'}
     >
       <IconeVoltar className="h-5 w-5" />

@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
 import Painel from '../components/Painel.jsx'
+import Abas from '../components/Abas.jsx'
 import Botao from '../components/Botao.jsx'
 import Avatar from '../components/Avatar.jsx'
+import Modal from '../components/Modal.jsx'
 import ModalCriarGrupo from '../components/ModalCriarGrupo.jsx'
 import ModalEntrarGrupo from '../components/ModalEntrarGrupo.jsx'
 import { IconeChave, IconeConfig, IconeMais, IconeSeta } from '../components/Icones.jsx'
@@ -17,7 +19,13 @@ export default function Home() {
   const [escolhas, setEscolhas] = useState([])
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState('')
-  const [modal, setModal] = useState(null) // 'criar' | 'entrar' | null
+  const [modal, setModal] = useState(null) // 'adicionar' | 'criar' | 'entrar' | null
+  // A aba aberta fica no endereço (/?aba=presentes): assim, quem sai para a lista
+  // de alguém e toca em voltar cai na mesma aba.
+  const [params, setParams] = useSearchParams()
+  const aba = params.get('aba') === 'presentes' ? 'presentes' : 'grupos'
+  // replace: trocar de aba não cria um passo a mais no "voltar" do navegador
+  const trocarAba = (id) => setParams(id === 'presentes' ? { aba: 'presentes' } : {}, { replace: true })
 
   // Busca os dados quando a tela abre
   useEffect(() => {
@@ -54,7 +62,7 @@ export default function Home() {
   const primeiroNome = perfil?.nome?.split(' ')[0]
 
   return (
-    <div className="mx-auto max-w-[1100px] px-4 pb-16">
+    <div className="mx-auto max-w-2xl px-4 pb-16">
       <Cabecalho
         direita={
           <BotaoIcone as={Link} to="/perfil" rotulo="Configurações do perfil">
@@ -64,85 +72,46 @@ export default function Home() {
       />
 
       <main>
-        <div className="mt-8 mb-10">
-          {/* "Olá," fino; o nome em negrito na cor de destaque */}
-          <h1 className="font-serif text-4xl font-light tracking-[-0.01em] italic sm:text-5xl">
-            Olá{primeiroNome && <>, <span className="font-bold text-destaque">{primeiroNome}</span></>}
-          </h1>
-          {!carregando && !erro && (
-            <p className="mt-2 text-base text-suave">{fraseDoDia(grupos.length, escolhas.length)}</p>
-          )}
-        </div>
+        {/* "Olá," fino; o nome em negrito na cor de destaque */}
+        <h1 className="mt-8 mb-8 font-serif text-4xl font-light tracking-[-0.01em] italic sm:text-5xl">
+          Olá{primeiroNome && <>, <span className="font-bold text-destaque">{primeiroNome}</span></>}
+        </h1>
 
         {erro && <p role="alert" className="mb-4 rounded-campo bg-negativo-claro px-3 py-2 text-sm text-negativo">{erro}</p>}
 
-        {/* grid-cols-1 = minmax(0, 1fr): deixa a coluna encolher até a largura da tela.
-            Sem isso, a grade se alarga para caber o nome de grupo mais longo inteiro
-            (antes de cortar com "…") e o painel vaza no celular. */}
-        <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
-          <Painel
-            titulo={<>Grupos que estou participando <Contagem n={grupos.length} carregando={carregando} /></>}
-          >
-            <div className="mb-4 flex flex-wrap gap-3">
-              <Botao icone={IconeMais} onClick={() => setModal('criar')}>Criar grupo novo</Botao>
-              <Botao variante="secundario" icone={IconeChave} onClick={() => setModal('entrar')}>Entrar com código</Botao>
-            </div>
-            {carregando ? (
-              <Esqueleto />
-            ) : grupos.length === 0 ? (
-              <Vazio>Você ainda não participa de nenhum grupo. Crie um ou entre com o código que alguém te mandou.</Vazio>
-            ) : (
-              <ul className="flex flex-col gap-2">
-                {grupos.map((g) => (
-                  <li key={g.id_grupo}>
-                    <CartaoLink to={`/grupo/${g.id_grupo}`}>
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium">{g.nome}</p>
-                        <p className="mt-0.5 text-xs text-suave">
-                          <span className="num">{g.usuario_grupo[0].count}</span>{' '}
-                          {g.usuario_grupo[0].count === 1 ? 'integrante' : 'integrantes'}
-                          {g.id_admin === usuario.id && ' · você é admin'}
-                        </p>
-                      </div>
-                    </CartaoLink>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Painel>
+        {/* Um card só, com as duas listas em abas (mesmo padrão da tela do Grupo).
+            O número em cada aba mostra o que tem na outra sem precisar abrir. */}
+        <Painel>
+          <Abas
+            abas={[
+              { id: 'grupos', rotulo: carregando ? 'Grupos' : `Grupos (${grupos.length})` },
+              { id: 'presentes', rotulo: carregando ? 'Vou comprar' : `Vou comprar (${escolhas.length})` },
+            ]}
+            ativa={aba}
+            onTrocar={trocarAba}
+          />
 
-          <Painel
-            titulo={<>Presentes que escolhi comprar <Contagem n={escolhas.length} carregando={carregando} /></>}
-          >
-            {carregando ? (
-              <Esqueleto />
-            ) : escolhas.length === 0 ? (
-              <Vazio>Quando você marcar “vou comprar” num presente da lista de alguém, ele aparece aqui.</Vazio>
+          <div className="mt-4">
+            {aba === 'grupos' ? (
+              <ListaGrupos
+                grupos={grupos}
+                carregando={carregando}
+                idUsuario={usuario.id}
+                onAdicionar={() => setModal('adicionar')}
+                onCriar={() => setModal('criar')}
+                onEntrar={() => setModal('entrar')}
+              />
             ) : (
-              <ul className="flex flex-col gap-2">
-                {escolhas.map(({ id_escolha_presente, presente }) => {
-                  const dono = presente.usuario_grupo
-                  return (
-                    <li key={id_escolha_presente}>
-                      {/* state: avisa a página do integrante que viemos da Home (para o botão voltar) */}
-                      <CartaoLink to={`/grupo/${dono.grupo.id_grupo}/integrante/${dono.id_usuario}`} state={{ de: 'home' }}>
-                        <Avatar nome={dono.usuario.nome} id={dono.id_usuario} tamanho="p" />
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-medium">{presente.nome}</p>
-                          <p className="mt-0.5 truncate text-xs text-suave">
-                            Para {dono.usuario.nome} · {dono.grupo.nome}
-                          </p>
-                        </div>
-                      </CartaoLink>
-                    </li>
-                  )
-                })}
-              </ul>
+              <ListaPresentes escolhas={escolhas} carregando={carregando} />
             )}
-          </Painel>
-        </div>
+          </div>
+        </Painel>
       </main>
 
+      {/* "+ Adicionar": uma porta só, que leva para a escolha explicada */}
+      <Modal aberto={modal === 'adicionar'} onFechar={() => setModal(null)} titulo="Adicionar grupo">
+        <OpcoesDeGrupo onEntrar={() => setModal('entrar')} onCriar={() => setModal('criar')} />
+      </Modal>
       <ModalCriarGrupo aberto={modal === 'criar'} onFechar={() => setModal(null)} />
       <ModalEntrarGrupo
         aberto={modal === 'entrar'}
@@ -153,16 +122,123 @@ export default function Home() {
   )
 }
 
-// A frase abaixo da saudação, montada a partir dos dados
-function fraseDoDia(qtdGrupos, qtdEscolhas) {
-  if (qtdGrupos === 0) return 'Comece criando um grupo ou entrando com um código de convite.'
-  if (qtdEscolhas === 0) return 'Você ainda não escolheu nenhum presente para comprar.'
-  return qtdEscolhas === 1 ? 'Você vai dar 1 presente.' : `Você vai dar ${qtdEscolhas} presentes.`
+function ListaGrupos({ grupos, carregando, idUsuario, onAdicionar, onCriar, onEntrar }) {
+  if (carregando) return <Esqueleto />
+
+  // Sem grupos, escolher "entrar ou criar" é a tarefa da tela: as duas opções
+  // aparecem direto, cada uma explicando para que serve.
+  if (grupos.length === 0) {
+    return (
+      <>
+        <p className="mb-3 text-sm text-suave">Você ainda não participa de nenhum grupo. Como quer começar?</p>
+        <OpcoesDeGrupo onEntrar={onEntrar} onCriar={onCriar} />
+      </>
+    )
+  }
+
+  // Com grupos, a lista é o principal; criar e entrar viram um "+ Adicionar" no título.
+  return (
+    <>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h2 className="text-sm font-semibold">Seus grupos</h2>
+        <Botao variante="secundario" icone={IconeMais} onClick={onAdicionar}>Adicionar</Botao>
+      </div>
+      <ul className="flex flex-col gap-2">
+        {grupos.map((g) => (
+          <li key={g.id_grupo}>
+            <CartaoLink to={`/grupo/${g.id_grupo}`}>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium">{g.nome}</p>
+                <p className="mt-0.5 text-xs text-suave">
+                  <span className="num">{g.usuario_grupo[0].count}</span>{' '}
+                  {g.usuario_grupo[0].count === 1 ? 'integrante' : 'integrantes'}
+                  {g.id_admin === idUsuario && ' · você é admin'}
+                </p>
+              </div>
+            </CartaoLink>
+          </li>
+        ))}
+      </ul>
+    </>
+  )
 }
 
-function Contagem({ n, carregando }) {
-  if (carregando) return null
-  return <span className="num ml-1 rounded-full bg-ativo px-2 py-0.5 text-xs font-medium text-suave">{n}</span>
+// As duas formas de ter um grupo, explicadas. "Tenho um código" vem primeiro:
+// quase todo mundo chega ao app por um convite.
+function OpcoesDeGrupo({ onEntrar, onCriar }) {
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      <OpcaoGrupo icone={IconeChave} cor="bg-confete-5 text-confete-5-tinta" titulo="Tenho um código" onClick={onEntrar}>
+        Recebi um convite de alguém da família ou da turma.
+      </OpcaoGrupo>
+      <OpcaoGrupo icone={IconeMais} cor="bg-confete-1 text-confete-1-tinta" titulo="Criar um grupo" onClick={onCriar}>
+        Para organizar o Natal, um aniversário ou um amigo secreto.
+      </OpcaoGrupo>
+    </div>
+  )
+}
+
+function OpcaoGrupo({ icone: Icone, cor, titulo, children, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex flex-col items-start gap-2 rounded-2xl border border-borda bg-elevado p-4 text-left transition-colors hover:border-controle focus-visible:outline-2 focus-visible:outline-destaque"
+    >
+      <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${cor}`}>
+        <Icone className="h-4 w-4" />
+      </span>
+      <span className="text-sm font-semibold">{titulo}</span>
+      <span className="text-xs text-suave">{children}</span>
+    </button>
+  )
+}
+
+// Presentes que escolhi comprar, separados por grupo (na ordem em que aparecem:
+// o grupo com a escolha mais recente vem primeiro)
+function ListaPresentes({ escolhas, carregando }) {
+  if (carregando) return <Esqueleto />
+  if (escolhas.length === 0) {
+    return <Vazio>Quando você marcar “vou comprar” num presente da lista de alguém, ele aparece aqui.</Vazio>
+  }
+
+  const porGrupo = new Map()
+  for (const escolha of escolhas) {
+    const grupo = escolha.presente.usuario_grupo.grupo
+    if (!porGrupo.has(grupo.id_grupo)) porGrupo.set(grupo.id_grupo, { nome: grupo.nome, itens: [] })
+    porGrupo.get(grupo.id_grupo).itens.push(escolha)
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      {[...porGrupo.entries()].map(([idGrupo, { nome, itens }]) => (
+        <section key={idGrupo}>
+          <div className="mb-2 flex items-baseline justify-between gap-3 px-1">
+            <h3 className="truncate text-sm font-semibold">{nome}</h3>
+            <span className="num shrink-0 text-xs text-suave">{itens.length} {itens.length === 1 ? 'presente' : 'presentes'}</span>
+          </div>
+          <ul className="flex flex-col gap-2">
+            {itens.map(({ id_escolha_presente, presente }) => {
+              const dono = presente.usuario_grupo
+              return (
+                <li key={id_escolha_presente}>
+                  {/* state: avisa a página do integrante que viemos da Home (para o botão voltar) */}
+                  <CartaoLink to={`/grupo/${idGrupo}/integrante/${dono.id_usuario}`} state={{ de: 'home' }}>
+                    <Avatar nome={dono.usuario.nome} id={dono.id_usuario} tamanho="p" />
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium">{presente.nome}</p>
+                      {/* O grupo já está no título da seção */}
+                      <p className="mt-0.5 truncate text-xs text-suave">Para {dono.usuario.nome}</p>
+                    </div>
+                  </CartaoLink>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      ))}
+    </div>
+  )
 }
 
 // Cartão clicável de uma linha (grupo ou presente)
