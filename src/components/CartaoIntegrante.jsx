@@ -27,11 +27,11 @@ export default function CartaoIntegrante({ integrante, ehAdmin }) {
       >
         <Avatar nome={nome} id={integrante.id_usuario} />
         <div className="min-w-0">
-          <p className="flex items-center gap-2 text-sm font-medium">
+          <p className="flex items-center gap-2 text-corpo font-medium">
             <span className="truncate">{nome}</span>
-            {ehAdmin && <span className="shrink-0 rounded-full bg-ativo px-2 py-0.5 text-xs font-normal text-suave">Admin</span>}
+            {ehAdmin && <span className="shrink-0 rounded-full bg-ativo px-2 py-0.5 text-selo font-normal text-suave">Admin</span>}
           </p>
-          <p className="num mt-0.5 text-xs text-suave">
+          <p className="num mt-0.5 text-nota text-suave">
             {qtd === 1 ? '1 presente' : `${qtd} presentes`}
           </p>
         </div>

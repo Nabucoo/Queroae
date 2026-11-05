@@ -10,9 +10,9 @@ const confetes = [
 ]
 
 const tamanhos = {
-  p: 'h-8 w-8 text-xs',
-  m: 'h-12 w-12 text-base',
-  g: 'h-20 w-20 text-2xl',
+  p: 'h-8 w-8 text-selo',
+  m: 'h-12 w-12 text-corpo',
+  g: 'h-20 w-20 text-titulo',
 }
 
 // "Maria Clara Souza" → "MS"; "Lucas" → "L"

@@ -63,11 +63,11 @@ export default function PedidosEntrada({ idGrupo, onAprovado }) {
                   <div className="flex min-w-0 items-center gap-3">
                     <Avatar nome={p.nome} id={p.id_usuario} tamanho="p" />
                     <div className="min-w-0">
-                      <p className="text-sm font-medium break-words">{p.nome}</p>
-                      <p className="text-xs break-all text-suave">{p.email}</p>
+                      <p className="text-corpo font-medium break-words">{p.nome}</p>
+                      <p className="text-nota break-all text-suave">{p.email}</p>
                     </div>
                   </div>
-                  <div className="flex justify-end gap-2">
+                  <div className="flex flex-wrap justify-end gap-2">
                     <Botao variante="secundario" disabled={esteOcupado} onClick={() => decidir(p, 'recusar')}>
                       {esteOcupado && ocupado.acao === 'recusar' ? 'Recusando…' : 'Recusar'}
                     </Botao>

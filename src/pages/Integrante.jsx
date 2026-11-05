@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
+import Painel from '../components/Painel.jsx'
 import Avatar from '../components/Avatar.jsx'
 import ListaDoIntegrante from '../components/ListaDoIntegrante.jsx'
 import MinhaLista from '../components/MinhaLista.jsx'
@@ -54,38 +55,38 @@ export default function Integrante() {
       <Cabecalho voltar={voltar} />
       <main>
         {carregando ? (
-          <p className="mt-8 text-sm text-suave">Carregando…</p>
+          <p className="mt-8 text-apoio text-suave">Carregando…</p>
         ) : erro || !integrante ? (
           <>
-            <h1 className="mt-8 text-2xl font-semibold">Integrante não encontrado</h1>
-            <p className="mt-2 text-sm text-suave">{erro || 'Esta pessoa não participa deste grupo.'}</p>
+            <h1 className="mt-8 text-titulo font-semibold">Integrante não encontrado</h1>
+            <p className="mt-2 text-apoio text-suave">{erro || 'Esta pessoa não participa deste grupo.'}</p>
           </>
         ) : (
           <>
             <div className="mt-6 flex items-center gap-4">
               <Avatar nome={integrante.usuario.nome} id={integrante.id_usuario} tamanho="g" />
               <div className="min-w-0">
-                <h1 className="text-2xl font-semibold break-words">
+                <h1 className="text-titulo font-semibold break-words">
                   {integrante.usuario.nome}
                   {ehVoce && <span className="font-normal text-suave"> (você)</span>}
                 </h1>
-                {!ehVoce && presentes && <p className="mt-1 text-sm text-suave">{resumo(presentes)}</p>}
+                {!ehVoce && presentes && <p className="mt-1 text-apoio text-suave">{resumo(presentes)}</p>}
               </div>
             </div>
 
-            <h2 className="mt-10 mb-4 text-base font-semibold">Lista de presentes</h2>
-
-            {ehVoce ? (
-              // Regra da surpresa: na sua própria página, nada de escolhas
-              <MinhaLista idUsuarioGrupo={integrante.id_usuario_grupo} />
-            ) : (
-              // setPresentes é estável (não muda entre desenhos), seguro como onMudou
-              <ListaDoIntegrante
-                idUsuarioGrupo={integrante.id_usuario_grupo}
-                nome={integrante.usuario.nome}
-                onMudou={setPresentes}
-              />
-            )}
+            <Painel titulo="Lista de presentes" className="mt-8">
+              {ehVoce ? (
+                // Regra da surpresa: na sua própria página, nada de escolhas
+                <MinhaLista idUsuarioGrupo={integrante.id_usuario_grupo} />
+              ) : (
+                // setPresentes é estável (não muda entre desenhos), seguro como onMudou
+                <ListaDoIntegrante
+                  idUsuarioGrupo={integrante.id_usuario_grupo}
+                  nome={integrante.usuario.nome}
+                  onMudou={setPresentes}
+                />
+              )}
+            </Painel>
           </>
         )}
       </main>

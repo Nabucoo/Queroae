@@ -14,7 +14,7 @@ import Modal from '../components/Modal.jsx'
 import ModalCriarGrupo from '../components/ModalCriarGrupo.jsx'
 import ModalEntrarGrupo from '../components/ModalEntrarGrupo.jsx'
 import ModalConvite from '../components/ModalConvite.jsx'
-import { IconeChave, IconeConfig, IconeMais, IconeSeta } from '../components/Icones.jsx'
+import { IconeAjuda, IconeChave, IconeConfig, IconeMais, IconeSeta } from '../components/Icones.jsx'
 
 export default function Home() {
   const { usuario, perfil } = useAuth()
@@ -106,6 +106,13 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-2xl px-4 pb-16">
       <Cabecalho
+        // A Home não tem seta de voltar: a ajuda usa esse espaço. O "state" faz a
+        // ajuda voltar para a aba que estava aberta.
+        voltar={
+          <BotaoIcone as={Link} to="/ajuda" state={{ de: aba === 'presentes' ? 'presentes' : 'home' }} rotulo="Ajuda">
+            <IconeAjuda className="h-5 w-5" />
+          </BotaoIcone>
+        }
         direita={
           <BotaoIcone as={Link} to="/perfil" rotulo="Configurações do perfil">
             <IconeConfig className="h-5 w-5" />
@@ -115,11 +122,11 @@ export default function Home() {
 
       <main>
         {/* "Olá," fino; o nome em negrito na cor de destaque */}
-        <h1 className="mt-8 mb-8 font-serif text-4xl font-light tracking-[-0.01em] italic sm:text-5xl">
+        <h1 className="mt-8 mb-8 font-serif text-titulo-grande font-light tracking-[-0.01em] italic">
           Olá{primeiroNome && <>, <span className="font-bold text-destaque">{primeiroNome}</span></>}
         </h1>
 
-        {erro && <p role="alert" className="mb-4 rounded-campo bg-negativo-claro px-3 py-2 text-sm text-negativo">{erro}</p>}
+        {erro && <p role="alert" className="mb-4 rounded-campo bg-negativo-claro px-3 py-2 text-apoio text-negativo">{erro}</p>}
 
         {/* Um card só, com as duas listas em abas (mesmo padrão da tela do Grupo).
             O número em cada aba mostra o que tem na outra sem precisar abrir. */}
@@ -182,7 +189,7 @@ function ListaGrupos({ grupos, pedidos, contagens, onDescartarPedido, carregando
     return (
       <>
         {blocoPedidos}
-        <p className="mb-3 text-sm text-suave">Você ainda não participa de nenhum grupo. Como quer começar?</p>
+        <p className="mb-3 text-apoio text-suave">Você ainda não participa de nenhum grupo. Como quer começar?</p>
         <OpcoesDeGrupo onEntrar={onEntrar} onCriar={onCriar} />
       </>
     )
@@ -193,22 +200,22 @@ function ListaGrupos({ grupos, pedidos, contagens, onDescartarPedido, carregando
     <>
       {blocoPedidos}
       <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 className="text-sm font-semibold">Seus grupos</h2>
-        <Botao variante="secundario" icone={IconeMais} onClick={onAdicionar}>Adicionar</Botao>
+        <h2 className="text-corpo font-semibold">Seus grupos</h2>
+        <Botao variante="primario" icone={IconeMais} onClick={onAdicionar}>Adicionar</Botao>
       </div>
       <ul className="flex flex-col gap-2">
         {grupos.map((g) => (
           <li key={g.id_grupo}>
             <CartaoLink to={`/grupo/${g.id_grupo}`}>
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{g.nome}</p>
-                <p className="mt-0.5 text-xs text-suave">
+                <p className="truncate text-corpo font-medium">{g.nome}</p>
+                <p className="mt-0.5 text-nota text-suave">
                   <span className="num">{g.usuario_grupo[0].count}</span>{' '}
                   {g.usuario_grupo[0].count === 1 ? 'integrante' : 'integrantes'}
                   {g.id_admin === idUsuario && ' · você é admin'}
                 </p>
                 {contagens[g.id_grupo] > 0 && (
-                  <span className="num mt-1 inline-block rounded-full bg-destaque px-2 py-0.5 text-xs font-medium text-fundo">
+                  <span className="num mt-1 inline-block rounded-full bg-destaque px-2 py-0.5 text-selo font-medium text-fundo">
                     {contagens[g.id_grupo] === 1 ? '1 pedido' : `${contagens[g.id_grupo]} pedidos`}
                   </span>
                 )}
@@ -235,13 +242,13 @@ function CartaoPedido({ pedido, onDescartar }) {
 
   return (
     <article className="flex flex-col items-start gap-2 rounded-2xl border border-dashed border-contorno bg-elevado p-4">
-      <h3 className="text-sm font-semibold break-words">{pedido.nome_grupo}</h3>
-      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${recusado ? 'bg-negativo-claro text-negativo' : 'bg-ativo text-texto'}`}>
+      <h3 className="text-corpo font-semibold break-words">{pedido.nome_grupo}</h3>
+      <span className={`rounded-full px-2 py-0.5 text-selo font-medium ${recusado ? 'bg-negativo-claro text-negativo' : 'bg-ativo text-texto'}`}>
         {recusado ? 'Pedido não aprovado' : 'Aguardando aprovação'}
       </span>
-      <div className="flex w-full items-center justify-between gap-3">
-        <p className="text-xs text-suave">{recusado ? 'Se foi engano, fale com quem te convidou.' : 'Avise quem te convidou.'}</p>
-        <Botao variante={recusado ? 'secundario' : 'texto'} className="shrink-0" disabled={enviando} onClick={descartar}>
+      <div className="flex w-full flex-wrap items-center justify-between gap-3">
+        <p className="text-nota text-suave">{recusado ? 'Se foi engano, fale com quem te convidou.' : 'Avise quem te convidou.'}</p>
+        <Botao variante="secundario" className="shrink-0" disabled={enviando} onClick={descartar}>
           {recusado ? 'Dispensar' : enviando ? 'Cancelando…' : 'Cancelar pedido'}
         </Botao>
       </div>
@@ -274,8 +281,8 @@ function OpcaoGrupo({ icone: Icone, cor, titulo, children, onClick }) {
       <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${cor}`}>
         <Icone className="h-4 w-4" />
       </span>
-      <span className="text-sm font-semibold">{titulo}</span>
-      <span className="text-xs text-suave">{children}</span>
+      <span className="text-corpo font-semibold">{titulo}</span>
+      <span className="text-nota text-suave">{children}</span>
     </button>
   )
 }
@@ -300,8 +307,8 @@ function ListaPresentes({ escolhas, carregando }) {
       {[...porGrupo.entries()].map(([idGrupo, { nome, itens }]) => (
         <section key={idGrupo}>
           <div className="mb-2 flex items-baseline justify-between gap-3 px-1">
-            <h3 className="truncate text-sm font-semibold">{nome}</h3>
-            <span className="num shrink-0 text-xs text-suave">{itens.length} {itens.length === 1 ? 'presente' : 'presentes'}</span>
+            <h3 className="truncate text-corpo font-semibold">{nome}</h3>
+            <span className="num shrink-0 text-nota text-suave">{itens.length} {itens.length === 1 ? 'presente' : 'presentes'}</span>
           </div>
           <ul className="flex flex-col gap-2">
             {itens.map(({ id_escolha_presente, presente }) => {
@@ -312,9 +319,9 @@ function ListaPresentes({ escolhas, carregando }) {
                   <CartaoLink to={`/grupo/${idGrupo}/integrante/${dono.id_usuario}`} state={{ de: 'home' }}>
                     <Avatar nome={dono.usuario.nome} id={dono.id_usuario} tamanho="p" />
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">{presente.nome}</p>
+                      <p className="truncate text-corpo font-medium">{presente.nome}</p>
                       {/* O grupo já está no título da seção */}
-                      <p className="mt-0.5 truncate text-xs text-suave">Para {dono.usuario.nome}</p>
+                      <p className="mt-0.5 truncate text-nota text-suave">Para {dono.usuario.nome}</p>
                     </div>
                   </CartaoLink>
                 </li>
@@ -342,7 +349,7 @@ function CartaoLink({ to, state, children }) {
 }
 
 function Vazio({ children }) {
-  return <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-sm text-suave">{children}</p>
+  return <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-apoio text-suave">{children}</p>
 }
 
 // Enquanto carrega: barras cinza no tamanho dos cartões

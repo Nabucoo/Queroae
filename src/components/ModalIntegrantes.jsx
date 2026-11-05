@@ -9,7 +9,7 @@ export default function ModalIntegrantes({ aberto, onFechar, onVoltar, integrant
   return (
     <Modal aberto={aberto} onFechar={onFechar} titulo="Gerenciar integrantes">
       {integrantes.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-sm text-suave">
+        <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-apoio text-suave">
           Ainda não há outros integrantes no grupo.
         </p>
       ) : (
@@ -17,7 +17,7 @@ export default function ModalIntegrantes({ aberto, onFechar, onVoltar, integrant
           {integrantes.map((p) => (
             <li key={p.id_usuario} className="flex items-center gap-3 border-b border-linha py-3 last:border-0">
               <Avatar nome={p.usuario.nome} id={p.id_usuario} tamanho="p" />
-              <span className="min-w-0 flex-1 truncate text-sm font-medium">{p.usuario.nome}</span>
+              <span className="min-w-0 flex-1 truncate text-corpo font-medium">{p.usuario.nome}</span>
               <Botao variante="perigo" icone={IconePessoaMenos} onClick={() => onPedirRemocao(p)}>
                 Remover
               </Botao>
@@ -26,7 +26,7 @@ export default function ModalIntegrantes({ aberto, onFechar, onVoltar, integrant
         </ul>
       )}
       <div className="mt-5 flex justify-end">
-        <Botao variante="texto" onClick={onVoltar}>Voltar</Botao>
+        <Botao variante="secundario" onClick={onVoltar}>Voltar</Botao>
       </div>
     </Modal>
   )

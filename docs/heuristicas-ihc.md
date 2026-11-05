@@ -74,7 +74,7 @@ Para cada uma: **definição**, o que procurar no código/tela e **padrões de i
 ### H4 – Consistência e padrões
 **Definição:** palavras, situações ou ações diferentes não devem significar a mesma coisa; seguir as convenções da plataforma. Tem dois lados: **interna** (dentro do app) e **externa** (igual a outros apps).
 **Procurar:** o mesmo conceito com nomes diferentes; botões iguais com estilos diferentes; o mesmo lugar da tela fazendo coisas diferentes conforme o papel; estados de carregamento diferentes em cada tela.
-**Implementar:** **sempre** reaproveitar `Botao`, `Campo`, `Modal`, `ModalConfirmar`, `Painel`, `Abas`, e os tokens de `src/index.css`. Variantes do `Botao`: `primario` (ação principal, 1 por tela/modal), `secundario`, `texto`, `perigo` (destrutiva). Ordem dos botões em modal: secundário/cancelar à esquerda, ação principal à direita.
+**Implementar:** **sempre** reaproveitar `Botao`, `Campo`, `Modal`, `ModalConfirmar`, `Painel`, `Abas`, e os tokens de `src/index.css`. Variantes do `Botao`: `primario` (ação principal, 1 por tela/modal), `secundario`, `perigo` (destrutiva). Ordem dos botões em modal: secundário/cancelar à esquerda, ação principal à direita.
 
 ### H5 – Prevenção de erros
 **Definição:** melhor que boas mensagens de erro é um projeto que evita o erro: eliminar condições propensas a erro ou pedir confirmação antes de ações com consequências.
@@ -153,6 +153,8 @@ Recomendações básicas da aula: escolher tamanho de texto/ícones, temas/cores
 - **Stack:** React 19, React Router 8, Vite 8, Tailwind CSS v4 (tokens em `src/index.css`), Supabase (Postgres + RLS, Auth, Edge Function `apagar-conta`). Lint: `npm run lint` (oxlint). Build: `npm run build`.
 - **Nomes em português** (componentes, variáveis, funções, comentários), como no resto do código.
 - **Estrutura:** telas em `src/pages/`, peças reutilizáveis em `src/components/`, utilidades em `src/lib/`. Criar componente novo só quando não der para estender um existente.
+- **Cores e temas:** usar só os tokens de cor de `src/index.css` (`bg-fundo`, `text-suave`...), que têm valores para os temas claro e escuro. Não fixar cores no código nem criar classes próprias para o escuro. Janelas usam `bg-janela`.
+- **Tamanhos de texto:** usar só os tokens de `src/index.css`: `text-selo`, `text-nota`, `text-apoio`, `text-corpo`, `text-subtitulo`, `text-titulo`, `text-titulo-grande` e, em campos, `text-campo`. Os tamanhos prontos do Tailwind (`text-sm`, `text-lg`...) estão desligados. Os valores vêm do Dynamic Type da Apple: o nível Médio é o padrão do iPhone, com corpo de 17 pt. Não fixar altura em elementos com texto (usar `min-h-*`), porque o texto pode crescer.
 - **Componentes base a reaproveitar:** `Botao`, `Campo`, `Modal`, `ModalConfirmar`, `Painel`, `Abas`, `Avatar`, `Cabecalho`/`BotaoIcone`, `Icones`, `Aviso` (em `TelaAuth.jsx`).
 - **Mensagens de erro:** sempre por `mensagemDeErro()` em `src/lib/erros.js`.
 - **Regra da surpresa é intocável:** a lista do dono (`MinhaLista`) nunca consulta `escolha_presente`, e o RLS garante isso no banco. Nenhuma melhoria de UX pode mostrar ao dono quem escolheu o quê, nem dar pistas (ex.: contagem de "presentes já escolhidos" na própria lista).

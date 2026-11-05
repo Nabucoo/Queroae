@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
+import Painel from '../components/Painel.jsx'
 import Abas from '../components/Abas.jsx'
 import CartaoIntegrante from '../components/CartaoIntegrante.jsx'
 import Botao from '../components/Botao.jsx'
@@ -99,13 +100,13 @@ export default function Grupo() {
     </BotaoIcone>
   )
 
-  if (carregando) return <Moldura voltar={voltar}><p className="mt-8 text-sm text-suave">Carregando…</p></Moldura>
+  if (carregando) return <Moldura voltar={voltar}><p className="mt-8 text-apoio text-suave">Carregando…</p></Moldura>
 
   if (erro || !grupo) {
     return (
       <Moldura voltar={voltar}>
-        <h1 className="mt-8 text-2xl font-semibold">Grupo não encontrado</h1>
-        <p className="mt-2 text-sm text-suave">{erro || 'Este grupo não existe ou você não participa dele.'}</p>
+        <h1 className="mt-8 text-titulo font-semibold">Grupo não encontrado</h1>
+        <p className="mt-2 text-apoio text-suave">{erro || 'Este grupo não existe ou você não participa dele.'}</p>
       </Moldura>
     )
   }
@@ -184,7 +185,7 @@ export default function Grupo() {
       </ModalConfirmar>
 
       <div className="mt-6">
-        <h1 className="text-2xl font-semibold">{grupo.nome}</h1>
+        <h1 className="text-titulo font-semibold break-words">{grupo.nome}</h1>
         {grupo.descricao && <Descricao texto={grupo.descricao} />}
       </div>
 
@@ -193,7 +194,8 @@ export default function Grupo() {
 
       <CartaoConvite nomeGrupo={grupo.nome} codigo={grupo.codigo_convite} />
 
-      <div className="mt-8">
+      {/* Abas e lista dentro do painel: o mesmo padrão da Home */}
+      <Painel className="mt-8">
         <Abas
           abas={[
             { id: 'integrantes', rotulo: `Integrantes (${outros.length})` },
@@ -205,7 +207,7 @@ export default function Grupo() {
 
         {aba === 'integrantes' ? (
           outros.length === 0 ? (
-            <p className="mt-4 rounded-2xl border border-dashed border-controle px-4 py-3 text-sm text-suave">
+            <p className="mt-4 rounded-2xl border border-dashed border-controle px-4 py-3 text-apoio text-suave">
               Por enquanto, só você está no grupo. Toque em Compartilhar e mande o convite para quem você quer chamar.
             </p>
           ) : (
@@ -219,12 +221,12 @@ export default function Grupo() {
           )
         ) : (
           minhaParticipacao && (
-            <div className="mt-6">
+            <div className="mt-4">
               <MinhaLista idUsuarioGrupo={minhaParticipacao.id_usuario_grupo} />
             </div>
           )
         )}
-      </div>
+      </Painel>
     </Moldura>
   )
 }
@@ -244,9 +246,9 @@ function Descricao({ texto }) {
   const longa = texto.length > 120 || texto.includes('\n')
   return (
     <div className="mt-2">
-      <p className={`whitespace-pre-line text-sm text-suave ${!aberta && longa ? 'line-clamp-2' : ''}`}>{texto}</p>
+      <p className={`whitespace-pre-line text-apoio text-suave ${!aberta && longa ? 'line-clamp-2' : ''}`}>{texto}</p>
       {longa && (
-        <button type="button" onClick={() => setAberta(!aberta)} className="mt-1 text-sm font-medium text-destaque hover:underline">
+        <button type="button" onClick={() => setAberta(!aberta)} className="mt-1 text-corpo font-medium text-destaque hover:underline">
           {aberta ? 'Ver menos' : 'Ver mais'}
         </button>
       )}
@@ -289,14 +291,14 @@ function CartaoConvite({ nomeGrupo, codigo }) {
 
   return (
     <div className="mt-6 rounded-cartao bg-painel px-5 py-4">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-sm font-semibold">Convidar pessoas</p>
+          <p className="text-corpo font-semibold">Convidar pessoas</p>
           <button
             type="button"
             onClick={() => copiar(codigo, 'codigo')}
             aria-label={`Copiar o código ${codigo}`}
-            className="num flex min-h-6 items-center gap-1 rounded text-xs text-suave hover:text-texto focus-visible:outline-2 focus-visible:outline-destaque"
+            className="num flex min-h-6 items-center gap-1 rounded text-nota text-suave hover:text-texto focus-visible:outline-2 focus-visible:outline-destaque"
           >
             {copiado === 'codigo' ? 'Código copiado!' : <>Código {codigo}</>}
             {copiado === 'codigo' ? <IconeConfirmar className="h-3 w-3" /> : <IconeCopiar className="h-3 w-3" />}

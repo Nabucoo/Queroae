@@ -31,7 +31,7 @@ export default function NovaSenha() {
     navegar('/', { replace: true })
   }
 
-  if (carregando) return <p className="p-6 text-sm text-suave">Carregando…</p>
+  if (carregando) return <p className="p-6 text-apoio text-suave">Carregando…</p>
 
   if (!sessao) {
     return (

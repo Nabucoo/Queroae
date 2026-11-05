@@ -49,13 +49,13 @@ export default function MinhaLista({ idUsuarioGrupo }) {
     setRemovendo(null)
   }
 
-  if (carregando) return <p className="text-sm text-suave">Carregando…</p>
-  if (erro) return <p role="alert" className="text-sm text-negativo">{erro}</p>
+  if (carregando) return <p className="text-apoio text-suave">Carregando…</p>
+  if (erro) return <p role="alert" className="text-apoio text-negativo">{erro}</p>
 
   return (
     <div className="flex flex-col gap-3">
       {presentes.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-sm text-suave">
+        <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-apoio text-suave">
           Sua lista está vazia. Adicione o que você gostaria de ganhar; os outros integrantes vão ver.
         </p>
       ) : (

@@ -1,0 +1,47 @@
+import { useState } from 'react'
+import { TAMANHOS_TEXTO, guardarTamanhoTexto, lerTamanhoTexto } from '../lib/tamanhoTexto.js'
+import { IconeConfirmar } from './Icones.jsx'
+
+// Opções de rádio: o teclado e o leitor de tela já sabem usar. A mudança vale na
+// hora, então a própria tela mostra o resultado. A escolhida se diferencia também
+// pelo visto, e não só pela borda.
+export default function SeletorTamanhoTexto() {
+  const [atual, setAtual] = useState(lerTamanhoTexto)
+
+  function escolher(id) {
+    setAtual(id)
+    guardarTamanhoTexto(id)
+  }
+
+  return (
+    <fieldset className="mt-5">
+      <legend className="text-apoio font-medium">Tamanho do texto</legend>
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        {TAMANHOS_TEXTO.map((tamanho) => {
+          const escolhido = tamanho.id === atual
+          return (
+            <label
+              key={tamanho.id}
+              className={[
+                'relative flex min-h-11 cursor-pointer flex-col items-start justify-center gap-1 rounded-2xl border bg-elevado p-3',
+                'has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-destaque',
+                escolhido ? 'border-texto' : 'border-borda hover:border-controle',
+              ].join(' ')}
+            >
+              <input
+                type="radio"
+                name="tamanho-texto"
+                className="sr-only"
+                checked={escolhido}
+                onChange={() => escolher(tamanho.id)}
+              />
+              <span aria-hidden="true" className="font-semibold" style={{ fontSize: tamanho.amostra }}>Aa</span>
+              <span className="text-apoio">{tamanho.rotulo}</span>
+              {escolhido && <IconeConfirmar className="absolute top-3 right-3 h-4 w-4" />}
+            </label>
+          )
+        })}
+      </div>
+    </fieldset>
+  )
+}

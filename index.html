@@ -14,6 +14,16 @@
     <!-- Descrição (Google) e cor da barra do navegador no celular -->
     <meta name="description" content="O fim do “nossa… que lindo, obrigado”. Listas de presentes do seu grupo, com a surpresa garantida." />
     <meta name="theme-color" content="#2552c4" />
+    <!-- Tema escuro antes da primeira pintura, para a tela não piscar em branco.
+         O restante da lógica está em src/lib/tema.js. -->
+    <script>
+      try {
+        var tema = localStorage.getItem('queroae:tema')
+        if (tema === 'escuro' || (tema !== 'claro' && matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.dataset.tema = 'escuro'
+        }
+      } catch (e) {}
+    </script>
     <!-- Prévia do link no WhatsApp, Instagram, LinkedIn... (padrão Open Graph).
          og:image e og:url precisam do endereço COMPLETO do site. -->
     <meta property="og:type" content="website" />

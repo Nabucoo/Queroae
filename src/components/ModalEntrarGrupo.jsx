@@ -53,10 +53,10 @@ export default function ModalEntrarGrupo({ aberto, onFechar }) {
       <form onSubmit={continuar} className="flex flex-col gap-4">
         <Campo ref={refCodigo} rotulo="Código" required autoComplete="off" spellCheck={false} placeholder="Ex.: 3fa9c1b2"
           erro={erroCodigo} value={codigo} onChange={(e) => { setCodigo(e.target.value); setErroCodigo('') }} />
-        <p className="text-xs text-suave">Peça o código para quem criou o grupo.</p>
+        <p className="text-nota text-suave">Peça o código para quem criou o grupo.</p>
         <Aviso>{erro}</Aviso>
-        <div className="mt-2 flex justify-end gap-3">
-          <Botao variante="texto" onClick={fechar}>Cancelar</Botao>
+        <div className="mt-2 flex flex-wrap justify-end gap-3">
+          <Botao variante="secundario" onClick={fechar}>Cancelar</Botao>
           <Botao type="submit" icone={IconeChave} disabled={enviando}>{enviando ? 'Conferindo…' : 'Continuar'}</Botao>
         </div>
       </form>

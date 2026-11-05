@@ -1,12 +1,10 @@
 // Botão reutilizável.
-// variante: "primario" (quase preto), "secundario" (branco com borda),
-//           "texto" (só o texto) ou "perigo" (vermelho com borda, para ações
-//           destrutivas e para "sair").
+// variante: "primario" (quase preto), "secundario" (cinza) ou "perigo"
+//           (vermelho claro, para ações destrutivas e para "sair").
 const estilos = {
   primario: 'bg-primario text-fundo hover:bg-texto/85',
-  secundario: 'bg-fundo text-texto border border-contorno hover:bg-painel',
-  texto: 'text-texto hover:bg-ativo',
-  perigo: 'bg-fundo text-negativo border border-negativo/40 hover:bg-negativo-claro',
+  secundario: 'bg-ativo text-texto hover:bg-controle',
+  perigo: 'bg-negativo-claro text-negativo hover:bg-negativo/15',
 }
 
 export default function Botao({
@@ -23,8 +21,8 @@ export default function Botao({
     <Componente
       type={Componente === 'button' ? type : undefined}
       className={[
-        'inline-flex h-[38px] items-center justify-center gap-2 rounded-full px-4',
-        'text-sm font-medium transition-colors active:scale-[0.98]',
+        'inline-flex min-h-[38px] items-center justify-center gap-2 rounded-full px-4 py-2 text-center',
+        'text-corpo font-medium transition-colors active:scale-[0.98]',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-destaque',
         'disabled:cursor-not-allowed disabled:opacity-60',
         estilos[variante],

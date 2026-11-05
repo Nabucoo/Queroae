@@ -13,13 +13,14 @@
   --color-fundo: #ffffff;       /* fundo da página */
   --color-painel: #f9f9f9;      /* painéis (um passo fora do branco) */
   --color-elevado: #ffffff;     /* cartão dentro de painel */
+  --color-janela: #ffffff;      /* janela (modal) */
   --color-ativo: #ededed;       /* item selecionado (ex.: aba, menu) */
 
   /* Linhas */
   --color-borda: #eaeaea;       /* borda de cartões */
   --color-linha: #f3f3f3;       /* divisória entre linhas de lista */
   --color-controle: #d9d9d6;    /* borda de campos */
-  --color-contorno: #8a8a87;    /* borda do botão secundário (3.5:1 no branco, WCAG 1.4.11) */
+  --color-contorno: #8a8a87;    /* borda tracejada do cartão de pedido (3.5:1 no branco, WCAG 1.4.11) */
 
   /* Texto */
   --color-texto: #1f201d;       /* texto principal */
@@ -41,6 +42,27 @@
   --color-confete-5: #dbeefb;  --color-confete-5-tinta: #164a6e;  /* céu */
   --color-confete-6: #fbe0ec;  --color-confete-6-tinta: #7a1f47;  /* rosa */
 
+  /*
+    TAMANHOS DE TEXTO: o app só usa estes (text-titulo, text-corpo...).
+    A linha abaixo desliga os tamanhos prontos do Tailwind (text-sm, text-lg...),
+    então um tamanho fora do padrão simplesmente não funciona.
+    Valores: Dynamic Type da Apple. 1 pt do iPhone = 1 px do CSS, e "17rem / 16"
+    é 17 px respeitando o ajuste de texto do navegador. Em cada um: tamanho e
+    altura da linha. Os outros níveis ficam em :root[data-tamanho-texto], abaixo.
+    Médio = "Large", o padrão do iPhone.
+  */
+  --text-*: initial;
+  --text-selo: calc(12rem / 16);           --text-selo--line-height: calc(16rem / 16);           /* Caption 1: selos */
+  --text-nota: calc(13rem / 16);           --text-nota--line-height: calc(18rem / 16);           /* Footnote: detalhes e erros de campo */
+  --text-apoio: calc(15rem / 16);          --text-apoio--line-height: calc(20rem / 16);          /* Subhead: explicações, rótulos e abas */
+  --text-corpo: calc(17rem / 16);          --text-corpo--line-height: calc(22rem / 16);          /* Body: texto e botões */
+  --text-subtitulo: calc(20rem / 16);      --text-subtitulo--line-height: calc(25rem / 16);      /* Title 3: títulos de janela */
+  --text-titulo: calc(28rem / 16);         --text-titulo--line-height: calc(34rem / 16);         /* Title 1: título da tela */
+  --text-titulo-grande: calc(34rem / 16);  --text-titulo-grande--line-height: calc(41rem / 16);  /* Large Title: saudação e capa */
+  /* Campos: nunca menos de 16 px, senão o iPhone dá zoom na tela ao tocar */
+  --text-campo: max(1rem, var(--text-corpo));
+  --text-campo--line-height: var(--text-corpo--line-height);
+
   /* Tipografia */
   --font-sans: "Instrument Sans", Inter, system-ui, sans-serif;
   --font-serif: "Fraunces", Georgia, serif;   /* só na saudação (itálica) */
@@ -50,9 +72,96 @@
   --radius-campo: 10px;
 }
 
+/*
+  TEMA ESCURO ("Grafite"): os mesmos nomes de cor, com outros valores. O app inteiro
+  troca junto, então nenhuma tela precisa de classe própria para o escuro.
+  Contraste conferido: 5,4:1 ou mais em texto, com a mesma regra do tema claro.
+  O botão principal inverte: fica claro, com texto da cor do fundo.
+*/
+:root {
+  color-scheme: light; /* barras de rolagem e campos do navegador */
+}
+:root[data-tema="escuro"] {
+  color-scheme: dark;
+
+  --color-fundo: #141413;
+  --color-painel: #1c1c1b;
+  --color-elevado: #262625;
+  --color-janela: #262625;
+  --color-ativo: #363634;
+
+  --color-borda: #343433;
+  --color-linha: #2c2c2b;
+  --color-controle: #4d4d4a;
+  --color-contorno: #7c7c78;
+
+  --color-texto: #f2f2ef;
+  --color-suave: #adada8;
+
+  --color-primario: #f2f2ef;
+  --color-destaque: #93b3ff;
+  --color-positivo: #7fcf85;
+  --color-negativo: #ff9385;
+  --color-negativo-claro: #401e1a;
+  --color-laco: #f0896e;
+
+  --color-confete-1: #4a2a20;  --color-confete-1-tinta: #ffc2ae;
+  --color-confete-2: #43350f;  --color-confete-2-tinta: #f4d58a;
+  --color-confete-3: #2a3a1b;  --color-confete-3-tinta: #c3e6a0;
+  --color-confete-4: #163a32;  --color-confete-4-tinta: #a0e6d2;
+  --color-confete-5: #163248;  --color-confete-5-tinta: #aeddfb;
+  --color-confete-6: #47213a;  --color-confete-6-tinta: #f9bdd6;
+}
+
+/* Véu atrás das janelas */
+dialog::backdrop {
+  background: rgb(31 32 29 / 0.4);
+}
+:root[data-tema="escuro"] dialog::backdrop {
+  background: rgb(0 0 0 / 0.6);
+}
+
+/*
+  Os outros níveis de "Tamanho do texto" (Perfil > Acessibilidade).
+  O nível fica em <html data-tamanho-texto="...">; o Médio não precisa do atributo.
+*/
+:root[data-tamanho-texto="pequeno"] { /* "Small" da Apple */
+  --text-selo: calc(11rem / 16);           --text-selo--line-height: calc(13rem / 16);
+  --text-nota: calc(12rem / 16);           --text-nota--line-height: calc(16rem / 16);
+  --text-apoio: calc(13rem / 16);          --text-apoio--line-height: calc(18rem / 16);
+  --text-corpo: calc(15rem / 16);          --text-corpo--line-height: calc(20rem / 16);
+  --text-subtitulo: calc(18rem / 16);      --text-subtitulo--line-height: calc(23rem / 16);
+  --text-titulo: calc(26rem / 16);         --text-titulo--line-height: calc(32rem / 16);
+  --text-titulo-grande: calc(32rem / 16);  --text-titulo-grande--line-height: calc(39rem / 16);
+}
+:root[data-tamanho-texto="grande"] { /* "xLarge" da Apple */
+  --text-selo: calc(14rem / 16);           --text-selo--line-height: calc(19rem / 16);
+  --text-nota: calc(15rem / 16);           --text-nota--line-height: calc(20rem / 16);
+  --text-apoio: calc(17rem / 16);          --text-apoio--line-height: calc(22rem / 16);
+  --text-corpo: calc(19rem / 16);          --text-corpo--line-height: calc(24rem / 16);
+  --text-subtitulo: calc(22rem / 16);      --text-subtitulo--line-height: calc(28rem / 16);
+  --text-titulo: calc(30rem / 16);         --text-titulo--line-height: calc(37rem / 16);
+  --text-titulo-grande: calc(36rem / 16);  --text-titulo-grande--line-height: calc(43rem / 16);
+}
+:root[data-tamanho-texto="muito-grande"] { /* "xxxLarge" da Apple */
+  --text-selo: calc(18rem / 16);           --text-selo--line-height: calc(23rem / 16);
+  --text-nota: calc(19rem / 16);           --text-nota--line-height: calc(24rem / 16);
+  --text-apoio: calc(21rem / 16);          --text-apoio--line-height: calc(28rem / 16);
+  --text-corpo: calc(23rem / 16);          --text-corpo--line-height: calc(29rem / 16);
+  --text-subtitulo: calc(26rem / 16);      --text-subtitulo--line-height: calc(32rem / 16);
+  --text-titulo: calc(34rem / 16);         --text-titulo--line-height: calc(41rem / 16);
+  --text-titulo-grande: calc(40rem / 16);  --text-titulo-grande--line-height: calc(48rem / 16);
+}
+
+/* Reserva o espaço da barra de rolagem nos dois lados: o conteúdo fica no centro e
+   não se move entre telas curtas e longas. No celular, a barra flutua e nada muda. */
+html {
+  scrollbar-gutter: stable both-edges;
+}
+
 /* Estilos base da página */
 body {
-  @apply bg-fundo text-texto font-sans text-sm antialiased;
+  @apply bg-fundo text-texto font-sans text-corpo antialiased;
 }
 
 /* Números alinhados (mesma largura para cada dígito) */

@@ -8,8 +8,11 @@ import Avatar from '../components/Avatar.jsx'
 import Campo from '../components/Campo.jsx'
 import Botao from '../components/Botao.jsx'
 import ModalConfirmar from '../components/ModalConfirmar.jsx'
+import Painel from '../components/Painel.jsx'
+import SeletorAparencia from '../components/SeletorAparencia.jsx'
+import SeletorTamanhoTexto from '../components/SeletorTamanhoTexto.jsx'
 import { Aviso } from '../components/TelaAuth.jsx'
-import { IconeConfirmar, IconeLixeira, IconeSair, IconeVoltar } from '../components/Icones.jsx'
+import { IconeAjuda, IconeConfirmar, IconeLixeira, IconeSair, IconeVoltar } from '../components/Icones.jsx'
 
 export default function Perfil() {
   const { usuario, perfil, recarregarPerfil, sair } = useAuth()
@@ -22,20 +25,32 @@ export default function Perfil() {
             <IconeVoltar className="h-5 w-5" />
           </BotaoIcone>
         }
+        direita={
+          <BotaoIcone as={Link} to="/ajuda" state={{ de: 'perfil' }} rotulo="Ajuda">
+            <IconeAjuda className="h-5 w-5" />
+          </BotaoIcone>
+        }
       />
 
       <main>
         <div className="mt-6 flex items-center gap-4">
           <Avatar nome={perfil?.nome ?? ''} id={usuario.id} tamanho="g" />
           <div className="min-w-0">
-            <h1 className="text-2xl font-semibold break-words">{perfil?.nome ?? 'Perfil'}</h1>
-            <p className="mt-1 truncate text-sm text-suave">{usuario.email}</p>
+            <h1 className="text-titulo font-semibold break-words">{perfil?.nome ?? 'Perfil'}</h1>
+            <p className="mt-1 truncate text-apoio text-suave">{usuario.email}</p>
           </div>
         </div>
 
         {/* key: o formulário é recriado só quando o perfil termina de carregar
             (não a cada nome salvo, senão a mensagem "Salvo" sumiria na hora) */}
         <EditarNome key={perfil?.id_usuario ?? 'carregando'} nomeAtual={perfil?.nome ?? ''} idUsuario={usuario.id} onSalvo={recarregarPerfil} />
+
+        <Painel className="mt-6">
+          <h2 className="text-corpo font-semibold">Acessibilidade</h2>
+          <p className="mt-1 text-apoio text-suave">Muda na hora e fica salvo neste aparelho.</p>
+          <SeletorAparencia />
+          <SeletorTamanhoTexto />
+        </Painel>
 
         {/* Sair fica junto das ações da conta (não no cabeçalho), em vermelho como
             todo "sair" do app. Largura total e ícone de porta: não se confunde com
@@ -47,7 +62,7 @@ export default function Perfil() {
         {/* Conta apagada: a pessoa não tem mais conta, então vai para as boas-vindas */}
         <ApagarConta idUsuario={usuario.id} onApagada={() => sair('/boas-vindas')} />
 
-        <p className="mt-10 text-sm">
+        <p className="mt-10 text-corpo">
           <Link to="/privacidade" state={{ de: 'perfil' }} className="font-medium text-destaque hover:underline">Política de privacidade</Link>
         </p>
       </main>
@@ -77,14 +92,14 @@ function EditarNome({ nomeAtual, idUsuario, onSalvo }) {
 
   return (
     <section className="mt-10 rounded-cartao bg-painel p-5">
-      <h2 className="text-sm font-semibold">Seu nome</h2>
-      <p className="mt-1 text-sm text-suave">É assim que você aparece para os integrantes dos seus grupos.</p>
+      <h2 className="text-corpo font-semibold">Seu nome</h2>
+      <p className="mt-1 text-apoio text-suave">É assim que você aparece para os integrantes dos seus grupos.</p>
       <form onSubmit={salvar} className="mt-5 flex flex-col gap-4">
         <Campo rotulo="Nome" required maxLength={60} autoComplete="name" value={nome}
           onChange={(e) => { setNome(e.target.value); setSalvo(false) }} />
         <Aviso>{erro}</Aviso>
-        <div className="flex items-center justify-end gap-3">
-          {salvo && <span role="status" className="text-sm text-suave">Salvo</span>}
+        <div className="flex flex-wrap items-center justify-end gap-3">
+          {salvo && <span role="status" className="text-apoio text-suave">Salvo</span>}
           <Botao type="submit" icone={IconeConfirmar} disabled={!mudou || enviando}>{enviando ? 'Salvando…' : 'Salvar'}</Botao>
         </div>
       </form>
@@ -119,8 +134,8 @@ function ApagarConta({ idUsuario, onApagada }) {
 
   return (
     <section className="mt-10 border-t border-borda pt-8">
-      <h2 className="text-sm font-semibold text-negativo">Apagar conta</h2>
-      <p className="mt-1 text-sm text-suave">
+      <h2 className="text-corpo font-semibold text-negativo">Apagar conta</h2>
+      <p className="mt-1 text-apoio text-suave">
         Apaga seu login, seu perfil, suas listas de presentes e os presentes que você escolheu. Não dá para desfazer.
       </p>
 
@@ -148,7 +163,7 @@ function ApagarConta({ idUsuario, onApagada }) {
 // Mostra, para cada grupo em que sou admin, para quem ele passa (ou se será excluído)
 function ResumoGruposAdmin({ grupos }) {
   return (
-    <div className="mt-4 rounded-campo bg-painel px-4 py-3 text-sm">
+    <div className="mt-4 rounded-campo bg-painel px-4 py-3 text-corpo">
       <p>Você é admin destes grupos. Ao apagar sua conta:</p>
       <ul className="mt-2 flex flex-col gap-1">
         {grupos.map((g) => (

@@ -70,15 +70,15 @@ export default function ListaDoIntegrante({ idUsuarioGrupo, nome, onMudou }) {
     setOcupado(null)
   }
 
-  if (carregando) return <p className="text-sm text-suave">Carregando…</p>
-  if (erro) return <p role="alert" className="text-sm text-negativo">{erro}</p>
+  if (carregando) return <p className="text-apoio text-suave">Carregando…</p>
+  if (erro) return <p role="alert" className="text-apoio text-negativo">{erro}</p>
 
   return (
     <div className="flex flex-col gap-3">
-      {aviso && <p role="alert" className="rounded-campo bg-negativo-claro px-3 py-2 text-sm text-negativo">{aviso}</p>}
+      {aviso && <p role="alert" className="rounded-campo bg-negativo-claro px-3 py-2 text-apoio text-negativo">{aviso}</p>}
 
       {presentes.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-sm text-suave">
+        <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-apoio text-suave">
           {nome.split(' ')[0]} ainda não adicionou presentes à lista.
         </p>
       ) : (
@@ -92,7 +92,7 @@ export default function ListaDoIntegrante({ idUsuarioGrupo, nome, onMudou }) {
                   riscado={Boolean(p.escolha)}
                   rodape={
                     p.escolha && (
-                      <p className={`mt-2 text-xs ${minha ? 'font-medium text-destaque' : 'text-suave'}`}>
+                      <p className={`mt-2 text-nota ${minha ? 'font-medium text-destaque' : 'text-suave'}`}>
                         {minha ? 'Você vai comprar' : `${p.escolha.usuario?.nome ?? 'Alguém'} vai comprar`}
                       </p>
                     )

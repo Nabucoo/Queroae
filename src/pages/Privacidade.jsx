@@ -1,10 +1,8 @@
 import { Link, useLocation } from 'react-router'
 import { useAuth } from '../contexts/AuthContext.jsx'
+import { EMAIL_CONTATO } from '../lib/contato.js'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
 import { IconeVoltar } from '../components/Icones.jsx'
-
-// E-mail do app para dúvidas sobre dados. Enquanto vazio, a seção "Contato" não aparece.
-const EMAIL_CONTATO = 'queroae.app@gmail.com'
 
 // De onde se pode abrir a política (os links mandam state={{ de: '...' }}).
 const ORIGENS = {
@@ -31,10 +29,10 @@ export default function Privacidade() {
         }
       />
       <main className="mt-6">
-        <h1 className="text-2xl font-semibold">Política de privacidade</h1>
-        <p className="mt-2 text-sm text-suave">Atualizada em 4 de novembro de 2026.</p>
+        <h1 className="text-titulo font-semibold">Política de privacidade</h1>
+        <p className="mt-2 text-apoio text-suave">Atualizada em 4 de novembro de 2026.</p>
 
-        <p className="mt-6 text-base">
+        <p className="mt-6 text-corpo">
           O QueroAê é um projeto pessoal para organizar listas de presentes entre família e amigos. Aqui explicamos,
           sem juridiquês, quais dados guardamos e como você controla cada um deles.
         </p>
@@ -78,7 +76,7 @@ export default function Privacidade() {
             <li><strong>Google</strong>: envio dos e-mails (Gmail) e fontes do site (Google Fonts).</li>
           </ul>
           <p>
-            Para manter você conectado, o app guarda sua sessão no próprio navegador. Não usamos cookies de
+            Para manter você conectado e lembrar a aparência e o tamanho do texto, o app guarda sua sessão e essas escolhas no próprio navegador. Não usamos cookies de
             rastreamento nem ferramentas de propaganda.
           </p>
         </Secao>
@@ -104,7 +102,7 @@ export default function Privacidade() {
           </Secao>
         )}
 
-        <p className="mt-10 text-sm">
+        <p className="mt-10 text-corpo">
           <Link to={voltar.para} className="font-medium text-destaque hover:underline">{voltar.rotulo}</Link>
         </p>
       </main>
@@ -115,8 +113,8 @@ export default function Privacidade() {
 function Secao({ titulo, children }) {
   return (
     <section className="mt-8">
-      <h2 className="text-base font-semibold">{titulo}</h2>
-      <div className="mt-2 space-y-2 text-sm leading-relaxed">{children}</div>
+      <h2 className="text-corpo font-semibold">{titulo}</h2>
+      <div className="mt-2 space-y-2 text-corpo leading-relaxed">{children}</div>
     </section>
   )
 }

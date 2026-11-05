@@ -8,7 +8,7 @@ import Botao from '../components/Botao.jsx'
 import { IconeChave, IconeEntrar, IconePessoaMais, IconePresente } from '../components/Icones.jsx'
 
 function Carregando() {
-  return <p className="p-6 text-sm text-suave">Carregando…</p>
+  return <p className="p-6 text-apoio text-suave">Carregando…</p>
 }
 
 // Porta de entrada do link /convite/:codigo.
@@ -72,8 +72,8 @@ function Passo({ icone: Icone, cor, titulo, children }) {
         <Icone className="h-4 w-4" />
       </span>
       <div className="min-w-0">
-        <p className="text-sm font-semibold">{titulo}</p>
-        <p className="text-sm text-suave">{children}</p>
+        <p className="text-corpo font-semibold">{titulo}</p>
+        <p className="text-apoio text-suave">{children}</p>
       </div>
     </li>
   )

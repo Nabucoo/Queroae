@@ -6,6 +6,288 @@ Entradas da mais recente para a mais antiga.
 
 <!-- Novas entradas entram logo abaixo desta linha. -->
 
+## Mudança 21: Conteúdo sempre no centro, sem pular entre telas
+
+**Data:** 2026-11-04
+**Telas/arquivos alterados:** `src/index.css`
+
+### Problema (antes)
+Ao ir da Home para o Perfil, o conteúdo mudava de lugar. O Perfil é mais longo e mostra a barra de rolagem, que ocupa espaço (15 px na medição), e isso deslocava todo o conteúdo em 7,5 px. A logo e os botões do topo não ficavam no mesmo ponto entre as telas (**H4**).
+
+### O que foi alterado (depois)
+- A página reserva o espaço da barra de rolagem dos dois lados, com `scrollbar-gutter: stable both-edges`. O conteúdo fica no centro da janela, tenha a tela barra de rolagem ou não.
+
+### Heurísticas e princípios considerados
+- **H4 – Consistência e padrões:** cada elemento fica na mesma posição entre as telas.
+- **H8 – Design estético e minimalista:** a tela não dá um salto sem motivo ao trocar de página.
+- **Previsibilidade (Dix):** a pessoa encontra os botões do topo sempre no mesmo lugar.
+
+### Trade-offs / heurísticas em tensão
+- **Largura útil:** no computador, a área de conteúdo perde o espaço reservado de cada lado. Isso não afeta o layout, porque o conteúdo já tem largura máxima. Em celulares com barra flutuante, como o iPhone, nada muda.
+
+### Regra da surpresa
+A mudança é só de posicionamento e não mostra nenhuma informação nova.
+
+### Como testar
+1. Num computador, com a janela baixa o suficiente para o Perfil ter rolagem, ir da Home para o Perfil: o conteúdo não se move.
+2. Conferir que a logo fica no centro da janela nas duas telas.
+3. No iPhone, conferir que a Home e o Perfil continuam com a mesma largura de antes.
+
+## Mudança 20: Perguntas frequentes e botão de ajuda
+
+**Data:** 2026-11-04
+**Telas/arquivos alterados:** `src/pages/Ajuda.jsx` (novo), `src/lib/contato.js` (novo), `src/App.jsx`, `src/components/Icones.jsx`, `src/components/Cabecalho.jsx`, `src/pages/Home.jsx`, `src/pages/Perfil.jsx`, `src/pages/Privacidade.jsx`
+
+### Problema (antes)
+O app não tinha um lugar para tirar dúvidas. Regras pouco óbvias, como a surpresa e a aprovação do admin, só apareciam em pontos soltos, e quem voltava depois de meses não tinha onde relembrar como o app funciona (**H10**).
+
+### O que foi alterado (depois)
+- Nova página **Perguntas frequentes**, em `/ajuda`, com 14 perguntas agrupadas em Grupos, Presentes, Surpresa e Conta. As respostas abrem e fecham, e duas já aparecem abertas: como entrar em um grupo e a regra da surpresa.
+- Botão **"?"** na Home, à esquerda, e no Perfil, à direita. A seta da página volta para a tela de origem, inclusive para a aba "Vou comprar" da Home.
+- Bloco **"Não achou sua resposta?"**, com o contato `queroae.app@gmail.com`.
+- O e-mail agora fica em um só lugar (`src/lib/contato.js`), usado também pela política de privacidade.
+- A página abre sem login, como a política de privacidade, mas as telas de entrada não têm botão para ela.
+
+A proposta foi apresentada em mockup, nos temas claro e escuro, e o Lucas aprovou. O formato de perguntas frequentes foi ideia dele.
+
+### Heurísticas e princípios considerados
+- **H10 – Ajuda e documentação:** a ajuda é curta, focada em tarefas, com passos concretos e fácil de encontrar. Também termina com um caminho para falar com alguém.
+- **H2 – Correspondência com o mundo real:** as perguntas usam as palavras de quem tem a dúvida, e as respostas citam os nomes reais dos botões.
+- **H6 – Reconhecer em vez de lembrar:** a pessoa reconhece a própria dúvida na lista, sem precisar lembrar onde fica cada função.
+- **H8 – Design estético e minimalista:** as respostas ficam fechadas até serem pedidas, e o botão aparece só em duas telas.
+- **H3 – Controle e liberdade:** a seta volta para o lugar de origem, sem perder a aba aberta.
+- **Facilidade de memorizar (Nielsen):** ajuda quem volta só no próximo Natal.
+- **Acessibilidade:** o abre e fecha usa o elemento próprio do navegador (`<details>`), que funciona com teclado e leitor de tela. O botão "?" tem o nome "Ajuda" para leitores de tela, e o texto acompanha o tamanho e o tema escolhidos.
+
+### Trade-offs / heurísticas em tensão
+- **H4 × espaço no cabeçalho:** o "?" fica à esquerda na Home e à direita no Perfil. Foi aceito porque, na Home, os dois ícones juntos à direita podem não caber com o texto Muito grande em celulares estreitos, e, no Perfil, a esquerda já tem a seta de voltar.
+- **Ajuda fora da tarefa:** a pessoa sai do que está fazendo para consultar a página. As explicações junto das regras foram propostas, mas ficaram de fora nesta etapa.
+- **Sem busca:** a H10 cita ajuda pesquisável, mas 14 perguntas com títulos claros se percorrem rapidamente. Vale rever se a lista crescer.
+- **Manutenção:** se uma regra do app mudar, a resposta precisa mudar junto. Um comentário no código avisa disso.
+
+### Regra da surpresa
+A página não mostra dados de ninguém. Ela reforça a regra: o dono da lista nunca vê se um presente foi escolhido nem por quem, e os outros integrantes veem as escolhas para não repetir presentes.
+
+### Como testar
+1. Na Home, tocar no "?": abre "Perguntas frequentes". A seta volta para a Home.
+2. Na aba "Vou comprar", tocar no "?" e voltar: a mesma aba continua aberta.
+3. No Perfil, tocar no "?": a seta volta para o Perfil.
+4. Abrir e fechar as respostas, também com Tab e Enter num computador.
+5. Tocar no e-mail: abre o aplicativo de e-mail com `queroae.app@gmail.com`.
+6. Conferir a página no tema escuro e em "Muito grande".
+7. Seguir as respostas com uma conta real e confirmar se cada passo está certo.
+
+## Mudança 19: Modo escuro "Grafite" e opção de Aparência
+
+**Data:** 2026-11-04
+**Telas/arquivos alterados:** `src/index.css`, `src/lib/tema.js` (novo), `src/components/SeletorAparencia.jsx` (novo), `src/components/Logo.jsx`, `src/components/Modal.jsx`, `src/components/ModalConvite.jsx`, `src/pages/BoasVindas.jsx`, `src/pages/Perfil.jsx`, `src/pages/Privacidade.jsx`, `src/main.jsx`, `index.html`, `docs/heuristicas-ihc.md`
+
+### Problema (antes)
+O app só tinha o tema claro. Ele incomodava em ambientes escuros e ignorava o ajuste de aparência do próprio iPhone, que outros apps seguem (**H4**, lado externo).
+
+### O que foi alterado (depois)
+- Novo tema escuro, com a paleta "Grafite", escolhida pelo Lucas entre três opções apresentadas em mockup.
+- Nova opção **Aparência** em Perfil > Acessibilidade: Claro, Escuro e Automático. O padrão é o Automático, que acompanha o ajuste do aparelho.
+- A escolha vale na hora, fica salva no aparelho e já vale antes do login.
+- O tema é definido antes da primeira pintura, para a tela não piscar em branco ao abrir.
+- O botão principal inverte no escuro: fica claro, com texto escuro.
+- As janelas ganharam cor própria (`janela`), mais clara que o fundo no escuro, e um véu próprio para cada tema.
+- A logo da capa passou a acompanhar as cores do tema, e a barra do navegador também muda de cor.
+- A política de privacidade passou a citar que essa escolha fica no navegador.
+
+**Paleta Grafite:**
+
+| Uso | Token | Cor |
+|---|---|---|
+| Fundo | `fundo` | `#141413` |
+| Painel | `painel` | `#1c1c1b` |
+| Cartão e janela | `elevado`, `janela` | `#262625` |
+| Botão secundário e selo | `ativo` | `#363634` |
+| Texto e botão principal | `texto`, `primario` | `#f2f2ef` |
+| Texto suave | `suave` | `#adada8` |
+| Azul de destaque | `destaque` | `#93b3ff` |
+| Vermelho | `negativo` | `#ff9385` |
+| Fundo do botão de perigo | `negativo-claro` | `#401e1a` |
+
+### Heurísticas e princípios considerados
+- **Acessibilidade:** atende à recomendação da aula de permitir a escolha de temas e cores. O menor contraste de texto medido é 5,4:1, acima do mínimo de 4,5:1, e a borda do cartão de pedido passa dos 3:1. A opção escolhida também tem o sinal de confirmação, e não só a borda.
+- **Facilidade de personalizar (Dix):** a pessoa pode escolher (adaptabilidade), e o Automático ajusta o app sozinho ao aparelho (adaptatividade).
+- **H4 – Consistência e padrões:** o Automático segue a convenção do sistema, e a hierarquia de botões é a mesma nos dois temas.
+- **H1 – Visibilidade do status:** o resultado aparece na hora.
+- **H3 – Controle e liberdade:** dá para trocar a qualquer momento, mesmo com o Automático como padrão.
+- **H10 – Ajuda e documentação:** uma frase curta explica o que o Automático faz.
+
+### Trade-offs / heurísticas em tensão
+- **Automático como padrão × surpresa:** quem usa o iPhone no modo escuro verá o app escuro sem ter pedido. Foi aceito porque é o comportamento esperado e pode ser trocado no Perfil.
+- **Salvar no aparelho × na conta:** a escolha não acompanha a pessoa em outro aparelho. Foi aceito porque assim ela vale antes do login e não exige mudança no banco.
+- **Confetes:** a animação de "Vou comprar" manteve as cores atuais nos dois temas, porque é só decorativa. O azul se destaca menos no fundo escuro.
+- **Lógica em dois lugares:** o script do `index.html` repete a leitura de `src/lib/tema.js`, para evitar o branco ao abrir. Um comentário nos dois arquivos avisa disso.
+
+### Regra da surpresa
+A mudança é só de apresentação. Nenhuma consulta de dados mudou, e nenhuma informação nova aparece.
+
+### Como testar
+1. No iPhone, abrir Perfil > Acessibilidade e tocar em Escuro e em Claro: o app inteiro muda na hora.
+2. Com Automático, trocar o modo escuro no iPhone e voltar para o app: ele acompanha.
+3. Fechar e abrir o app no modo escuro: a tela não pisca em branco.
+4. Percorrer Home, grupo, lista, Perfil e janelas no escuro, conferindo textos, botões e avatares.
+5. Abrir uma janela, como "Excluir grupo": ela se destaca do fundo, com o véu escuro atrás.
+
+## Mudança 18: Tamanho do texto em Acessibilidade e padrão único de fontes
+
+**Data:** 2026-11-04
+**Telas/arquivos alterados:** `src/index.css`, `src/lib/tamanhoTexto.js` (novo), `src/components/SeletorTamanhoTexto.jsx` (novo), `src/main.jsx`, `src/pages/Perfil.jsx`, `src/pages/Privacidade.jsx`, `docs/heuristicas-ihc.md`, e todas as telas e componentes com texto, que passaram a usar o padrão.
+
+### Problema (antes)
+O texto do app não podia ser ajustado, o que prejudicava quem tem dificuldade de leitura. Os tamanhos também vinham de várias classes soltas do Tailwind, sem uma regra de uso (**H4**). O corpo tinha 14 px, abaixo dos 17 pt recomendados pela Apple para o iPhone, e os campos, com menos de 16 px, faziam o iPhone dar zoom na tela ao tocar.
+
+### O que foi alterado (depois)
+- Nova seção **Acessibilidade** no Perfil, com **Tamanho do texto**: Pequeno, Médio, Grande e Muito grande. A mudança vale na hora, e cada opção mostra uma amostra "Aa".
+- A escolha fica salva no aparelho e já vale nas telas de login, de cadastro e de boas-vindas. O padrão é o Médio.
+- Novo padrão em `src/index.css`, com os tamanhos abaixo em pt (1 pt do iPhone equivale a 1 px do CSS):
+
+| Token | Uso | Estilo da Apple | Pequeno (Small) | Médio (Large) | Grande (xLarge) | Muito grande (xxxLarge) |
+|---|---|---|---|---|---|---|
+| `text-selo` | selos | Caption 1 | 11 | 12 | 14 | 18 |
+| `text-nota` | detalhes e erros de campo | Footnote | 12 | 13 | 15 | 19 |
+| `text-apoio` | explicações, rótulos e abas | Subhead | 13 | 15 | 17 | 21 |
+| `text-corpo` | texto e botões | Body | 15 | 17 | 19 | 23 |
+| `text-subtitulo` | títulos de janela | Title 3 | 18 | 20 | 22 | 26 |
+| `text-titulo` | título da tela | Title 1 | 26 | 28 | 30 | 34 |
+| `text-titulo-grande` | saudação e capa | Large Title | 32 | 34 | 36 | 40 |
+
+- `text-campo` acompanha `text-corpo`, mas nunca fica abaixo de 16 px, para o iPhone não dar zoom ao tocar no campo.
+- Os tamanhos prontos do Tailwind foram desligados, então um tamanho fora do padrão não funciona.
+- Botões e campos passaram a crescer com o texto. Linhas de botões e abas descem para outra linha quando falta espaço, em vez de cortar o texto.
+- A política de privacidade passou a citar que essa escolha fica no navegador.
+
+**Fonte dos valores:** tabelas de Dynamic Type das [Human Interface Guidelines da Apple](https://developer.apple.com/design/human-interface-guidelines/typography), onde o padrão do iOS é o nível "Large", com corpo de 17 pt, e o mínimo é 11 pt. O "Médio" do QueroAê corresponde ao "Large" da Apple, que é o padrão dela.
+
+### Heurísticas e princípios considerados
+- **Acessibilidade:** atende à recomendação da aula de permitir a escolha do tamanho do texto. A opção usa botões de rádio, que funcionam com teclado e leitor de tela, e a escolhida se diferencia também pelo sinal de confirmação, e não só pela borda.
+- **Facilidade de personalizar (Dix):** é a pessoa quem adapta o app à sua necessidade.
+- **H1 – Visibilidade do status:** o resultado aparece na hora, na própria tela.
+- **H3 – Controle e liberdade:** dá para voltar a qualquer outro tamanho a qualquer momento.
+- **H4 – Consistência e padrões:** cada tipo de texto tem um único tamanho no app inteiro, e os valores seguem a convenção do iPhone.
+- **H10 – Ajuda e documentação:** uma frase curta explica que a mudança é imediata e fica salva no aparelho.
+
+### Trade-offs / heurísticas em tensão
+- **Legibilidade × densidade:** como o corpo passou de 14 px para 17 px, o Médio mostra menos conteúdo por tela do que antes. Foi aceito para seguir o padrão do iPhone.
+- **Salvar no aparelho × na conta:** a escolha não acompanha a pessoa em outro aparelho. Foi aceito porque assim ela já vale antes do login e não exige mudança no banco.
+- **Pequeno × legibilidade:** o menor nível chega a 11 pt nos selos, o mínimo indicado pela Apple. Ele só vale para quem escolher.
+- **Texto muito grande × celular estreito:** no Muito grande, algumas linhas quebram e nomes longos podem ser cortados com reticências. O texto não sai da tela.
+- **Tamanho dos botões:** a altura mínima dos botões continua em 38 px. Os 44 pt recomendados pela Apple para toque ficam como melhoria futura, assim como os botões de ícone.
+
+### Regra da surpresa
+A mudança é só de apresentação. Nenhuma consulta de dados mudou, e nenhuma informação nova aparece.
+
+### Como testar
+1. No iPhone, abrir Perfil > Acessibilidade e tocar em cada tamanho: o texto da tela muda na hora.
+2. Fechar e abrir o app: a escolha continua. Sair da conta: a tela de login segue no mesmo tamanho.
+3. Em "Muito grande", percorrer Home, grupo, lista e janelas: nada sai da tela, e os botões continuam fáceis de ler.
+4. Em "Pequeno", tocar num campo: o iPhone não dá zoom.
+5. Num computador, usar Tab e as setas nas opções: o foco fica visível e a opção muda.
+
+## Mudança 17: Botões sem borda e sem fundo transparente
+
+**Data:** 2026-11-04
+**Telas/arquivos alterados:** `src/components/Botao.jsx` e as telas e janelas que usavam a variante `texto`: `src/pages/Home.jsx`, `src/components/ModalPresente.jsx`, `src/components/ModalIntegrantes.jsx`, `src/components/ModalEntrarGrupo.jsx`, `src/components/ModalEditarGrupo.jsx`, `src/components/ModalConfirmar.jsx`, `src/components/ModalCriarGrupo.jsx`, `src/components/ModalConvite.jsx`. Também o guia `docs/heuristicas-ihc.md`.
+
+### Problema (antes)
+Havia quatro estilos de botão, e três pareciam vazados sobre o fundo branco: `secundario` e `perigo` eram brancos com borda, e `texto` não tinha fundo nem borda. "Cancelar" e "Editar" tinham papéis parecidos e aparências diferentes (**H4**), e as bordas somavam linhas às dos cartões (**H8**).
+
+### O que foi alterado (depois)
+- `secundario` passou a ter fundo cinza, sem borda.
+- `perigo` passou a ter fundo vermelho claro e texto vermelho, sem borda.
+- A variante `texto` foi removida. "Cancelar", "Voltar", "Agora não" e "Cancelar pedido" agora usam `secundario`.
+- O botão `primario` e os ícones do topo não mudaram.
+
+A proposta foi apresentada em mockups com três versões (sem borda, com borda e fundo branco, com borda e fundo colorido), e o Lucas escolheu "sem borda".
+
+### Heurísticas e princípios considerados
+- **H4 – Consistência e padrões:** ações do mesmo nível têm a mesma aparência, e o app fica com três estilos em vez de quatro.
+- **H8 – Design estético e minimalista:** sem as bordas, há menos linhas na tela, e o botão preto se destaca como ação principal.
+- **Consistência (Dix):** a hierarquia é a mesma em todas as telas: preto, cinza e vermelho claro.
+- **Acessibilidade:** o texto tem contraste de 14:1 no cinza e 5,8:1 no vermelho claro. A ação de risco não depende só da cor, porque o texto já diz o que o botão faz.
+
+### Trade-offs / heurísticas em tensão
+- **Contorno × H8:** o fundo do botão se destaca pouco do branco (1,17:1 no cinza). Foi aceito porque o texto escuro identifica o botão, e o foco de teclado continua com contorno azul.
+- **"Cancelar" mais visível × hierarquia:** ele ganha mais peso do que tinha sem fundo, mas continua abaixo do botão preto.
+- **H5 na confirmação:** "Excluir grupo" e os outros botões da janela de confirmação perdem a borda e ficam em vermelho claro, com aparência igual à de "Remover" nas listas. A janela continua pedindo a segunda confirmação e explicando a consequência. Um vermelho forte nessa janela foi proposto e pode ser avaliado depois.
+
+### Regra da surpresa
+A mudança é só visual e não mostra nenhuma informação nova.
+
+### Como testar
+1. Na largura de celular, abrir "Minha lista de presentes": "Editar" fica cinza e "Remover" fica vermelho claro, ambos sem borda.
+2. Abrir "Novo presente": "Cancelar" fica cinza, ao lado do botão preto.
+3. Abrir a confirmação de excluir um grupo: "Cancelar" fica cinza e "Excluir grupo" fica vermelho claro.
+4. Na tela de boas-vindas, conferir "Já tenho conta" em cinza.
+5. Usar a tecla Tab num computador: o botão focado mostra o contorno azul.
+
+## Mudança 16: Mesmo painel nas listas do grupo e do integrante
+
+**Data:** 2026-11-04
+**Telas/arquivos alterados:** `src/pages/Grupo.jsx`, `src/pages/Integrante.jsx`
+
+### Problema (antes)
+Na Home, as abas e os cartões ficam dentro de um painel cinza. No grupo, a mesma estrutura ficava direto no fundo branco, e a lista do integrante também não tinha painel. A mesma organização aparecia de dois jeitos (**H4**).
+
+### O que foi alterado (depois)
+- No grupo, as abas e o conteúdo delas passaram para o componente `Painel`, o mesmo da Home.
+- Na aba "Minha lista de presentes", a distância entre as abas e o conteúdo ficou igual à da aba "Integrantes".
+- Na tela do integrante, a lista passou para o `Painel`. O título "Lista de presentes" foi para dentro dele e ficou do tamanho dos outros títulos de painel.
+
+A proposta foi apresentada em um mockup com antes e depois, e o Lucas aprovou.
+
+### Heurísticas e princípios considerados
+- **H4 – Consistência e padrões:** telas com a mesma estrutura agora têm a mesma aparência, usando o mesmo componente.
+- **H8 – Design estético e minimalista:** o painel agrupa as abas e o conteúdo delas, e os cartões brancos se destacam do fundo cinza.
+- **Consistência e facilidade de generalizar (Dix):** quem aprendeu a Home reconhece a organização das outras telas, o que ajuda num app de uso sazonal.
+- **Acessibilidade:** o painel `#f9f9f9` fica atrás dos cartões brancos e das abas. O texto secundário direto sobre ele, como o da aba inativa e o da mensagem de lista vazia, usa `#636361`, com contraste de 5,7:1.
+
+### Trade-offs / heurísticas em tensão
+- **Consistência × largura no celular:** o painel tira 20 px de cada lado. O cartão de integrante aberto fica mais apertado, mas no mockup ele continuou legível em 360 px, sem botões saindo do lugar.
+- **Consistência × H8:** para o admin com pedido pendente, a tela do grupo fica com três blocos cinza seguidos. Foi aceito porque cada bloco tem uma função clara, há espaço entre eles e o bloco de pedidos some quando não há pedidos.
+
+### Regra da surpresa
+A mudança é só visual. As consultas não mudaram, e "Minha lista" continua sem consultar quem escolheu cada presente.
+
+### Como testar
+1. Na largura de celular, abrir um grupo: as abas e a lista ficam dentro do painel cinza, como na Home.
+2. Abrir o cartão de um integrante e conferir se os presentes e os botões cabem.
+3. Trocar para "Minha lista de presentes": o conteúdo não muda de distância em relação às abas.
+4. Na Home, abrir um presente pela aba "Vou comprar": a lista do integrante aparece dentro do painel.
+5. Entrar como admin de um grupo com pedido pendente e conferir se os três blocos ficam bem separados.
+
+## Mudança 15: Botão "Adicionar" da Home em preto
+
+**Data:** 2026-11-04
+**Telas/arquivos alterados:** `src/pages/Home.jsx`
+
+### Problema (antes)
+Na lista de grupos da Home, "Adicionar" era branco com borda (`secundario`), embora fosse a única ação principal da tela. Na "Minha lista", a ação equivalente, "Adicionar novo presente", já era preta (**H4**).
+
+### O que foi alterado (depois)
+- O botão passou a usar a variante `primario`, a mesma cor quase preta dos outros botões principais do app. O texto, o ícone e a posição não mudaram.
+
+### Heurísticas e princípios considerados
+- **H4 – Consistência e padrões:** adicionar grupo e adicionar presente agora têm o mesmo peso visual, e o guia pede uma ação `primario` por tela.
+- **H8 – Design estético e minimalista:** a tela ganha uma hierarquia clara, com uma única ação em destaque.
+- **Consistência e facilidade de generalizar (Dix):** quem aprendeu que o botão preto é a ação principal reconhece o padrão aqui.
+- **Acessibilidade:** o texto branco sobre o fundo `#1f201d` tem contraste de 16,4:1, acima do mínimo de 4,5:1.
+
+### Trade-offs / heurísticas em tensão
+- **Destaque × tarefa mais frequente:** quem já tem grupos costuma abrir um grupo, e não criar outro, então o botão preto chama mais atenção que os cartões da lista. Foi aceito porque ele é pequeno, fica na linha do título e não compete com outro botão principal.
+
+### Regra da surpresa
+A mudança é só de cor e não mostra nenhuma informação nova.
+
+### Como testar
+1. Entrar com uma conta que tenha pelo menos um grupo, na largura de celular.
+2. Na aba "Grupos", conferir que "Adicionar" está preto, com texto e ícone brancos.
+3. Tocar no botão: abre a janela "Adicionar grupo", como antes.
+
 ## Mudança 14: Tela "Você recebeu um convite" para quem abre o link sem login
 
 **Data:** 2026-11-04

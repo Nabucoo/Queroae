@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router'
+import { SimboloCompleto } from '../components/Logo.jsx'
 import Botao from '../components/Botao.jsx'
 import ModalConviteInvalido from '../components/ModalConviteInvalido.jsx'
 import { IconeEntrar, IconePessoaMais } from '../components/Icones.jsx'
@@ -13,10 +14,10 @@ export default function BoasVindas() {
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-4 py-10 text-center">
       {/* Decorativa: o nome logo abaixo já diz o que é */}
-      <img src="/marca/queroae-simbolo-completo.svg" alt="" className="mx-auto h-28 w-28" />
-      <h1 className="mt-2 text-3xl font-semibold">QueroAê</h1>
-      <p className="mt-2 text-base font-medium text-destaque">O fim do “nossa… que lindo, obrigado”.</p>
-      <p className="mt-4 text-sm text-suave">
+      <SimboloCompleto className="mx-auto h-28 w-28" />
+      <h1 className="mt-2 text-titulo-grande font-semibold">QueroAê</h1>
+      <p className="mt-2 text-corpo font-medium text-destaque">O fim do “nossa… que lindo, obrigado”.</p>
+      <p className="mt-4 text-apoio text-suave">
         Monte sua lista de desejos e veja a da sua família. Ninguém sabe quem vai dar o quê.
       </p>
 
@@ -25,7 +26,7 @@ export default function BoasVindas() {
         <Botao as={Link} to="/login" variante="secundario" icone={IconeEntrar} larguraTotal>Já tenho conta</Botao>
       </div>
 
-      <Link to="/privacidade" state={{ de: 'boas-vindas' }} className="mt-8 text-xs font-medium text-destaque hover:underline">
+      <Link to="/privacidade" state={{ de: 'boas-vindas' }} className="mt-8 text-nota font-medium text-destaque hover:underline">
         Política de privacidade
       </Link>
 

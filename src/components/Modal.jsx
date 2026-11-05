@@ -22,13 +22,13 @@ export default function Modal({ aberto, onFechar, titulo, children }) {
       // Clicar no fundo escuro (fora da caixa) também fecha
       onClick={(e) => e.target === ref.current && onFechar()}
       className={[
-        'm-auto w-[calc(100%-2rem)] max-w-md rounded-cartao bg-fundo p-0 text-texto',
-        'shadow-[0_16px_48px_-8px_rgba(15,15,15,0.16)] backdrop:bg-texto/40', // sombra ok: o modal flutua (taste-skill-ignore)
+        'm-auto w-[calc(100%-2rem)] max-w-md rounded-cartao bg-janela p-0 text-texto',
+        'shadow-[0_16px_48px_-8px_rgba(15,15,15,0.16)]', // sombra ok: o modal flutua (taste-skill-ignore)
       ].join(' ')}
     >
       <div className="p-6">
         <header className="mb-5 flex items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold">{titulo}</h2>
+          <h2 className="text-subtitulo font-semibold">{titulo}</h2>
           <button
             type="button"
             onClick={onFechar}

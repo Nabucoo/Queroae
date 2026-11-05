@@ -35,21 +35,21 @@ export default function ModalEditarGrupo({ aberto, onFechar, grupo, onSalvo, onG
         <Campo rotulo="Nome do grupo" required maxLength={60} value={nome} onChange={(e) => setNome(e.target.value)} />
         <Campo rotulo="Descrição" opcional multilinha maxLength={500} value={descricao} onChange={(e) => setDescricao(e.target.value)} />
         <Aviso>{erro}</Aviso>
-        <div className="mt-2 flex justify-end gap-3">
-          <Botao variante="texto" onClick={onFechar}>Cancelar</Botao>
+        <div className="mt-2 flex flex-wrap justify-end gap-3">
+          <Botao variante="secundario" onClick={onFechar}>Cancelar</Botao>
           <Botao type="submit" icone={IconeConfirmar} disabled={enviando}>{enviando ? 'Salvando…' : 'Salvar'}</Botao>
         </div>
       </form>
 
       {/* Integrantes: abre outra janela com a lista para remover pessoas */}
       <div className="mt-6 flex items-center justify-between gap-3 border-t border-borda pt-5">
-        <p className="text-sm text-suave">Remover pessoas do grupo.</p>
+        <p className="text-apoio text-suave">Remover pessoas do grupo.</p>
         <Botao variante="secundario" icone={IconePessoas} onClick={onGerenciarIntegrantes}>Gerenciar integrantes</Botao>
       </div>
 
       {/* Ação perigosa fica separada, no fim */}
       <div className="mt-6 flex items-center justify-between gap-3 border-t border-borda pt-5">
-        <p className="text-sm text-suave">Apaga o grupo e todas as listas dele.</p>
+        <p className="text-apoio text-suave">Apaga o grupo e todas as listas dele.</p>
         <Botao variante="perigo" icone={IconeLixeira} onClick={onPedirExclusao}>Excluir grupo</Botao>
       </div>
     </Modal>

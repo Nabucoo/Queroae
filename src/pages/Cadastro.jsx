@@ -98,7 +98,7 @@ export default function Cadastro() {
           <p className="text-suave">
             Já tem conta? <Link to="/login" className="font-medium text-destaque hover:underline">Entrar</Link>
           </p>
-          <Link to="/privacidade" state={{ de: 'cadastro' }} className="text-xs font-medium text-destaque hover:underline">Política de privacidade</Link>
+          <Link to="/privacidade" state={{ de: 'cadastro' }} className="text-nota font-medium text-destaque hover:underline">Política de privacidade</Link>
         </>
       }
     >

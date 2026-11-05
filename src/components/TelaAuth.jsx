@@ -19,10 +19,10 @@ export default function TelaAuth({ titulo, subtitulo, children, rodape, voltar }
         )}
       />
       <main className="pt-8 pb-10">
-        <h1 className="text-2xl font-semibold">{titulo}</h1>
-        {subtitulo && <p className="mt-2 text-sm text-suave">{subtitulo}</p>}
+        <h1 className="text-titulo font-semibold">{titulo}</h1>
+        {subtitulo && <p className="mt-2 text-apoio text-suave">{subtitulo}</p>}
         {children && <div className="mt-6">{children}</div>}
-        {rodape && <div className="mt-6 flex flex-col gap-3 text-sm">{rodape}</div>}
+        {rodape && <div className="mt-6 flex flex-col gap-3 text-corpo">{rodape}</div>}
       </main>
     </div>
   )
@@ -33,7 +33,7 @@ export function Aviso({ tipo = 'erro', children }) {
   if (!children) return null
   const cor = tipo === 'erro' ? 'bg-negativo-claro text-negativo' : 'bg-painel text-texto'
   return (
-    <p role={tipo === 'erro' ? 'alert' : 'status'} className={`rounded-campo px-3 py-2 text-sm ${cor}`}>
+    <p role={tipo === 'erro' ? 'alert' : 'status'} className={`rounded-campo px-3 py-2 text-apoio ${cor}`}>
       {children}
     </p>
   )

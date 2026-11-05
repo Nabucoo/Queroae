@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext.jsx'
 import Logo from './Logo.jsx'
 
 // Barra do topo de todas as telas (menos a capa de boas-vindas), em 3 colunas:
-// seta de voltar (opcional) | logo, sempre no centro | ação (opcional).
+// seta de voltar ou botão de ajuda (opcional) | logo, sempre no centro | ação (opcional).
 // As colunas dos lados têm a mesma largura (1fr), então a logo fica no mesmo
 // ponto em todas as telas, com ou sem seta, qualquer que seja a ação.
 export default function Cabecalho({ voltar, direita }) {

@@ -37,8 +37,8 @@ export default function ModalCriarGrupo({ aberto, onFechar }) {
         <Campo rotulo="Descrição" opcional multilinha maxLength={500} placeholder="Data, regras, valor sugerido…"
           value={descricao} onChange={(e) => setDescricao(e.target.value)} />
         <Aviso>{erro}</Aviso>
-        <div className="mt-2 flex justify-end gap-3">
-          <Botao variante="texto" onClick={onFechar}>Cancelar</Botao>
+        <div className="mt-2 flex flex-wrap justify-end gap-3">
+          <Botao variante="secundario" onClick={onFechar}>Cancelar</Botao>
           <Botao type="submit" icone={IconeMais} disabled={enviando}>{enviando ? 'Criando…' : 'Criar grupo'}</Botao>
         </div>
       </form>

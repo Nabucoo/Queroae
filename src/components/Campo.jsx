@@ -15,7 +15,7 @@ export default function Campo({ rotulo, erro, multilinha = false, opcional = fal
 
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-sm font-medium">
+      <label htmlFor={id} className="text-apoio font-medium">
         {rotulo}
         {opcional && <span className="font-normal text-suave"> (opcional)</span>}
       </label>
@@ -30,9 +30,9 @@ export default function Campo({ rotulo, erro, multilinha = false, opcional = fal
           aria-invalid={erro ? true : undefined}
           aria-describedby={erro ? idErro : undefined}
           className={[
-            'w-full rounded-campo border bg-fundo text-sm text-texto',
+            'w-full rounded-campo border bg-fundo text-campo text-texto',
             'placeholder:text-suave focus:outline-2 focus:outline-offset-0 focus:outline-destaque',
-            multilinha ? 'min-h-24 py-2' : 'h-10',
+            multilinha ? 'min-h-24 py-2' : 'min-h-10 py-2',
             temIcone ? 'pl-9' : 'pl-3', // espaço para o ícone da esquerda
             ehSenha ? 'pr-11' : 'pr-3', // espaço para o olhinho da direita
             erro ? 'border-negativo' : 'border-controle',
@@ -51,7 +51,7 @@ export default function Campo({ rotulo, erro, multilinha = false, opcional = fal
           </button>
         )}
       </div>
-      {erro && <p id={idErro} className="text-xs text-negativo">{erro}</p>}
+      {erro && <p id={idErro} className="text-nota text-negativo">{erro}</p>}
     </div>
   )
 }

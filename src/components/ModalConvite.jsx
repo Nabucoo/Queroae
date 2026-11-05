@@ -60,8 +60,8 @@ export default function ModalConvite({ codigo, onFechar, onPedido }) {
     return (
       <Modal aberto onFechar={onFechar} titulo="Não conseguimos abrir o convite">
         <Aviso>{erro}</Aviso>
-        <div className="mt-6 flex justify-end gap-3">
-          <Botao variante="texto" onClick={onFechar}>Agora não</Botao>
+        <div className="mt-6 flex flex-wrap justify-end gap-3">
+          <Botao variante="secundario" onClick={onFechar}>Agora não</Botao>
           <Botao onClick={tentarDeNovo}>Tentar de novo</Botao>
         </div>
       </Modal>
@@ -82,7 +82,7 @@ export default function ModalConvite({ codigo, onFechar, onPedido }) {
   if (convite.meu_pedido === 'recusado') {
     return (
       <Modal aberto onFechar={onFechar} titulo="Pedido não aprovado">
-        <p className="text-sm text-suave">
+        <p className="text-apoio text-suave">
           Seu pedido para entrar em <strong className="font-semibold text-texto">{convite.nome}</strong> não foi aprovado. Se foi engano, fale com quem te convidou. Para pedir de novo, dispense o aviso na tela inicial.
         </p>
         <div className="mt-6 flex justify-end">
@@ -95,7 +95,7 @@ export default function ModalConvite({ codigo, onFechar, onPedido }) {
   if (convite.meu_pedido === 'pendente') {
     return (
       <Modal aberto onFechar={onFechar} titulo={acabouDePedir ? 'Pedido enviado' : 'Você já pediu para entrar'}>
-        <p role="status" className="text-sm text-suave">
+        <p role="status" className="text-apoio text-suave">
           O admin de <strong className="font-semibold text-texto">{convite.nome}</strong> precisa aprovar sua entrada. Avise quem te convidou, porque o app não manda notificação.
         </p>
         <div className="mt-6 flex justify-end">
@@ -107,15 +107,15 @@ export default function ModalConvite({ codigo, onFechar, onPedido }) {
 
   return (
     <Modal aberto onFechar={onFechar} titulo="Entrar neste grupo?">
-      <p className="text-base font-semibold break-words">{convite.nome}</p>
+      <p className="text-corpo font-semibold break-words">{convite.nome}</p>
       <Rostos nomes={convite.nomes} total={convite.total} />
-      <p className="mt-2 text-sm text-suave">{quemEstaNoGrupo(convite.nomes, convite.total)}</p>
+      <p className="mt-2 text-apoio text-suave">{quemEstaNoGrupo(convite.nomes, convite.total)}</p>
       <div className="mt-4">
         <Aviso tipo="info">O admin vai ver seu nome e e-mail para aprovar o pedido.</Aviso>
       </div>
       {erro && <div className="mt-4"><Aviso>{erro}</Aviso></div>}
-      <div className="mt-6 flex justify-end gap-3">
-        <Botao variante="texto" onClick={onFechar}>Agora não</Botao>
+      <div className="mt-6 flex flex-wrap justify-end gap-3">
+        <Botao variante="secundario" onClick={onFechar}>Agora não</Botao>
         <Botao icone={IconeEntrar} onClick={pedir} disabled={enviando}>
           {enviando ? 'Enviando…' : 'Pedir para entrar'}
         </Botao>
@@ -131,12 +131,12 @@ function Rostos({ nomes, total }) {
   return (
     <div aria-hidden="true" className="mt-3 flex">
       {nomes.map((nome, i) => (
-        <span key={i} className={`inline-flex rounded-full ring-2 ring-fundo ${i > 0 ? '-ml-2' : ''}`}>
+        <span key={i} className={`inline-flex rounded-full ring-2 ring-janela ${i > 0 ? '-ml-2' : ''}`}>
           <Avatar nome={nome} tamanho="p" />
         </span>
       ))}
       {restantes > 0 && (
-        <span className="num -ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-ativo text-xs font-semibold text-suave ring-2 ring-fundo">
+        <span className="num -ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-ativo text-selo font-semibold text-suave ring-2 ring-janela">
           +{restantes}
         </span>
       )}

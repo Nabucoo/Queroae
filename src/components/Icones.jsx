@@ -19,6 +19,16 @@ export function IconeConfig(props) {
   )
 }
 
+export function IconeAjuda(props) {
+  return (
+    <Icone {...props}>
+      <circle cx="8" cy="8" r="6.5" />
+      <path d="M6.2 6.2a1.9 1.9 0 0 1 3.65.7c0 1.3-1.85 1.55-1.85 2.8" />
+      <path d="M8 11.9v.05" />
+    </Icone>
+  )
+}
+
 export function IconeVoltar(props) {
   return (
     <Icone {...props}>

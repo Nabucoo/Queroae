@@ -51,11 +51,11 @@ export default function ModalPresente({ presente, idUsuarioGrupo, onFechar, onSa
         <Campo rotulo="Link de referência" opcional inputMode="url" autoComplete="off" maxLength={2000}
           placeholder="https://" value={link} onChange={(e) => setLink(e.target.value)} />
         <Aviso>{erro}</Aviso>
-        <div className="mt-2 flex justify-end gap-3">
+        <div className="mt-2 flex flex-wrap justify-end gap-3">
           {editando ? (
             <Botao variante="perigo" icone={IconeLixeira} className="mr-auto" onClick={onPedirRemocao}>Remover</Botao>
           ) : (
-            <Botao variante="texto" onClick={onFechar}>Cancelar</Botao>
+            <Botao variante="secundario" onClick={onFechar}>Cancelar</Botao>
           )}
           <Botao type="submit" icone={editando ? IconeConfirmar : IconeMais} disabled={enviando}>
             {enviando ? 'Salvando…' : editando ? 'Salvar' : 'Adicionar'}

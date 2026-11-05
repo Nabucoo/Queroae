@@ -2,7 +2,7 @@ import { Navigate, Outlet } from 'react-router'
 import { useAuth } from '../contexts/AuthContext.jsx'
 
 function Carregando() {
-  return <p className="p-6 text-sm text-suave">Carregando…</p>
+  return <p className="p-6 text-apoio text-suave">Carregando…</p>
 }
 
 // Só deixa passar quem está logado. Os outros vão para as boas-vindas

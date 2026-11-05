@@ -21,7 +21,27 @@ export default function Logo({ mostrarNome = true }) {
         </g>
         <rect x="30.5" y="9.5" width="5" height="6" rx="2" className="fill-laco" />
       </svg>
-      {mostrarNome && <span className="text-lg font-semibold">QueroAê</span>}
+      {mostrarNome && <span className="text-subtitulo font-semibold">QueroAê</span>}
     </span>
+  )
+}
+
+// O símbolo da capa, com os confetes. Fica no código, e não num arquivo de imagem,
+// para acompanhar as cores do tema.
+export function SimboloCompleto({ className }) {
+  return (
+    <svg viewBox="0 0 64 64" className={className} aria-hidden="true">
+      <path d="M18 14h30a10 10 0 0 1 10 10v16a10 10 0 0 1-10 10H26l-12 9 2-9.4A10 10 0 0 1 8 40V24a10 10 0 0 1 10-10z" className="fill-destaque"/>
+      <rect x="31" y="14" width="4" height="36" className="fill-fundo"/>
+      <rect x="8" y="30" width="50" height="4" className="fill-fundo"/>
+      <g className="stroke-laco" fill="none" strokeWidth="3" strokeLinejoin="round">
+        <path d="M33 12.5C28 4 19 4 19.5 9.5C20 14 28 13.5 33 12.5Z"/>
+        <path d="M33 12.5C38 4 47 4 46.5 9.5C46 14 38 13.5 33 12.5Z"/>
+      </g>
+      <rect x="30.5" y="9.5" width="5" height="6" rx="2" className="fill-laco"/>
+      <circle cx="55" cy="6" r="2.4" fill="#e0a526"/>
+      <rect x="57.5" y="11" width="3.5" height="6" rx="1" fill="#3fb39a" transform="rotate(-28 59.25 14)"/>
+      <circle cx="11" cy="7" r="2" fill="#e06a9e"/>
+    </svg>
   )
 }

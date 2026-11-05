@@ -6,7 +6,7 @@ import Botao from './Botao.jsx'
 export default function ModalConviteInvalido({ onFechar }) {
   return (
     <Modal aberto onFechar={onFechar} titulo="Este convite não é válido">
-      <p className="text-left text-sm text-suave">
+      <p className="text-left text-apoio text-suave">
         O grupo pode ter sido excluído ou o link veio incompleto. Peça um novo link para quem convidou você.
       </p>
       <div className="mt-6 flex justify-end">

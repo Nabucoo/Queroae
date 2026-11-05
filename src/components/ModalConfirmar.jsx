@@ -24,11 +24,11 @@ export default function ModalConfirmar({ aberto, onFechar, titulo, children, rot
 
   return (
     <Modal aberto={aberto} onFechar={fechar} titulo={titulo}>
-      <div className="flex flex-col gap-4 text-sm">
+      <div className="flex flex-col gap-4 text-corpo">
         {children}
         <Aviso>{erro}</Aviso>
-        <div className="mt-2 flex justify-end gap-3">
-          <Botao variante="texto" onClick={fechar}>Cancelar</Botao>
+        <div className="mt-2 flex flex-wrap justify-end gap-3">
+          <Botao variante="secundario" onClick={fechar}>Cancelar</Botao>
           <Botao variante="perigo" icone={iconeConfirmar} onClick={confirmar} disabled={enviando}>
             {enviando ? 'Aguarde…' : rotuloConfirmar}
           </Botao>
