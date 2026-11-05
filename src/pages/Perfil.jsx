@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { ehFalhaDeConexao, mensagemDeErro } from '../lib/erros.js'
+import { useErrosDeCampo } from '../lib/useErrosDeCampo.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
 import Avatar from '../components/Avatar.jsx'
@@ -105,10 +106,13 @@ function ModalEditarNome({ nomeAtual, idUsuario, onFechar, onSalvo }) {
   const [nome, setNome] = useState(nomeAtual)
   const [erro, setErro] = useState('')
   const [enviando, setEnviando] = useState(false)
+  const { erros, refDe, mostrar, limpar, limparTodos } = useErrosDeCampo()
 
   async function salvar(e) {
     e.preventDefault()
     setErro('')
+    if (!nome.trim()) return mostrar({ nome: 'Digite seu nome. É assim que você aparece para os grupos.' })
+    limparTodos()
     setEnviando(true)
     const { error } = await supabase.from('usuario').update({ nome: nome.trim() }).eq('id_usuario', idUsuario)
     setEnviando(false)
@@ -116,14 +120,14 @@ function ModalEditarNome({ nomeAtual, idUsuario, onFechar, onSalvo }) {
     onSalvo()
   }
 
-  const mudou = nome.trim() !== nomeAtual && nome.trim() !== ''
+  const mudou = nome.trim() !== nomeAtual
 
   return (
     <Modal aberto onFechar={onFechar} titulo="Editar nome">
       <p className="text-apoio text-suave">É assim que você aparece para os integrantes dos seus grupos.</p>
-      <form onSubmit={salvar} className="mt-4 flex flex-col gap-4">
-        <Campo rotulo="Nome" required maxLength={60} autoComplete="name" value={nome}
-          onChange={(e) => setNome(e.target.value)} />
+      <form onSubmit={salvar} noValidate className="mt-4 flex flex-col gap-4">
+        <Campo rotulo="Nome" required maxLength={60} autoComplete="name" ref={refDe('nome')} erro={erros.nome} value={nome}
+          onChange={(e) => { setNome(e.target.value); limpar('nome') }} />
         <Aviso>{erro}</Aviso>
         <div className="mt-2 flex flex-wrap justify-end gap-3">
           <Botao variante="secundario" onClick={onFechar}>Cancelar</Botao>

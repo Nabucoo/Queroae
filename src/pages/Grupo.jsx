@@ -24,7 +24,7 @@ import { CartaoVazio } from '../components/Cartao.jsx'
 // as escolhas dos presentes dela, e ela não tem card na aba Integrantes.
 function pedirIntegrantes(idGrupo) {
   return supabase.from('usuario_grupo').select('id_usuario_grupo, id_usuario, usuario(nome), presente(id_presente, escolha_presente(id_escolha_presente))')
-    .eq('id_grupo', idGrupo).order('created_at')
+    .eq('id_grupo', idGrupo).order('created_at').order('id_usuario_grupo')
 }
 
 export default function Grupo() {
@@ -76,9 +76,15 @@ export default function Grupo() {
     navegar('/', { replace: true })
   }
 
-  // Integrante sai do grupo. Sua lista é apagada junto, e um trigger no banco
-  // libera os presentes que ele tinha escolhido aqui (vale também para remoção).
+  // Sair do grupo. Sua lista é apagada junto, e um trigger no banco libera os
+  // presentes que você tinha escolhido aqui (vale também para remoção).
+  // O admin sai por uma função do banco, que passa o grupo para outra pessoa.
   async function sairDoGrupo() {
+    if (grupo.id_admin === usuario.id) {
+      const { error } = await supabase.rpc('admin_sair_do_grupo', { p_id_grupo: Number(idGrupo) })
+      if (error) return mensagemDeErro(error)
+      return navegar('/', { replace: true })
+    }
     const { data, error } = await supabase
       .from('usuario_grupo').delete()
       .eq('id_grupo', idGrupo).eq('id_usuario', usuario.id)
@@ -135,6 +141,8 @@ export default function Grupo() {
   // A lista mostra só os outros (sua lista fica na aba "Minha lista"), mas o número da
   // aba é o total do grupo, com você incluído, igual ao da Home.
   const outros = integrantes.filter((p) => p.id_usuario !== usuario.id)
+  // Vem em ordem de entrada: quem vira admin se o admin sair (mesma regra do banco)
+  const sucessor = outros[0] ?? null
   const acaoTopo = souAdmin ? (
     <BotaoIcone rotulo="Editar grupo" onClick={() => setModal('editar')}>
       <IconeConfig className="h-5 w-5" />
@@ -154,8 +162,10 @@ export default function Grupo() {
           aberto={modal === 'editar'}
           onFechar={() => setModal(null)}
           grupo={grupo}
+          sucessor={sucessor}
           onSalvo={(atualizado) => { setGrupo(atualizado); setModal(null) }}
           onGerenciarIntegrantes={() => setModal('integrantes')}
+          onPedirSaida={() => setModal('sair')}
           onPedirExclusao={() => setModal('excluir')}
         />
       )}
@@ -194,13 +204,17 @@ export default function Grupo() {
       </ModalConfirmar>
       <ModalConfirmar
         aberto={modal === 'sair'}
-        onFechar={() => setModal(null)}
+        onFechar={() => setModal(souAdmin ? 'editar' : null)}
         titulo="Sair do grupo?"
         rotuloConfirmar="Sair do grupo"
         iconeConfirmar={IconeSair}
         onConfirmar={sairDoGrupo}
       >
-        <p>Você vai sair de <strong>{grupo.nome}</strong>. Sua lista de presentes deste grupo será apagada e os presentes que você escolheu voltam a ficar livres.</p>
+        <p>
+          Você vai sair de <strong>{grupo.nome}</strong>.
+          {souAdmin && sucessor && <> <strong>{sucessor.usuario.nome}</strong> passa a ser admin.</>}
+          {' '}Sua lista de presentes deste grupo será apagada e os presentes que você escolheu voltam a ficar livres.
+        </p>
       </ModalConfirmar>
 
       <div className="mt-6">

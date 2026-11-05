@@ -1,7 +1,7 @@
 // Alto contraste, escolhido em Perfil > Aparência e acessibilidade.
 // Sem escolha da pessoa, segue o ajuste do aparelho ("Aumentar contraste" no iPhone).
 // Fica guardado no aparelho e vale também antes do login.
-// As cores estão em src/index.css. O script no <head> do index.html repete a leitura
+// As cores estão em src/index.css. O arquivo public/preferencias-iniciais.js repete a leitura
 // abaixo para a tela não piscar ao abrir: se mudar a chave aqui, mude lá também.
 import { aplicarTema, lerTema } from './tema.js'
 

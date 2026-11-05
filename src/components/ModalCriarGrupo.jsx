@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
+import { useErrosDeCampo } from '../lib/useErrosDeCampo.js'
+import { erroDeNomeDoGrupo } from '../lib/validacao.js'
 import Modal from './Modal.jsx'
 import Campo from './Campo.jsx'
 import Botao from './Botao.jsx'
@@ -14,10 +16,14 @@ export default function ModalCriarGrupo({ aberto, onFechar }) {
   const [descricao, setDescricao] = useState('')
   const [erro, setErro] = useState('')
   const [enviando, setEnviando] = useState(false)
+  const { erros, refDe, mostrar, limpar, limparTodos } = useErrosDeCampo()
 
   async function criar(e) {
     e.preventDefault()
     setErro('')
+    const erroNome = erroDeNomeDoGrupo(nome)
+    if (erroNome) return mostrar({ nome: erroNome })
+    limparTodos()
     setEnviando(true)
     // A função do banco cria o grupo e já coloca você como admin e integrante
     const { data: idGrupo, error } = await supabase.rpc('criar_grupo', {
@@ -31,9 +37,9 @@ export default function ModalCriarGrupo({ aberto, onFechar }) {
 
   return (
     <Modal aberto={aberto} onFechar={onFechar} titulo="Criar grupo novo">
-      <form onSubmit={criar} className="flex flex-col gap-4">
+      <form onSubmit={criar} noValidate className="flex flex-col gap-4">
         <Campo rotulo="Nome do grupo" required maxLength={60} placeholder="Ex.: Natal da família Faria"
-          value={nome} onChange={(e) => setNome(e.target.value)} />
+          ref={refDe('nome')} erro={erros.nome} value={nome} onChange={(e) => { setNome(e.target.value); limpar('nome') }} />
         <Campo rotulo="Descrição" opcional multilinha maxLength={500} placeholder="Data, regras, valor sugerido…"
           value={descricao} onChange={(e) => setDescricao(e.target.value)} />
         <Aviso>{erro}</Aviso>

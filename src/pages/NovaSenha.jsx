@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { supabase } from '../lib/supabase.js'
-import { mensagemDeErro } from '../lib/erros.js'
+import { campoDoErro, mensagemDeErro } from '../lib/erros.js'
+import { useErrosDeCampo } from '../lib/useErrosDeCampo.js'
+import { erroDeRepeticao, erroDeSenhaNova, soErros } from '../lib/validacao.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import TelaAuth, { Aviso } from '../components/TelaAuth.jsx'
 import Campo from '../components/Campo.jsx'
@@ -18,17 +20,21 @@ export default function NovaSenha() {
   const [repetir, setRepetir] = useState('')
   const [erro, setErro] = useState('')
   const [enviando, setEnviando] = useState(false)
+  const { erros, refDe, mostrar, limpar, limparTodos } = useErrosDeCampo()
 
   async function salvar(e) {
     e.preventDefault()
     setErro('')
-    if (senha.length < 8) return setErro('A senha precisa ter pelo menos 8 caracteres.')
-    if (senha !== repetir) return setErro('As senhas não são iguais.')
+    const novos = soErros({ senha: erroDeSenhaNova(senha), repetir: erroDeRepeticao(senha, repetir) })
+    if (Object.keys(novos).length > 0) return mostrar(novos)
+    limparTodos()
 
     setEnviando(true)
     const { error } = await supabase.auth.updateUser({ password: senha })
     setEnviando(false)
-    if (error) return setErro(mensagemDeErro(error))
+    if (error) {
+      return campoDoErro(error) === 'senha' ? mostrar({ senha: mensagemDeErro(error) }) : setErro(mensagemDeErro(error))
+    }
     navegar('/', { replace: true })
   }
 
@@ -47,9 +53,11 @@ export default function NovaSenha() {
 
   return (
     <TelaAuth titulo="Nova senha" subtitulo="Escolha a senha que você vai usar daqui em diante.">
-      <form onSubmit={salvar} className="flex flex-col gap-4">
-        <Campo rotulo="Nova senha" icone={IconeCadeado} type="password" autoComplete="new-password" required value={senha} onChange={(e) => setSenha(e.target.value)} />
-        <Campo rotulo="Repita a nova senha" icone={IconeCadeado} type="password" autoComplete="new-password" required value={repetir} onChange={(e) => setRepetir(e.target.value)} />
+      <form onSubmit={salvar} noValidate className="flex flex-col gap-4">
+        <Campo rotulo="Nova senha" icone={IconeCadeado} type="password" autoComplete="new-password" required value={senha}
+          ref={refDe('senha')} erro={erros.senha} onChange={(e) => { setSenha(e.target.value); limpar('senha') }} />
+        <Campo rotulo="Repita a nova senha" icone={IconeCadeado} type="password" autoComplete="new-password" required value={repetir}
+          ref={refDe('repetir')} erro={erros.repetir} onChange={(e) => { setRepetir(e.target.value); limpar('repetir') }} />
         <Aviso>{erro}</Aviso>
         <Botao type="submit" icone={IconeConfirmar} larguraTotal disabled={enviando}>
           {enviando ? 'Salvando…' : 'Salvar nova senha'}

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
 import { normalizarLink } from '../lib/links.js'
+import { useErrosDeCampo } from '../lib/useErrosDeCampo.js'
 import Modal from './Modal.jsx'
 import Campo from './Campo.jsx'
 import Botao from './Botao.jsx'
@@ -16,17 +17,20 @@ export default function ModalPresente({ presente, idUsuarioGrupo, onFechar, onSa
   const [link, setLink] = useState(presente?.link ?? '')
   const [erro, setErro] = useState('')
   const [enviando, setEnviando] = useState(false)
+  const { erros, refDe, mostrar, limpar, limparTodos } = useErrosDeCampo()
 
   async function salvar(e) {
     e.preventDefault()
     setErro('')
+    if (!nome.trim()) return mostrar({ nome: 'Digite o nome do presente. É assim que as pessoas vão reconhecê-lo.' })
 
     let linkFinal
     try {
       linkFinal = normalizarLink(link)
     } catch (falha) {
-      return setErro(falha.message)
+      return mostrar({ link: falha.message })
     }
+    limparTodos()
 
     const dados = { nome: nome.trim(), descricao: descricao.trim() || null, link: linkFinal }
     const colunas = 'id_presente, nome, descricao, link, created_at'
@@ -43,13 +47,13 @@ export default function ModalPresente({ presente, idUsuarioGrupo, onFechar, onSa
 
   return (
     <Modal aberto onFechar={onFechar} titulo={editando ? 'Editar presente' : 'Novo presente'}>
-      <form onSubmit={salvar} className="flex flex-col gap-4">
+      <form onSubmit={salvar} noValidate className="flex flex-col gap-4">
         <Campo rotulo="Nome" required maxLength={100} placeholder="Ex.: Fone de ouvido sem fio"
-          value={nome} onChange={(e) => setNome(e.target.value)} />
+          ref={refDe('nome')} erro={erros.nome} value={nome} onChange={(e) => { setNome(e.target.value); limpar('nome') }} />
         <Campo rotulo="Descrição" opcional multilinha maxLength={500} placeholder="Cor, tamanho, modelo…"
           value={descricao} onChange={(e) => setDescricao(e.target.value)} />
         <Campo rotulo="Link do presente" opcional inputMode="url" autoComplete="off" maxLength={2000}
-          placeholder="https://" value={link} onChange={(e) => setLink(e.target.value)} />
+          placeholder="https://" ref={refDe('link')} erro={erros.link} value={link} onChange={(e) => { setLink(e.target.value); limpar('link') }} />
         <Aviso>{erro}</Aviso>
         <div className="mt-2 flex flex-wrap justify-end gap-3">
           <Botao variante="secundario" onClick={onFechar}>Cancelar</Botao>

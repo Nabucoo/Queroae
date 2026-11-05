@@ -1,6 +1,6 @@
 // Aparência escolhida em Perfil > Aparência e acessibilidade: claro, escuro ou automático.
 // Fica guardada no aparelho, como o tamanho do texto, e vale também antes do login.
-// As cores do tema escuro estão em src/index.css. O script no <head> do index.html
+// As cores do tema escuro estão em src/index.css. O arquivo public/preferencias-iniciais.js
 // repete a leitura abaixo para a tela não piscar em branco ao abrir: se mudar a
 // chave aqui, mude lá também.
 const CHAVE = 'queroae:tema'

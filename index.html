@@ -14,20 +14,8 @@
     <!-- Descrição (Google) e cor da barra do navegador no celular -->
     <meta name="description" content="O fim do “nossa… que lindo, obrigado”. Listas de presentes do seu grupo, com a surpresa garantida." />
     <meta name="theme-color" content="#2552c4" />
-    <!-- Tema e alto contraste antes da primeira pintura, para a tela não piscar.
-         O restante da lógica está em src/lib/tema.js e src/lib/altoContraste.js. -->
-    <script>
-      try {
-        var tema = localStorage.getItem('queroae:tema')
-        if (tema === 'escuro' || (tema !== 'claro' && matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.dataset.tema = 'escuro'
-        }
-        var contraste = localStorage.getItem('queroae:alto-contraste')
-        if (contraste === 'ligado' || (contraste !== 'desligado' && matchMedia('(prefers-contrast: more)').matches)) {
-          document.documentElement.dataset.contraste = 'alto'
-        }
-      } catch (e) {}
-    </script>
+    <!-- Tema e alto contraste antes da primeira pintura, para a tela não piscar -->
+    <script src="/preferencias-iniciais.js"></script>
     <!-- Prévia do link no WhatsApp, Instagram, LinkedIn... (padrão Open Graph).
          og:image e og:url precisam do endereço COMPLETO do site. -->
     <meta property="og:type" content="website" />

@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
+import { useErrosDeCampo } from '../lib/useErrosDeCampo.js'
 import Modal from './Modal.jsx'
 import Campo from './Campo.jsx'
 import Botao from './Botao.jsx'
@@ -12,15 +13,14 @@ import { IconeChave } from './Icones.jsx'
 // para a mesma janela do link de convite ("Entrar neste grupo?", em ModalConvite).
 export default function ModalEntrarGrupo({ aberto, onFechar }) {
   const navegar = useNavigate()
-  const refCodigo = useRef(null)
   const [codigo, setCodigo] = useState('')
-  const [erroCodigo, setErroCodigo] = useState('') // o código está errado: aparece junto do campo
   const [erro, setErro] = useState('') // outro problema (ex.: sem internet)
   const [enviando, setEnviando] = useState(false)
+  const { erros, refDe, mostrar, limpar: limparErro, limparTodos } = useErrosDeCampo()
 
   function limpar() {
     setCodigo('')
-    setErroCodigo('')
+    limparTodos()
     setErro('')
   }
 
@@ -31,16 +31,15 @@ export default function ModalEntrarGrupo({ aberto, onFechar }) {
 
   async function continuar(e) {
     e.preventDefault()
-    setErroCodigo('')
     setErro('')
+    if (!codigo.trim()) return mostrar({ codigo: 'Digite o código que você recebeu.' })
+    limparTodos()
     setEnviando(true)
     const { data: existe, error } = await supabase.rpc('convite_existe', { p_codigo: codigo })
     setEnviando(false)
     if (error) return setErro(mensagemDeErro(error))
     if (!existe) {
-      setErroCodigo('Não encontramos este código. Confira se digitou certo ou peça um novo para quem convidou você.')
-      refCodigo.current?.focus()
-      return
+      return mostrar({ codigo: 'Não encontramos este código. Confira se digitou certo ou peça um novo para quem convidou você.' })
     }
     limpar()
     onFechar()
@@ -50,9 +49,9 @@ export default function ModalEntrarGrupo({ aberto, onFechar }) {
 
   return (
     <Modal aberto={aberto} onFechar={fechar} titulo="Entrar com código de convite">
-      <form onSubmit={continuar} className="flex flex-col gap-4">
-        <Campo ref={refCodigo} rotulo="Código" required autoComplete="off" spellCheck={false} placeholder="Ex.: 3fa9c1b2"
-          erro={erroCodigo} value={codigo} onChange={(e) => { setCodigo(e.target.value); setErroCodigo('') }} />
+      <form onSubmit={continuar} noValidate className="flex flex-col gap-4">
+        <Campo ref={refDe('codigo')} rotulo="Código" required autoComplete="off" spellCheck={false} placeholder="Ex.: 3fa9c1b2"
+          erro={erros.codigo} value={codigo} onChange={(e) => { setCodigo(e.target.value); limparErro('codigo') }} />
         <p className="text-nota text-suave">Peça o código para quem criou o grupo.</p>
         <Aviso>{erro}</Aviso>
         <div className="mt-2 flex flex-wrap justify-end gap-3">

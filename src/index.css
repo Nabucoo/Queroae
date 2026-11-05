@@ -209,6 +209,10 @@ dialog::backdrop {
   outline: 3px solid var(--color-texto);
   outline-offset: 2px;
 }
+/* A janela recebe o foco ao abrir, mas o contorno dela já é a borda */
+:root[data-contraste="alto"] dialog:focus-visible {
+  outline: none;
+}
 /* Texto em destaque um pouco mais pesado */
 :root[data-contraste="alto"] .font-medium {
   font-weight: 600;

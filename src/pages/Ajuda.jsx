@@ -43,7 +43,7 @@ const GRUPOS = [
       },
       {
         pergunta: 'Como saio de um grupo?',
-        resposta: 'Dentro do grupo, toque no botão vermelho de sair, no topo. Sua lista daquele grupo é apagada, e os presentes que você escolheu voltam a ficar livres. O admin não tem essa opção, mas pode excluir o grupo.',
+        resposta: 'Dentro do grupo, toque no botão vermelho de sair, no topo. Sua lista daquele grupo é apagada, e os presentes que você escolheu voltam a ficar livres. Se você for admin, toque na engrenagem e em Sair do grupo: o grupo passa para quem está nele há mais tempo.',
       },
     ],
   },
@@ -91,7 +91,7 @@ const GRUPOS = [
       },
       {
         pergunta: 'Como apago minha conta?',
-        resposta: <>No Perfil, toque em <Destaque>Apagar minha conta</Destaque>. Não dá para desfazer. Se você for admin, o grupo passa para outra pessoa ou, se só houver você, é excluído. O app mostra o que vai acontecer antes de você confirmar.</>,
+        resposta: <>No Perfil, toque em <Destaque>Apagar minha conta</Destaque>. Não dá para desfazer. Se você for admin, o grupo passa para quem está nele há mais tempo ou, se só houver você, é excluído. O app mostra o que vai acontecer antes de você confirmar.</>,
       },
     ],
   },

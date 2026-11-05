@@ -158,6 +158,8 @@ Recomendações básicas da aula: escolher tamanho de texto/ícones, temas/cores
 - **Unidades:** usar `rem` em medidas da interface (texto, espaços, alturas e cantos). `px` fica só para o que não deve acompanhar o texto: bordas finas, e a animação de confetes, que é calculada a partir de posições na tela.
 - **Componentes base a reaproveitar:** `Botao`, `Campo`, `Modal`, `ModalConfirmar`, `Painel`, `Cartao`/`CartaoVazio`, `Abas`, `Avatar`, `Cabecalho`/`BotaoIcone`, `Icones`, `Aviso` (em `TelaAuth.jsx`), `Esqueleto` (carregamento), `EstadoDeErro` (quando os dados de uma tela não carregam) e `AvisoFlutuante` (confirmação rápida de sucesso).
 - **Mensagens de erro:** sempre por `mensagemDeErro()` em `src/lib/erros.js`.
+- **Formulários:** sempre com `noValidate` e `useErrosDeCampo`, com o erro junto do campo. Regras repetidas ficam em `src/lib/validacao.js`.
+- **Scripts:** a política de segurança em `vercel.json` não permite script embutido na página nem conexão com outros endereços. Um serviço externo novo precisa ser liberado lá.
 - **Regra da surpresa é intocável:** a lista do dono (`MinhaLista`) nunca consulta `escolha_presente`, e o RLS garante isso no banco. Nenhuma melhoria de UX pode mostrar ao dono quem escolheu o quê, nem dar pistas (ex.: contagem de "presentes já escolhidos" na própria lista).
 - **Mudanças no banco:** nova migration em `supabase/migrations/` (o Lucas roda no SQL Editor). Mudanças na Edge Function precisam ser republicadas manualmente.
 - **Jeito de trabalhar (do README):** passos pequenos, cada um explicado antes de ser feito, testado pelo Lucas e salvo em um commit. Não fazer commit sem ele pedir. Mobile first: testar na largura de celular.

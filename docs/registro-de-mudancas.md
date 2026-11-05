@@ -6,6 +6,138 @@ Entradas da mais recente para a mais antiga.
 
 <!-- Novas entradas entram logo abaixo desta linha. -->
 
+## Mudança 37: Janelas abrem sem contorno no botão de fechar
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/components/Modal.jsx`, `src/index.css`
+
+### Problema (antes)
+Ao abrir uma janela, como a do convite, o X aparecia com um contorno, como se fosse uma borda. O navegador coloca o foco no primeiro botão da janela, e, quando a janela abre sozinha, mostra o contorno de foco, o que chamava atenção para fechar, e não para o conteúdo (**H8**).
+
+### O que foi alterado (depois)
+- Ao abrir, o foco vai para a própria janela, e não para o X. Isso vale para todas as janelas do app.
+- O X continua mostrando o contorno quando a pessoa chega nele pelo teclado, agora igual ao dos outros botões.
+
+### Heurísticas e princípios considerados
+- **H8 – Design estético e minimalista:** a abertura da janela não destaca o botão de fechar.
+- **H4 – Consistência e padrões:** o X usa o mesmo contorno de foco dos outros botões.
+- **Acessibilidade:** o contorno de foco não foi removido (WCAG 2.4.7), só deixou de aparecer ao abrir. Com o foco na janela, o leitor de tela anuncia o título dela.
+
+### Trade-offs / heurísticas em tensão
+Nenhum relevante. O Tab continua passando pelos elementos da janela na mesma ordem.
+
+### Regra da surpresa
+A mudança é só no foco das janelas e não mostra nenhuma informação nova.
+
+### Como testar
+1. Abrir um link de convite estando logado: o X aparece sem contorno.
+2. Abrir outras janelas, como "Adicionar grupo" e "Editar nome": o mesmo vale.
+3. Num computador, abrir uma janela e apertar Tab: o X mostra o contorno.
+4. Apertar Esc: a janela fecha.
+5. Conferir no modo escuro e no alto contraste.
+
+## Mudança 36: O admin pode sair do grupo
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `supabase/migrations/20261105000000_admin_sair_do_grupo.sql` (novo), `src/components/ModalEditarGrupo.jsx`, `src/pages/Grupo.jsx`, `src/pages/Ajuda.jsx`
+
+### Problema (antes)
+O admin não podia sair do grupo. As únicas saídas eram excluir o grupo para todos ou apagar a própria conta (**H3**).
+
+### O que foi alterado (depois)
+- A janela "Editar grupo" ganhou **Sair do grupo**, com o aviso de quem vira admin. A confirmação cita o nome dessa pessoa.
+- O grupo passa para o integrante mais antigo, a mesma regra de apagar a conta.
+- Se só houver o admin, a janela explica que, para sair, é preciso excluir o grupo.
+- A troca é feita por uma função do banco, de uma vez só, então o grupo nunca fica sem admin.
+- As perguntas frequentes foram atualizadas.
+
+### Heurísticas e princípios considerados
+- **H3 – Controle e liberdade:** a pessoa pode deixar o grupo sem apagá-lo para todos.
+- **H5 – Prevenção de erros:** a ação tem confirmação, e "Cancelar" volta para a janela anterior.
+- **H1 – Visibilidade do status:** a pessoa sabe antes quem vai assumir o grupo.
+- **H4 – Consistência e padrões:** usa a mesma regra de apagar a conta e a mesma confirmação de quem não é admin.
+
+### Trade-offs / heurísticas em tensão
+- **Escolher o novo admin:** o grupo passa automaticamente para o mais antigo, e a pessoa não escolhe. Foi aceito por ser simples e seguir a regra que já existia.
+- **Novo admin sem aviso:** o app não tem notificações, então a pessoa só percebe ao abrir o grupo.
+
+### Regra da surpresa
+A função não lê nem devolve escolhas. O teste confirmou que o novo admin continua sem ver quem escolheu os presentes dele.
+
+### Como testar
+1. Rodar a migration no Supabase antes de publicar.
+2. Como admin de um grupo com outras pessoas, abrir a engrenagem: aparece "O grupo passa para" e o nome. Tocar em "Sair do grupo" e confirmar.
+3. Com a conta da pessoa citada, abrir o grupo: ela aparece como admin.
+4. Conferir que os presentes de quem saiu sumiram e que os escolhidos por essa pessoa voltaram a ficar livres.
+5. Num grupo só com você, abrir a engrenagem: a janela explica que é preciso excluir o grupo.
+
+## Mudança 35: Cabeçalhos de segurança no site
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `vercel.json`, `public/preferencias-iniciais.js` (novo), `index.html`, `src/lib/tema.js`, `src/lib/altoContraste.js`, `docs/heuristicas-ihc.md`
+
+### Problema (antes)
+O site só enviava o cabeçalho HSTS. Ele podia ser aberto dentro de outra página para enganar cliques e não tinha uma política limitando de onde vêm scripts e conexões.
+
+### O que foi alterado (depois)
+- **Content-Security-Policy:** só permite scripts do próprio site, estilos do site e do Google Fonts, fontes do Google e conexão com o Supabase do projeto.
+- **`frame-ancestors 'none'` e X-Frame-Options:** o site não pode ser aberto dentro de outra página.
+- **X-Content-Type-Options, Referrer-Policy e Permissions-Policy:** evitam interpretar arquivos no tipo errado, limitam o endereço enviado a outros sites e desligam câmera, microfone e localização, que o app não usa.
+- O script que aplica o tema antes da primeira pintura saiu do `index.html` e foi para um arquivo, porque a política não permite scripts embutidos.
+
+### Heurísticas e princípios considerados
+- **Segurança:** se algum dia um texto malicioso escapar para a página, a política impede que ele rode como script. Isso soma com as proteções que já existiam.
+- **Sem efeito visual:** o uso do app não muda.
+
+### Trade-offs / heurísticas em tensão
+- **Serviço externo novo:** qualquer serviço novo, como o VLibras, precisa ser liberado em `vercel.json`, senão fica bloqueado.
+- **Só em produção:** os cabeçalhos vêm da Vercel, então não valem em `npm run dev`.
+
+### Regra da surpresa
+A mudança não envolve dados de presentes nem de escolhas.
+
+### Como testar
+1. Depois de publicar, abrir o site e conferir na tela e no console que nada foi bloqueado.
+2. Rodar `curl -I https://queroae.vercel.app/` e conferir os cabeçalhos.
+3. Entrar na conta, abrir um grupo e usar o app normalmente, conferindo que nada deixou de funcionar.
+4. Conferir o tema escuro e o alto contraste ao abrir o app.
+
+## Mudança 34: Erros junto do campo em todos os formulários
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/lib/useErrosDeCampo.js` e `src/lib/validacao.js` (novos), `src/pages/Login.jsx`, `src/pages/EsqueciSenha.jsx`, `src/pages/NovaSenha.jsx`, `src/pages/Cadastro.jsx`, `src/pages/Perfil.jsx`, `src/components/ModalEntrarGrupo.jsx`, `src/components/ModalCriarGrupo.jsx`, `src/components/ModalEditarGrupo.jsx`, `src/components/ModalPresente.jsx`, `docs/heuristicas-ihc.md`
+
+### Problema (antes)
+Só o cadastro mostrava os erros junto do campo. Os outros formulários usavam o balão do navegador, com outro estilo e sem seguir o tema, o tamanho do texto ou o alto contraste (**H4**, **H9**). Um nome só com espaços também passava pela validação do navegador.
+
+### O que foi alterado (depois)
+- Todos os formulários mostram o erro embaixo do campo, levam o foco ao primeiro erro e apagam a mensagem quando a pessoa digita.
+- As mensagens dizem o problema e o que fazer, como "Digite o nome do presente. É assim que as pessoas vão reconhecê-lo."
+- Um link inválido aparece no campo do link, e não no aviso geral.
+- Nomes só com espaços são recusados.
+- No Perfil, "Salvar" fica ligado quando o nome muda, mesmo vazio, para o app poder explicar o erro.
+- `useErrosDeCampo` e `validacao.js` reúnem o comportamento e as regras, usados também pelo cadastro.
+
+### Heurísticas e princípios considerados
+- **H9 – Reconhecer e recuperar-se de erros:** a mensagem fica perto do problema, diz o que fazer e não usa códigos.
+- **H4 – Consistência e padrões:** todos os formulários se comportam igual, com a mesma peça.
+- **H5 – Prevenção de erros:** os dados são conferidos antes do envio.
+- **Acessibilidade:** o campo com erro é marcado com `aria-invalid` e ligado à mensagem, e o foco vai até ele. A mensagem acompanha o tamanho do texto, o tema e o alto contraste.
+
+### Trade-offs / heurísticas em tensão
+- **Senha errada no login:** continua no aviso geral, porque não dá para dizer se o erro é do e-mail ou da senha, e essa informação ajudaria quem tenta invadir uma conta.
+- **Validação só ao enviar:** o erro aparece ao tentar enviar, e não durante a digitação, para não interromper a pessoa.
+
+### Regra da surpresa
+A mudança é só nos formulários e não mostra nenhuma informação sobre escolhas.
+
+### Como testar
+1. No login, tocar em "Entrar" com os campos vazios: aparecem as duas mensagens, e o foco vai para o e-mail.
+2. Digitar no campo: a mensagem dele some.
+3. Repetir em "Esqueceu a senha?", nova senha, criar grupo, editar grupo, código de convite, novo presente e editar nome.
+4. Criar um grupo só com espaços no nome: o app recusa.
+5. Em um presente, digitar `javascript:alert(1)` no link: o erro aparece nesse campo.
+
 ## Mudança 33: Opção de alto contraste em preto e branco
 
 **Data:** 2026-11-05
