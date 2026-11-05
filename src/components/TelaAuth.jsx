@@ -33,7 +33,7 @@ export function Aviso({ tipo = 'erro', children }) {
   if (!children) return null
   const cor = tipo === 'erro' ? 'bg-negativo-claro text-negativo' : 'bg-painel text-texto'
   return (
-    <p role={tipo === 'erro' ? 'alert' : 'status'} className={`rounded-campo px-3 py-2 text-apoio ${cor}`}>
+    <p role={tipo === 'erro' ? 'alert' : 'status'} className={`rounded-campo px-3 py-2 text-apoio contraste:border-2 contraste:border-current ${cor}`}>
       {children}
     </p>
   )

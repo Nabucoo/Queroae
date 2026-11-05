@@ -18,7 +18,7 @@ export default function AvisoSemInternet() {
   if (conectado) return null
 
   return (
-    <div role="status" className="sticky top-0 z-10 bg-ativo">
+    <div role="status" className="sticky top-0 z-10 bg-ativo contraste:border-b-2 contraste:border-texto">
       <p className="mx-auto flex max-w-2xl items-center gap-2 px-4 py-2 text-apoio font-medium">
         <IconeSemInternet className="h-4 w-4 shrink-0" />
         Você está sem internet

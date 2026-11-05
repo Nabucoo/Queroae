@@ -6,6 +6,7 @@ import Painel from './Painel.jsx'
 import Avatar from './Avatar.jsx'
 import Botao from './Botao.jsx'
 import { Aviso } from './TelaAuth.jsx'
+import Cartao from './Cartao.jsx'
 
 // Só o admin vê este bloco: pedidos para entrar no grupo, com Aprovar e Recusar.
 // Fica vazio (e some) quando não há pedidos. Só mostra nome e e-mail de quem
@@ -61,7 +62,7 @@ export default function PedidosEntrada({ idGrupo, onAprovado }) {
             {pedidos.map((p) => {
               const esteOcupado = ocupado?.id === p.id_pedido
               return (
-                <li key={p.id_pedido} className="flex flex-col gap-3 rounded-2xl border border-borda bg-elevado p-4">
+                <Cartao as="li" key={p.id_pedido} className="flex flex-col gap-3 p-4">
                   <div className="flex min-w-0 items-center gap-3">
                     <Avatar nome={p.nome} id={p.id_usuario} tamanho="p" />
                     <div className="min-w-0">
@@ -77,7 +78,7 @@ export default function PedidosEntrada({ idGrupo, onAprovado }) {
                       {esteOcupado && ocupado.acao === 'aprovar' ? 'Aprovando…' : 'Aprovar'}
                     </Botao>
                   </div>
-                </li>
+                </Cartao>
               )
             })}
           </ul>

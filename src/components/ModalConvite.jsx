@@ -137,7 +137,7 @@ function Rostos({ nomes, total }) {
         </span>
       ))}
       {restantes > 0 && (
-        <span className="num -ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-ativo text-selo font-semibold text-suave ring-2 ring-janela">
+        <span className="num -ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-ativo contraste:border-2 contraste:border-texto text-selo font-semibold text-suave ring-2 ring-janela">
           +{restantes}
         </span>
       )}

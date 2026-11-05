@@ -30,7 +30,7 @@ export default function Campo({ rotulo, erro, multilinha = false, opcional = fal
           aria-invalid={erro ? true : undefined}
           aria-describedby={erro ? idErro : undefined}
           className={[
-            'w-full rounded-campo border bg-fundo text-campo text-texto',
+            'w-full rounded-campo border bg-fundo text-campo text-texto contraste:border-2',
             'placeholder:text-suave focus:outline-2 focus:outline-offset-0 focus:outline-destaque',
             multilinha ? 'min-h-24 py-2' : 'min-h-10 py-2',
             temIcone ? 'pl-9' : 'pl-3', // espaço para o ícone da esquerda

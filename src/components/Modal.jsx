@@ -22,7 +22,7 @@ export default function Modal({ aberto, onFechar, titulo, children }) {
       // Clicar no fundo escuro (fora da caixa) também fecha
       onClick={(e) => e.target === ref.current && onFechar()}
       className={[
-        'm-auto w-[calc(100%-2rem)] max-w-md rounded-cartao bg-janela p-0 text-texto',
+        'm-auto w-[calc(100%-2rem)] max-w-md rounded-cartao bg-janela p-0 text-texto contraste:border-2 contraste:border-texto',
         'shadow-[0_1rem_3rem_-0.5rem_rgba(15,15,15,0.16)]', // sombra ok: o modal flutua (taste-skill-ignore)
       ].join(' ')}
     >

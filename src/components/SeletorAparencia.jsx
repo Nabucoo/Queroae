@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { TEMAS, guardarTema, lerTema } from '../lib/tema.js'
+import Cartao from './Cartao.jsx'
 import { IconeConfirmar } from './Icones.jsx'
 
 // Opções de rádio, como o tamanho do texto. As opções descem de linha quando o
@@ -19,14 +20,13 @@ export default function SeletorAparencia() {
         {TEMAS.map((tema) => {
           const escolhido = tema.id === atual
           return (
-            <label
-              key={tema.id}
-              className={[
-                'flex min-h-11 grow cursor-pointer items-center justify-center gap-2 rounded-2xl border px-3 py-2',
-                'has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-destaque',
-                escolhido ? 'border-primario bg-primario text-fundo' : 'border-borda bg-elevado hover:border-controle',
-              ].join(' ')}
-            >
+            <Cartao
+                key={tema.id}
+                as="label"
+                interativo
+                selecionado={escolhido}
+                className="flex min-h-11 grow cursor-pointer items-center justify-center gap-2 px-3 py-2"
+              >
               <input
                 type="radio"
                 name="aparencia"
@@ -36,7 +36,7 @@ export default function SeletorAparencia() {
               />
               <span className="text-apoio">{tema.rotulo}</span>
               {escolhido && <IconeConfirmar className="h-4 w-4 shrink-0" />}
-            </label>
+            </Cartao>
           )
         })}
       </div>

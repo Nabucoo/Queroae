@@ -9,6 +9,7 @@ import ModalPresente from './ModalPresente.jsx'
 import ModalConfirmar from './ModalConfirmar.jsx'
 import Botao from './Botao.jsx'
 import { IconeLapis, IconeLixeira, IconeMais } from './Icones.jsx'
+import { CartaoVazio } from './Cartao.jsx'
 
 // A aba "Minha lista de presentes" de um grupo.
 // REGRA DA SURPRESA: aqui nunca consultamos escolha_presente,
@@ -68,9 +69,9 @@ export default function MinhaLista({ idUsuarioGrupo }) {
   return (
     <div className="flex flex-col gap-3">
       {presentes.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-apoio text-suave">
+        <CartaoVazio>
           Sua lista está vazia. Adicione o que você gostaria de ganhar; os outros integrantes vão ver.
-        </p>
+        </CartaoVazio>
       ) : (
         <ul className="flex flex-col gap-2">
           {presentes.map((p) => (

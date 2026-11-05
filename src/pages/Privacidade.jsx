@@ -76,7 +76,7 @@ export default function Privacidade() {
             <li><strong>Google</strong>: envio dos e-mails (Gmail) e fontes do site (Google Fonts).</li>
           </ul>
           <p>
-            Para manter você conectado e lembrar a aparência e o tamanho do texto, o app guarda sua sessão e essas escolhas no próprio navegador. Não usamos cookies de
+            Para manter você conectado e lembrar a aparência, o contraste e o tamanho do texto, o app guarda sua sessão e essas escolhas no próprio navegador. Não usamos cookies de
             rastreamento nem ferramentas de propaganda.
           </p>
         </Secao>
@@ -97,13 +97,13 @@ export default function Privacidade() {
           <Secao titulo="Contato">
             <p>
               Dúvidas sobre seus dados? Escreva para{' '}
-              <a href={`mailto:${EMAIL_CONTATO}`} className="font-medium text-destaque hover:underline">{EMAIL_CONTATO}</a>.
+              <a href={`mailto:${EMAIL_CONTATO}`} className="link">{EMAIL_CONTATO}</a>.
             </p>
           </Secao>
         )}
 
         <p className="mt-10 text-corpo">
-          <Link to={voltar.para} className="font-medium text-destaque hover:underline">{voltar.rotulo}</Link>
+          <Link to={voltar.para} className="link">{voltar.rotulo}</Link>
         </p>
       </main>
     </div>

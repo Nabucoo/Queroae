@@ -26,7 +26,7 @@ export default function EsqueciSenha() {
     else setEnviado(true)
   }
 
-  const voltar = <Link to="/login" className="font-medium text-destaque hover:underline">Voltar para a tela de entrada</Link>
+  const voltar = <Link to="/login" className="link">Voltar para a tela de entrada</Link>
 
   if (enviado) {
     return (

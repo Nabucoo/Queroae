@@ -9,8 +9,10 @@ const QUANTIDADE = 26
 const aleatorio = (min, max) => min + Math.random() * (max - min)
 
 export function soltarConfetes(elemento) {
-  // Respeita quem pediu "reduzir movimento" nas configurações do sistema
-  if (!elemento || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return []
+  // Respeita quem pediu "reduzir movimento" no sistema ou ligou o alto contraste no app
+  const semEfeitos = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    || document.documentElement.dataset.contraste === 'alto'
+  if (!elemento || semEfeitos) return []
 
   // Ponto de partida: o centro do botão
   const caixa = elemento.getBoundingClientRect()

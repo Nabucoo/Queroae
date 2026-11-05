@@ -39,9 +39,9 @@ export function SimboloCompleto({ className }) {
         <path d="M33 12.5C38 4 47 4 46.5 9.5C46 14 38 13.5 33 12.5Z"/>
       </g>
       <rect x="30.5" y="9.5" width="5" height="6" rx="2" className="fill-laco"/>
-      <circle cx="55" cy="6" r="2.4" fill="#e0a526"/>
-      <rect x="57.5" y="11" width="3.5" height="6" rx="1" fill="#3fb39a" transform="rotate(-28 59.25 14)"/>
-      <circle cx="11" cy="7" r="2" fill="#e06a9e"/>
+      <circle cx="55" cy="6" r="2.4" fill="#e0a526" className="contraste:hidden"/>
+      <rect x="57.5" y="11" width="3.5" height="6" rx="1" fill="#3fb39a" transform="rotate(-28 59.25 14)" className="contraste:hidden"/>
+      <circle cx="11" cy="7" r="2" fill="#e06a9e" className="contraste:hidden"/>
     </svg>
   )
 }

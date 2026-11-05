@@ -6,6 +6,99 @@ Entradas da mais recente para a mais antiga.
 
 <!-- Novas entradas entram logo abaixo desta linha. -->
 
+## Mudança 33: Opção de alto contraste em preto e branco
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/lib/altoContraste.js` e `src/components/SeletorAltoContraste.jsx` (novos), `src/index.css`, `index.html`, `src/main.jsx`, `src/lib/tema.js`, `src/lib/confete.js`, `scripts/gerar-paleta.py`, `docs/paleta-de-cores.html`, `docs/heuristicas-ihc.md`, `src/pages/Perfil.jsx`, `src/pages/Ajuda.jsx`, `src/pages/Privacidade.jsx` e os componentes de interface: `Botao`, `Cartao`, `Painel`, `Abas`, `Campo`, `Modal`, `Avatar`, `Logo`, `Esqueleto`, `AvisoFlutuante`, `AvisoSemInternet`, `EstadoDeErro`, `TelaAuth`, `CartaoIntegrante`, `ListaDoIntegrante`, `ModalConvite`, além das telas com links, que passaram a usar a classe `link`.
+
+### Problema (antes)
+O app não oferecia alto contraste, recomendado na aula para quem tem baixa visão. Os tons de cinza, as sombras e as transparências também podiam dificultar a leitura para quem precisa de limites bem marcados.
+
+### O que foi alterado (depois)
+- **Nova opção "Alto contraste"** em Perfil > Aparência e acessibilidade, com um interruptor. Ela vale nos temas claro e escuro, fica salva no aparelho e já vale antes do login.
+- **Ajuste do aparelho:** sem escolha da pessoa, o app segue o pedido de mais contraste do sistema ("Aumentar contraste" no iPhone).
+- **Cores e fundos sólidos:** preto e branco, sem cinzas. Transparências foram removidas, inclusive nos botões desligados, que ficam tracejados. A exceção é o véu atrás das janelas, escurecido em 70%.
+- **Bordas:** 2 px em painéis, cartões, botões, campos, janelas, avatares e avisos, e 1 px nos selos. A aba ativa tem traço de 4 px, e o foco, contorno de 3 px afastado do elemento.
+- **Menos elementos visuais:** sem sombras, animações, transições nem confetes. Os confetes decorativos da logo da capa também somem.
+- **Links:** ficam sempre sublinhados e mais pesados, com contraste de 11,3:1 no claro e 13,6:1 no escuro.
+- **Paleta:** `docs/paleta-de-cores.html` mostra também as cores do alto contraste, e o script exige 7:1 nos textos desse modo.
+- **Classe `link`:** os 13 links do app passaram a usar a mesma classe, e a variante `contraste:` padroniza os contornos nos componentes.
+
+**Decisão de projeto:** a pesquisa mostrou que as diretrizes não exigem preto e branco puros. Apple e Microsoft pedem mais diferença visual e contraste alto, o que permite manter cinzas com 7:1 ou mais. Foi apresentada uma versão com cinza, e o Lucas escolheu o preto e branco. A decisão é legítima, porque a opção é voluntária, passa de todos os mínimos e pode ser desligada.
+
+### Heurísticas e princípios considerados
+- **Acessibilidade:** os textos passam de 7:1, nível mais rigoroso da WCAG (1.4.6), e os contornos passam de 3:1 (1.4.11). A aba e os links não dependem só da cor, e o foco fica mais visível (WCAG 2.4.7). O interruptor usa `role="switch"`, que o leitor de tela anuncia como ligado ou desligado.
+- **Facilidade de personalizar (Dix):** a pessoa decide, e o app também se adapta ao ajuste do aparelho.
+- **H1 – Visibilidade do status:** a mudança aparece na hora, e a posição do interruptor mostra o estado.
+- **H3 – Controle e liberdade:** dá para desligar a qualquer momento, e a escolha vale acima do ajuste do aparelho.
+- **H4 – Consistência e padrões:** as regras ficam nos componentes e nas cores centrais, e o resultado é o mesmo em todas as telas.
+
+### Trade-offs / heurísticas em tensão
+- **Preto e branco × sensibilidade à luz:** contraste muito alto pode incomodar pessoas com sensibilidade à luz, como aponta o rascunho da W3C sobre baixa visão. Foi aceito porque é uma opção, e o modo normal segue disponível. A evidência sobre preto puro causar brilho ou cansaço é fraca, então não foi tratada como fato.
+- **Hierarquia × contraste:** sem cinzas, painéis e cartões têm a mesma cor e se separam só pela borda, e o texto secundário perde a diferença de tom. A hierarquia fica por conta do tamanho e do peso da letra.
+- **Peso visual (H8):** há mais linhas na tela. Foi aceito porque só aparece para quem ligar a opção.
+- **Véu translúcido × cores sólidas:** primeiro o véu foi totalmente opaco, mas a pessoa perdia de vista a tela anterior, e parecia que tinha trocado de página (**H1**, **H6**). O Lucas escolheu um véu preto de 70%: a tela de trás continua visível, e o que se lê segue sólido. No tema escuro, a borda de 2 px é o que separa a janela do fundo.
+
+### Regra da surpresa
+A mudança é só de apresentação. Nenhuma consulta mudou, e nenhuma informação nova aparece.
+
+### Como testar
+1. Em Perfil > Aparência e acessibilidade, ligar **Alto contraste**: o app inteiro muda na hora. Recarregar: a escolha continua.
+2. Trocar entre Claro e Escuro: os dois ficam em preto e branco.
+3. Percorrer Home, grupo, listas, Perfil, ajuda e janelas, conferindo contornos e fundos sólidos.
+4. Conferir que os links estão sublinhados e que não há sombras nem animações. Marcar "Vou comprar": não há confetes.
+5. Abrir uma janela com "Salvar" desligado: ele fica tracejado, e a tela de trás continua visível, bem escurecida.
+6. Num computador, usar Tab: o foco tem um contorno de 3 px.
+7. Desligar a opção: tudo volta ao normal.
+8. No iPhone, sem ter usado a opção, ligar **Ajustes > Acessibilidade > Tela e Tamanho do Texto > Aumentar Contraste** e abrir o app: o alto contraste liga sozinho.
+9. Rodar `python3 scripts/gerar-paleta.py`: termina sem avisos.
+
+## Mudança 32: Mais contraste nos cartões, com um único padrão de cartão
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/components/Cartao.jsx` (novo), `scripts/gerar-paleta.py` (novo), `docs/paleta-de-cores.html` (novo), `src/index.css`, `docs/heuristicas-ihc.md` e todas as telas e componentes com cartões: `src/pages/Home.jsx`, `src/pages/Grupo.jsx`, `src/pages/Ajuda.jsx`, `src/components/CartaoPresente.jsx`, `src/components/CartaoIntegrante.jsx`, `src/components/PedidosEntrada.jsx`, `src/components/SeletorAparencia.jsx`, `src/components/SeletorTamanhoTexto.jsx`, `src/components/Esqueleto.jsx`, `src/components/MinhaLista.jsx`, `src/components/ListaDoIntegrante.jsx`, `src/components/ModalIntegrantes.jsx`
+
+### Problema (antes)
+O professor avaliou o design e apontou que os cartões não tinham contraste suficiente. A medição confirmou: no tema claro, o cartão branco tinha 1,05:1 com o painel, e a borda, 1,14:1. O recomendado para o contorno de elementos da interface é 3:1 (WCAG 1.4.11).
+
+O mesmo cartão também estava escrito à mão em vários arquivos, então cada ajuste precisava ser repetido em cada lugar (**H4**). O projeto não tinha um documento com a paleta de cores.
+
+### O que foi alterado (depois)
+- **Tema claro:** o painel passou de `#f9f9f9` para `#eeeeeb`, e o contorno dos cartões, para `#767674`. Os botões secundários passaram para `#e2e2df`, para não sumirem no painel novo.
+- **Tema escuro:** o painel continuou igual, o cartão passou para `#2e2e2c` e o contorno, para `#858581`. Os botões secundários passaram para `#3c3c3a`.
+- **Novo componente `Cartao`:** reúne a aparência de todos os cartões, com as opções `interativo`, `tracejado` e `selecionado`. `CartaoVazio` padroniza as mensagens de lista vazia.
+- **`Painel` reaproveitado:** o bloco de convite do grupo e o de contato da ajuda deixaram de repetir o estilo do painel.
+- **Paleta de cores:** `docs/paleta-de-cores.html` mostra todas as cores nos dois temas, com o uso de cada uma e o contraste medido. Ela é gerada a partir de `src/index.css`, por `scripts/gerar-paleta.py`, então não fica desatualizada.
+
+A proposta foi apresentada em mockups com dez ideias, e o Lucas escolheu a opção C, painel e borda.
+
+| Contraste do contorno com o painel | Antes | Depois |
+|---|---|---|
+| Tema claro | 1,14:1 | 3,92:1 |
+| Tema escuro | 1,37:1 | 4,60:1 |
+
+### Heurísticas e princípios considerados
+- **Acessibilidade:** o contorno dos cartões passa dos 3:1 nos dois temas, e os textos seguem acima de 4,5:1. O limite do cartão fica mais fácil de perceber para quem tem baixa visão ou usa a tela com muita luz.
+- **H4 – Consistência e padrões:** todos os cartões têm a mesma aparência e o mesmo comportamento, porque vêm de um único componente.
+- **Facilidade de generalizar (Dix):** o que a pessoa aprende sobre um cartão vale para os outros, e o código segue a mesma ideia: uma mudança no componente vale para o app inteiro.
+- **H8 – Design estético e minimalista:** a hierarquia entre página, painel e cartão fica mais clara.
+
+### Trade-offs / heurísticas em tensão
+- **Contraste × leveza (H8):** com contornos mais escuros, as telas com muitos cartões, como as perguntas frequentes, ficam mais marcadas. Foi aceito para atender ao feedback e à recomendação de 3:1.
+- **Lista vazia:** a mensagem passou a ter fundo de cartão e contorno mais forte, para seguir o padrão. Ela continua tracejada, para indicar que não é um item da lista.
+- **Borda dos campos:** não mudou nesta etapa e segue abaixo de 3:1. Ela está no plano de acessibilidade.
+
+### Regra da surpresa
+A mudança é só visual. Nenhuma consulta mudou, e nenhuma informação nova aparece.
+
+### Como testar
+1. Abrir Home, grupo, Perfil e perguntas frequentes nos temas claro e escuro: os cartões têm o mesmo contorno e se separam do painel.
+2. Num computador, passar o mouse sobre um grupo ou uma opção do Perfil: o contorno escurece.
+3. Conferir a opção selecionada no Perfil: continua preenchida.
+4. Conferir um pedido aguardando e uma lista vazia: seguem tracejados.
+5. Abrir `docs/paleta-de-cores.html` no navegador e conferir as cores e o contraste.
+6. Rodar `python3 scripts/gerar-paleta.py`: termina sem avisos.
+
 ## Mudança 31: Opção selecionada com a cor principal
 
 **Data:** 2026-11-05

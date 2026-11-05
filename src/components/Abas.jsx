@@ -4,7 +4,7 @@
 // abas: [{ id: 'integrantes', rotulo: 'Integrantes' }, ...]
 export default function Abas({ abas, ativa, onTrocar }) {
   return (
-    <div role="tablist" className="flex flex-wrap gap-x-6 border-b border-borda">
+    <div role="tablist" className="flex flex-wrap gap-x-6 border-b border-borda contraste:border-b-2">
       {abas.map((aba) => {
         const selecionada = aba.id === ativa
         return (
@@ -15,7 +15,7 @@ export default function Abas({ abas, ativa, onTrocar }) {
             aria-selected={selecionada}
             onClick={() => onTrocar(aba.id)}
             className={[
-              '-mb-px shrink-0 border-b-2 py-3 text-apoio transition-colors',
+              '-mb-px shrink-0 border-b-2 py-3 text-apoio transition-colors contraste:-mb-0.5 contraste:border-b-4',
               'focus-visible:outline-2 focus-visible:outline-destaque',
               selecionada
                 ? 'border-texto font-medium text-texto'

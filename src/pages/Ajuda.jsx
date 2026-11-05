@@ -2,6 +2,8 @@ import { Link, useLocation } from 'react-router'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { EMAIL_CONTATO } from '../lib/contato.js'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
+import Cartao from '../components/Cartao.jsx'
+import Painel from '../components/Painel.jsx'
 import { IconeSeta, IconeVoltar } from '../components/Icones.jsx'
 
 // De onde se pode abrir a ajuda (os botões mandam state={{ de: '...' }}).
@@ -84,7 +86,7 @@ const GRUPOS = [
         resposta: <>Na tela de entrar, toque em <Destaque>Esqueceu a senha?</Destaque>.</>,
       },
       {
-        pergunta: 'Como mudo o tamanho do texto ou a aparência?',
+        pergunta: 'Como mudo o tamanho do texto, a aparência ou o contraste?',
         resposta: <>No Perfil, em <Destaque>Aparência e acessibilidade</Destaque>. A mudança vale na hora e fica salva no aparelho.</>,
       },
       {
@@ -126,13 +128,13 @@ export default function Ajuda() {
           </section>
         ))}
 
-        <section className="mt-6 rounded-cartao bg-painel p-5">
+        <Painel className="mt-6">
           <h2 className="text-corpo font-semibold">Não achou sua resposta?</h2>
           <p className="mt-1 text-apoio text-suave">
             Escreva para a gente:{' '}
-            <a href={`mailto:${EMAIL_CONTATO}`} className="font-medium break-all text-destaque hover:underline">{EMAIL_CONTATO}</a>
+            <a href={`mailto:${EMAIL_CONTATO}`} className="break-all link">{EMAIL_CONTATO}</a>
           </p>
-        </section>
+        </Painel>
       </main>
     </div>
   )
@@ -141,13 +143,13 @@ export default function Ajuda() {
 // <details> é o abre e fecha do próprio navegador: já funciona com teclado e leitor de tela
 function Pergunta({ pergunta, resposta, aberta = false }) {
   return (
-    <details open={aberta} className="group rounded-2xl border border-borda bg-elevado">
+    <Cartao as="details" open={aberta} className="group">
       <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 rounded-2xl px-4 py-3 font-medium focus-visible:outline-2 focus-visible:outline-destaque [&::-webkit-details-marker]:hidden">
         {pergunta}
         <IconeSeta className="h-4 w-4 shrink-0 text-suave transition-transform group-open:rotate-90" />
       </summary>
       <p className="border-t border-linha px-4 pt-3 pb-4 text-apoio text-suave">{resposta}</p>
-    </details>
+    </Cartao>
   )
 }
 

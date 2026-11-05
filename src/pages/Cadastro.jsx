@@ -89,7 +89,7 @@ export default function Cadastro() {
         subtitulo={convite
           ? `Enviamos um link de confirmação para ${email}. Clique nele para continuar seu convite. Se o app pedir, entre com sua senha.`
           : `Enviamos um link de confirmação para ${email}. Clique nele e depois entre com sua senha.`}
-        rodape={<Link to="/login" className="font-medium text-destaque hover:underline">Voltar para a tela de entrada</Link>}
+        rodape={<Link to="/login" className="link">Voltar para a tela de entrada</Link>}
       />
     )
   }
@@ -101,9 +101,9 @@ export default function Cadastro() {
       rodape={
         <>
           <p className="text-suave">
-            Já tem conta? <Link to="/login" className="font-medium text-destaque hover:underline">Entrar</Link>
+            Já tem conta? <Link to="/login" className="link">Entrar</Link>
           </p>
-          <Link to="/privacidade" state={{ de: 'cadastro' }} onClick={() => guardarRascunhoCadastro({ nome, email, senha, confirmar })} className="text-nota font-medium text-destaque hover:underline">Política de privacidade</Link>
+          <Link to="/privacidade" state={{ de: 'cadastro' }} onClick={() => guardarRascunhoCadastro({ nome, email, senha, confirmar })} className="text-nota link">Política de privacidade</Link>
         </>
       }
     >

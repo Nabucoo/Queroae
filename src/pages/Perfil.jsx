@@ -11,6 +11,7 @@ import Botao from '../components/Botao.jsx'
 import Modal from '../components/Modal.jsx'
 import ModalConfirmar from '../components/ModalConfirmar.jsx'
 import Painel from '../components/Painel.jsx'
+import SeletorAltoContraste from '../components/SeletorAltoContraste.jsx'
 import SeletorAparencia from '../components/SeletorAparencia.jsx'
 import SeletorTamanhoTexto from '../components/SeletorTamanhoTexto.jsx'
 import { Aviso } from '../components/TelaAuth.jsx'
@@ -60,6 +61,7 @@ export default function Perfil() {
           <h2 className="text-corpo font-semibold">Aparência e acessibilidade</h2>
           <p className="mt-1 text-apoio text-suave">Muda na hora e fica salvo neste aparelho.</p>
           <SeletorAparencia />
+          <SeletorAltoContraste />
           <SeletorTamanhoTexto />
         </Painel>
 
@@ -183,12 +185,12 @@ function ApagarConta({ idUsuario, onApagada }) {
 // Mostra, para cada grupo em que sou admin, para quem ele passa (ou se será excluído)
 function ResumoGruposAdmin({ grupos }) {
   return (
-    <div className="mt-4 rounded-campo bg-painel px-4 py-3 text-corpo">
+    <div className="mt-4 rounded-campo bg-painel px-4 py-3 text-corpo contraste:border-2 contraste:border-texto">
       <p>Você é admin destes grupos. Ao apagar sua conta:</p>
       <ul className="mt-2 flex flex-col gap-1">
         {grupos.map((g) => (
           <li key={g.id_grupo}>
-            <Link to={`/grupo/${g.id_grupo}`} className="font-medium hover:underline">{g.nome}</Link>
+            <Link to={`/grupo/${g.id_grupo}`} className="font-medium hover:underline contraste:underline">{g.nome}</Link>
             {g.sucessor ? (
               <span className="text-suave"> → passa para {g.sucessor.usuario.nome}</span>
             ) : (

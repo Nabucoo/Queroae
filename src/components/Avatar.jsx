@@ -36,7 +36,7 @@ export default function Avatar({ nome, id, tamanho = 'm' }) {
     <span
       aria-hidden="true"
       className={[
-        'inline-flex shrink-0 items-center justify-center rounded-full font-semibold',
+        'inline-flex shrink-0 items-center justify-center rounded-full font-semibold contraste:border-2 contraste:border-texto',
         tamanhos[tamanho],
         confetes[indiceDaCor(id ?? nome)],
       ].join(' ')}

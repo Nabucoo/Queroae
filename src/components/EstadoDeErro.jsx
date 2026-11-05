@@ -18,7 +18,7 @@ export default function EstadoDeErro({ falha, acao, onTentar }) {
 
   return (
     <div role="alert" className="flex flex-col items-start gap-2">
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ativo">
+      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ativo contraste:border-2 contraste:border-texto">
         <Icone className="h-4 w-4" />
       </span>
       <p className="font-semibold">{conexao ? 'Sem conexão' : 'Não foi possível carregar'}</p>

@@ -31,7 +31,9 @@ export function aplicarTema(id) {
   const escuro = id === 'escuro' || (id === 'automatico' && window.matchMedia(ESCURO_NO_SISTEMA).matches)
   if (escuro) document.documentElement.dataset.tema = 'escuro'
   else delete document.documentElement.dataset.tema
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', escuro ? COR_DA_BARRA.escuro : COR_DA_BARRA.claro)
+  const altoContraste = document.documentElement.dataset.contraste === 'alto'
+  const cor = altoContraste ? (escuro ? '#000000' : '#ffffff') : escuro ? COR_DA_BARRA.escuro : COR_DA_BARRA.claro
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', cor)
 }
 
 export function guardarTema(id) {

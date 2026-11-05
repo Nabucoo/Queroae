@@ -10,6 +10,7 @@ import Painel from '../components/Painel.jsx'
 import Abas from '../components/Abas.jsx'
 import Botao from '../components/Botao.jsx'
 import Avatar from '../components/Avatar.jsx'
+import Cartao, { CartaoVazio } from '../components/Cartao.jsx'
 import Modal from '../components/Modal.jsx'
 import EstadoDeErro from '../components/EstadoDeErro.jsx'
 import { EsqueletoCartoes } from '../components/Esqueleto.jsx'
@@ -139,7 +140,7 @@ export default function Home() {
 
         {/* Com dados na tela, a falha de uma atualização só avisa: a lista continua visível */}
         {(erro || (falha && carregou)) && (
-          <p role="alert" className="mb-4 rounded-campo bg-negativo-claro px-3 py-2 text-apoio text-negativo">
+          <p role="alert" className="mb-4 rounded-campo bg-negativo-claro px-3 py-2 text-apoio text-negativo contraste:border-2 contraste:border-current">
             {erro || mensagemDeErro(falha)}
           </p>
         )}
@@ -263,9 +264,9 @@ function CartaoPedido({ pedido, onDescartar }) {
   }
 
   return (
-    <article className="flex flex-col items-start gap-2 rounded-2xl border border-dashed border-contorno bg-elevado p-4">
+    <Cartao as="article" tracejado className="flex flex-col items-start gap-2 p-4">
       <h3 className="text-corpo font-semibold break-words">{pedido.nome_grupo}</h3>
-      <span className={`rounded-full px-2 py-0.5 text-selo font-medium ${recusado ? 'bg-negativo-claro text-negativo' : 'bg-ativo text-texto'}`}>
+      <span className={`rounded-full px-2 py-0.5 text-selo font-medium contraste:border contraste:border-current ${recusado ? 'bg-negativo-claro text-negativo' : 'bg-ativo text-texto'}`}>
         {recusado ? 'Pedido não aprovado' : 'Aguardando aprovação'}
       </span>
       <div className="flex w-full flex-wrap items-center justify-between gap-3">
@@ -274,7 +275,7 @@ function CartaoPedido({ pedido, onDescartar }) {
           {recusado ? 'Dispensar' : enviando ? 'Cancelando…' : 'Cancelar pedido'}
         </Botao>
       </div>
-    </article>
+    </Cartao>
   )
 }
 
@@ -295,17 +296,19 @@ function OpcoesDeGrupo({ onEntrar, onCriar }) {
 
 function OpcaoGrupo({ icone: Icone, cor, titulo, children, onClick }) {
   return (
-    <button
+    <Cartao
+      as="button"
+      interativo
       type="button"
       onClick={onClick}
-      className="flex flex-col items-start gap-2 rounded-2xl border border-borda bg-elevado p-4 text-left transition-colors hover:border-controle focus-visible:outline-2 focus-visible:outline-destaque"
+      className="flex flex-col items-start gap-2 p-4 text-left"
     >
       <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${cor}`}>
         <Icone className="h-4 w-4" />
       </span>
       <span className="text-corpo font-semibold">{titulo}</span>
       <span className="text-nota text-suave">{children}</span>
-    </button>
+    </Cartao>
   )
 }
 
@@ -359,17 +362,19 @@ function ListaPresentes({ escolhas, carregando }) {
 // Cartão clicável de uma linha (grupo ou presente)
 function CartaoLink({ to, state, children }) {
   return (
-    <Link
+    <Cartao
+      as={Link}
+      interativo
       to={to}
       state={state}
-      className="flex min-h-[3.9375rem] items-center gap-3 rounded-2xl border border-borda bg-elevado px-4 py-3 transition-colors hover:border-controle focus-visible:outline-2 focus-visible:outline-destaque"
+      className="flex min-h-[3.9375rem] items-center gap-3 px-4 py-3"
     >
       {children}
       <IconeSeta className="ml-auto h-4 w-4 shrink-0 text-suave" />
-    </Link>
+    </Cartao>
   )
 }
 
 function Vazio({ children }) {
-  return <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-apoio text-suave">{children}</p>
+  return <CartaoVazio>{children}</CartaoVazio>
 }

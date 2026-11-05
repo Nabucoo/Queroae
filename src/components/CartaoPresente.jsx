@@ -1,4 +1,5 @@
 import { linkSeguro, dominio } from '../lib/links.js'
+import Cartao from './Cartao.jsx'
 
 // Um presente da lista: nome, descrição e link.
 // "acoes" é o espaço dos botões (editar/remover, ou "vou comprar" na etapa 7).
@@ -7,7 +8,7 @@ export default function CartaoPresente({ presente, acoes, riscado = false, rodap
   const temLink = presente.link && linkSeguro(presente.link)
 
   return (
-    <article className="flex flex-col gap-3 rounded-2xl border border-borda bg-elevado p-4 sm:flex-row sm:items-start">
+    <Cartao as="article" className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start">
       <div className="min-w-0 flex-1">
         <h3 className={`text-corpo font-medium break-words ${riscado ? 'text-suave line-through' : ''}`}>
           {presente.nome}
@@ -20,7 +21,7 @@ export default function CartaoPresente({ presente, acoes, riscado = false, rodap
             href={presente.link}
             target="_blank"
             rel="noopener noreferrer" // a página aberta não consegue mexer na nossa
-            className="mt-2 inline-block text-corpo font-medium text-destaque hover:underline"
+            className="mt-2 inline-block text-corpo link"
           >
             Ver em {dominio(presente.link)}
           </a>
@@ -28,6 +29,6 @@ export default function CartaoPresente({ presente, acoes, riscado = false, rodap
         {rodape}
       </div>
       {acoes && <div className="flex shrink-0 flex-wrap gap-2">{acoes}</div>}
-    </article>
+    </Cartao>
   )
 }

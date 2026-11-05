@@ -1,5 +1,6 @@
 import { useId, useState } from 'react'
 import Avatar from './Avatar.jsx'
+import Cartao from './Cartao.jsx'
 import ListaDoIntegrante from './ListaDoIntegrante.jsx'
 import { resumoPresentes } from '../lib/resumoPresentes.js'
 import { IconeSeta } from './Icones.jsx'
@@ -15,7 +16,7 @@ export default function CartaoIntegrante({ integrante, ehAdmin }) {
   const nome = integrante.usuario.nome
 
   return (
-    <div className="rounded-2xl border border-borda bg-elevado">
+    <Cartao>
       <button
         type="button"
         onClick={() => setAberto(!aberto)}
@@ -27,7 +28,7 @@ export default function CartaoIntegrante({ integrante, ehAdmin }) {
         <div className="min-w-0">
           <p className="flex items-center gap-2 text-corpo font-medium">
             <span className="truncate">{nome}</span>
-            {ehAdmin && <span className="shrink-0 rounded-full bg-ativo px-2 py-0.5 text-selo font-normal text-suave">Admin</span>}
+            {ehAdmin && <span className="shrink-0 rounded-full bg-ativo px-2 py-0.5 contraste:border contraste:border-texto text-selo font-normal text-suave">Admin</span>}
           </p>
           <p className="num mt-0.5 text-nota text-suave">
             {resumoPresentes(presentes)}
@@ -42,6 +43,6 @@ export default function CartaoIntegrante({ integrante, ehAdmin }) {
           <ListaDoIntegrante idUsuarioGrupo={integrante.id_usuario_grupo} nome={nome} onMudou={setPresentes} />
         </div>
       )}
-    </div>
+    </Cartao>
   )
 }

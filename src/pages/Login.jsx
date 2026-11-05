@@ -35,9 +35,9 @@ export default function Login() {
       rodape={
         <>
           <p className="text-suave">
-            Ainda não tem conta? <Link to="/cadastro" className="font-medium text-destaque hover:underline">Criar conta</Link>
+            Ainda não tem conta? <Link to="/cadastro" className="link">Criar conta</Link>
           </p>
-          <Link to="/esqueci-senha" className="font-medium text-destaque hover:underline">
+          <Link to="/esqueci-senha" className="link">
             Esqueceu a senha?
           </Link>
         </>

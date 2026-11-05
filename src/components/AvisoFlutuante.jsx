@@ -38,7 +38,7 @@ export default function AvisoFlutuante({ aviso }) {
       {aviso.texto && (
         <p
           className={[
-            'mx-auto flex min-h-11 max-w-[calc(42rem-2rem)] items-center gap-2.5 rounded-2xl bg-ativo px-4 py-2.5',
+            'mx-auto flex min-h-11 max-w-[calc(42rem-2rem)] items-center gap-2.5 rounded-2xl bg-ativo px-4 py-2.5 contraste:border-2 contraste:border-texto',
             'text-apoio font-medium break-words text-texto shadow-[0_0.5rem_1.5rem_-0.5rem_rgba(0,0,0,0.4)]',
             'transition duration-200 starting:translate-y-3 starting:opacity-0 motion-reduce:transition-none',
             aviso.visivel ? 'opacity-100' : 'translate-y-3 opacity-0',

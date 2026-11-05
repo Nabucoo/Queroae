@@ -8,6 +8,7 @@ import EstadoDeErro from './EstadoDeErro.jsx'
 import { EsqueletoPresentes } from './Esqueleto.jsx'
 import { soltarConfetes } from '../lib/confete.js'
 import { IconeDesfazer, IconePresente } from './Icones.jsx'
+import { CartaoVazio } from './Cartao.jsx'
 
 // Lista de presentes de OUTRA pessoa, com "Vou comprar" e "Desmarcar".
 // Usada na página do integrante e no card que expande da aba Integrantes.
@@ -89,12 +90,12 @@ export default function ListaDoIntegrante({ idUsuarioGrupo, nome, onMudou }) {
 
   return (
     <div className="flex flex-col gap-3">
-      {aviso && <p role="alert" className="rounded-campo bg-negativo-claro px-3 py-2 text-apoio text-negativo">{aviso}</p>}
+      {aviso && <p role="alert" className="rounded-campo bg-negativo-claro px-3 py-2 text-apoio text-negativo contraste:border-2 contraste:border-current">{aviso}</p>}
 
       {presentes.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-apoio text-suave">
+        <CartaoVazio>
           {nome.split(' ')[0]} ainda não adicionou presentes à lista.
-        </p>
+        </CartaoVazio>
       ) : (
         <ul className="flex flex-col gap-2">
           {presentes.map((p) => {

@@ -8,19 +8,22 @@
   Estilo: "editorial-greeting" (taste-skill). Base neutra; a festa
   fica nos confetes (as cores pastel de cada pessoa, lá embaixo).
 */
+/* contraste:... só vale quando o alto contraste está ligado */
+@custom-variant contraste (&:where([data-contraste="alto"], [data-contraste="alto"] *));
+
 @theme {
   /* Superfícies */
   --color-fundo: #ffffff;       /* fundo da página */
-  --color-painel: #f9f9f9;      /* painéis (um passo fora do branco) */
+  --color-painel: #eeeeeb;      /* painéis (cinza que separa os cartões brancos) */
   --color-elevado: #ffffff;     /* cartão dentro de painel */
   --color-janela: #ffffff;      /* janela (modal) */
-  --color-ativo: #ededed;       /* item selecionado (ex.: aba, menu) */
+  --color-ativo: #e2e2df;       /* botão secundário, selo e barra de carregamento */
 
   /* Linhas */
-  --color-borda: #eaeaea;       /* borda de cartões */
+  --color-borda: #d9d9d6;       /* linha das abas e divisórias de janela */
   --color-linha: #f3f3f3;       /* divisória entre linhas de lista */
   --color-controle: #d9d9d6;    /* borda de campos */
-  --color-contorno: #8a8a87;    /* borda tracejada do cartão de pedido (3.5:1 no branco, WCAG 1.4.11) */
+  --color-contorno: #767674;    /* contorno de cartões (3,9:1 no painel; WCAG 1.4.11 pede 3:1) */
 
   /* Texto */
   --color-texto: #1f201d;       /* texto principal */
@@ -29,9 +32,9 @@
   /* Ações e sinais */
   --color-primario: #1f201d;    /* botão principal: quase preto */
   --color-destaque: #2552c4;    /* a única cor de destaque (azul-cobalto) */
-  --color-positivo: #2e7d32;
+  --color-positivo: #2e7d32;    /* reservada para sucesso (ainda sem uso nas telas) */
   --color-negativo: #b42318;    /* só para erro e ações perigosas */
-  --color-negativo-claro: #fdecea;
+  --color-negativo-claro: #fdecea; /* fundo de erros e do botão de perigo */
   --color-laco: #e8775a;        /* coral do laço da logo */
 
   /* Confetes: cor pastel fixa de cada pessoa (fundo + tinta do mesmo tom) */
@@ -86,14 +89,14 @@
 
   --color-fundo: #141413;
   --color-painel: #1c1c1b;
-  --color-elevado: #262625;
+  --color-elevado: #2e2e2c;
   --color-janela: #262625;
-  --color-ativo: #363634;
+  --color-ativo: #3c3c3a;
 
   --color-borda: #343433;
   --color-linha: #2c2c2b;
   --color-controle: #4d4d4a;
-  --color-contorno: #7c7c78;
+  --color-contorno: #858581;
 
   --color-texto: #f2f2ef;
   --color-suave: #adada8;
@@ -119,6 +122,110 @@ dialog::backdrop {
 }
 :root[data-tema="escuro"] dialog::backdrop {
   background: rgb(0 0 0 / 0.6);
+}
+
+/*
+  ALTO CONTRASTE: preto e branco. As mesmas cores de sempre, com outros valores.
+  Texto com pelo menos 7:1 (WCAG 1.4.6). Sem cinzas, os componentes se separam por
+  contornos, definidos em cada componente com contraste:border-2.
+  A paleta completa está em docs/paleta-de-cores.html.
+*/
+:root[data-contraste="alto"] {
+  --color-fundo: #ffffff;
+  --color-painel: #ffffff;
+  --color-elevado: #ffffff;
+  --color-janela: #ffffff;
+  --color-ativo: #ffffff;
+
+  --color-borda: #000000;
+  --color-linha: #000000;
+  --color-controle: #000000;
+  --color-contorno: #000000;
+
+  --color-texto: #000000;
+  --color-suave: #000000;
+
+  --color-primario: #000000;
+  --color-destaque: #0b2f96;
+  --color-positivo: #0b5c16;
+  --color-negativo: #8a1007;
+  --color-negativo-claro: #ffffff;
+  --color-laco: #b23a1c;
+
+  --color-confete-1: #ffffff;  --color-confete-1-tinta: #000000;
+  --color-confete-2: #ffffff;  --color-confete-2-tinta: #000000;
+  --color-confete-3: #ffffff;  --color-confete-3-tinta: #000000;
+  --color-confete-4: #ffffff;  --color-confete-4-tinta: #000000;
+  --color-confete-5: #ffffff;  --color-confete-5-tinta: #000000;
+  --color-confete-6: #ffffff;  --color-confete-6-tinta: #000000;
+}
+:root[data-contraste="alto"][data-tema="escuro"] {
+  --color-fundo: #000000;
+  --color-painel: #000000;
+  --color-elevado: #000000;
+  --color-janela: #000000;
+  --color-ativo: #000000;
+
+  --color-borda: #ffffff;
+  --color-linha: #ffffff;
+  --color-controle: #ffffff;
+  --color-contorno: #ffffff;
+
+  --color-texto: #ffffff;
+  --color-suave: #ffffff;
+
+  --color-primario: #ffffff;
+  --color-destaque: #bcd0ff;
+  --color-positivo: #9be3a0;
+  --color-negativo: #ffb8ad;
+  --color-negativo-claro: #000000;
+  --color-laco: #ffb39c;
+
+  --color-confete-1: #000000;  --color-confete-1-tinta: #ffffff;
+  --color-confete-2: #000000;  --color-confete-2-tinta: #ffffff;
+  --color-confete-3: #000000;  --color-confete-3-tinta: #ffffff;
+  --color-confete-4: #000000;  --color-confete-4-tinta: #ffffff;
+  --color-confete-5: #000000;  --color-confete-5-tinta: #ffffff;
+  --color-confete-6: #000000;  --color-confete-6-tinta: #ffffff;
+}
+
+/* Tudo sólido e sem efeitos: nem sombra, nem transição, nem animação */
+:root[data-contraste="alto"] *,
+:root[data-contraste="alto"] *::before,
+:root[data-contraste="alto"] *::after {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+/* Véu forte, mas a tela de trás continua aparecendo: a pessoa não perde o contexto.
+   É a única transparência do modo: o véu não tem nada para ser lido. */
+:root[data-contraste="alto"] dialog::backdrop {
+  background: rgb(0 0 0 / 0.7);
+}
+/* Foco mais grosso, afastado do elemento */
+:root[data-contraste="alto"] :focus-visible,
+:root[data-contraste="alto"] label:has(:focus-visible) {
+  outline: 3px solid var(--color-texto);
+  outline-offset: 2px;
+}
+/* Texto em destaque um pouco mais pesado */
+:root[data-contraste="alto"] .font-medium {
+  font-weight: 600;
+}
+
+/* Link no meio de um texto. No alto contraste, fica sempre sublinhado. */
+@utility link {
+  font-weight: 500;
+  color: var(--color-destaque);
+  &:hover {
+    text-decoration-line: underline;
+  }
+  :root[data-contraste="alto"] & {
+    font-weight: 600;
+    text-decoration-line: underline;
+    text-underline-offset: 0.15em;
+  }
 }
 
 /*

@@ -17,6 +17,7 @@ import ModalIntegrantes from '../components/ModalIntegrantes.jsx'
 import PedidosEntrada from '../components/PedidosEntrada.jsx'
 import { Aviso } from '../components/TelaAuth.jsx'
 import { IconeCompartilhar, IconeConfig, IconeConfirmar, IconeCopiar, IconeLixeira, IconePessoaMenos, IconeSair, IconeVoltar } from '../components/Icones.jsx'
+import { CartaoVazio } from '../components/Cartao.jsx'
 
 // Os presentes de cada um e as escolhas, para o resumo do card fechado.
 // REGRA DA SURPRESA: a linha da própria pessoa também vem, mas o banco não entrega
@@ -225,9 +226,9 @@ export default function Grupo() {
 
         {aba === 'integrantes' ? (
           outros.length === 0 ? (
-            <p className="mt-4 rounded-2xl border border-dashed border-controle px-4 py-3 text-apoio text-suave">
+            <div className="mt-4"><CartaoVazio>
               Por enquanto, só você está no grupo. Toque em Compartilhar e mande o convite para quem você quer chamar.
-            </p>
+            </CartaoVazio></div>
           ) : (
             <ul className="mt-4 flex flex-col gap-2">
               {outros.map((p) => (
@@ -255,13 +256,13 @@ function EsqueletoGrupo({ aba, onTrocarAba }) {
     <>
       <Carregando className="mt-6 flex flex-col gap-6">
         <Barra className="h-[2.125rem] w-2/3 rounded-full" />
-        <div className="flex items-center justify-between gap-3 rounded-cartao bg-painel px-5 py-4">
+        <Painel className="flex items-center justify-between gap-3 py-4">
           <div className="flex flex-1 flex-col gap-2">
             <Barra className="h-[1.125rem] w-3/4 rounded-full" />
             <Barra className="h-3.5 w-1/2 rounded-full" />
           </div>
           <Barra className="h-[2.375rem] w-[7.5rem] shrink-0 rounded-full" />
-        </div>
+        </Painel>
       </Carregando>
       <Painel className="mt-8">
         <Abas
@@ -295,7 +296,7 @@ function Descricao({ texto }) {
     <div className="mt-2">
       <p className={`whitespace-pre-line text-apoio text-suave ${!aberta && longa ? 'line-clamp-2' : ''}`}>{texto}</p>
       {longa && (
-        <button type="button" onClick={() => setAberta(!aberta)} className="mt-1 text-corpo font-medium text-destaque hover:underline">
+        <button type="button" onClick={() => setAberta(!aberta)} className="mt-1 text-corpo link">
           {aberta ? 'Ver menos' : 'Ver mais'}
         </button>
       )}
@@ -337,7 +338,7 @@ function CartaoConvite({ nomeGrupo, codigo }) {
   }
 
   return (
-    <div className="mt-6 rounded-cartao bg-painel px-5 py-4">
+    <Painel className="mt-6 py-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-corpo font-semibold">Convidar pessoas</p>
@@ -362,6 +363,6 @@ function CartaoConvite({ nomeGrupo, codigo }) {
           <Aviso>Não conseguimos copiar. Selecione e envie este link: <span className="break-all">{link}</span></Aviso>
         </div>
       )}
-    </div>
+    </Painel>
   )
 }

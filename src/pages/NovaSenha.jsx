@@ -40,7 +40,7 @@ export default function NovaSenha() {
         titulo="Este link não funciona mais"
         voltar={{ para: '/login', rotulo: 'Voltar para a tela de entrada' }}
         subtitulo="Peça um novo link para criar sua senha."
-        rodape={<Link to="/esqueci-senha" className="font-medium text-destaque hover:underline">Pedir novo link</Link>}
+        rodape={<Link to="/esqueci-senha" className="link">Pedir novo link</Link>}
       />
     )
   }

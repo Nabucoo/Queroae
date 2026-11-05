@@ -2,6 +2,7 @@ import Modal from './Modal.jsx'
 import Avatar from './Avatar.jsx'
 import Botao from './Botao.jsx'
 import { IconePessoaMenos } from './Icones.jsx'
+import { CartaoVazio } from './Cartao.jsx'
 
 // Só o admin abre esta janela (Editar grupo › Gerenciar integrantes).
 // Lista os OUTROS integrantes; "Remover" pede confirmação antes de agir.
@@ -9,9 +10,9 @@ export default function ModalIntegrantes({ aberto, onFechar, onVoltar, integrant
   return (
     <Modal aberto={aberto} onFechar={onFechar} titulo="Gerenciar integrantes">
       {integrantes.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-apoio text-suave">
+        <CartaoVazio>
           Ainda não há outros integrantes no grupo.
-        </p>
+        </CartaoVazio>
       ) : (
         <ul className="flex flex-col">
           {integrantes.map((p) => (

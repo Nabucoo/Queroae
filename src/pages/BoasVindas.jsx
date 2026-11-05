@@ -26,7 +26,7 @@ export default function BoasVindas() {
         <Botao as={Link} to="/login" variante="secundario" icone={IconeEntrar} larguraTotal>Já tenho conta</Botao>
       </div>
 
-      <Link to="/privacidade" state={{ de: 'boas-vindas' }} className="mt-8 text-nota font-medium text-destaque hover:underline">
+      <Link to="/privacidade" state={{ de: 'boas-vindas' }} className="mt-8 text-nota link">
         Política de privacidade
       </Link>
 
