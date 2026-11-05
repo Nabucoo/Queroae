@@ -1,4 +1,4 @@
-// Tamanho do texto escolhido em Perfil > Acessibilidade.
+// Tamanho do texto escolhido em Perfil > Aparência e acessibilidade.
 // Fica guardado no aparelho: quem precisa de letra maior precisa dela também na
 // tela de login, antes de entrar na conta.
 // Os tamanhos de cada nível estão em src/index.css.

@@ -59,6 +59,14 @@ export function IconeAlerta(props) {
   )
 }
 
+export function IconeEscudo(props) {
+  return (
+    <Icone {...props}>
+      <path d="M8 1.8l5 2v4c0 3.2-2.1 5.3-5 6.4-2.9-1.1-5-3.2-5-6.4v-4z" />
+    </Icone>
+  )
+}
+
 export function IconeVoltar(props) {
   return (
     <Icone {...props}>

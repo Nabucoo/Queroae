@@ -3,7 +3,7 @@ import { TEMAS, guardarTema, lerTema } from '../lib/tema.js'
 import { IconeConfirmar } from './Icones.jsx'
 
 // Opções de rádio, como o tamanho do texto. As opções descem de linha quando o
-// texto grande não cabe, e a escolhida também tem o visto, e não só a borda.
+// texto grande não cabe, e a escolhida tem a cor do botão principal e o visto.
 export default function SeletorAparencia() {
   const [atual, setAtual] = useState(lerTema)
 
@@ -22,9 +22,9 @@ export default function SeletorAparencia() {
             <label
               key={tema.id}
               className={[
-                'flex min-h-11 grow cursor-pointer items-center justify-center gap-2 rounded-2xl border bg-elevado px-3 py-2',
+                'flex min-h-11 grow cursor-pointer items-center justify-center gap-2 rounded-2xl border px-3 py-2',
                 'has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-destaque',
-                escolhido ? 'border-texto' : 'border-borda hover:border-controle',
+                escolhido ? 'border-primario bg-primario text-fundo' : 'border-borda bg-elevado hover:border-controle',
               ].join(' ')}
             >
               <input

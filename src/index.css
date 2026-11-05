@@ -122,7 +122,7 @@ dialog::backdrop {
 }
 
 /*
-  Os outros níveis de "Tamanho do texto" (Perfil > Acessibilidade).
+  Os outros níveis de "Tamanho do texto" (Perfil > Aparência e acessibilidade).
   O nível fica em <html data-tamanho-texto="...">; o Médio não precisa do atributo.
 */
 :root[data-tamanho-texto="pequeno"] { /* "Small" da Apple */

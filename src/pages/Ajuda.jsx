@@ -85,7 +85,7 @@ const GRUPOS = [
       },
       {
         pergunta: 'Como mudo o tamanho do texto ou a aparência?',
-        resposta: <>No Perfil, em <Destaque>Acessibilidade</Destaque>. A mudança vale na hora e fica salva no aparelho.</>,
+        resposta: <>No Perfil, em <Destaque>Aparência e acessibilidade</Destaque>. A mudança vale na hora e fica salva no aparelho.</>,
       },
       {
         pergunta: 'Como apago minha conta?',

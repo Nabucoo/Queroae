@@ -5,17 +5,27 @@ import { ehFalhaDeConexao, mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
 import Avatar from '../components/Avatar.jsx'
+import AvisoFlutuante, { useAvisoFlutuante } from '../components/AvisoFlutuante.jsx'
 import Campo from '../components/Campo.jsx'
 import Botao from '../components/Botao.jsx'
+import Modal from '../components/Modal.jsx'
 import ModalConfirmar from '../components/ModalConfirmar.jsx'
 import Painel from '../components/Painel.jsx'
 import SeletorAparencia from '../components/SeletorAparencia.jsx'
 import SeletorTamanhoTexto from '../components/SeletorTamanhoTexto.jsx'
 import { Aviso } from '../components/TelaAuth.jsx'
-import { IconeAjuda, IconeConfirmar, IconeLixeira, IconeSair, IconeVoltar } from '../components/Icones.jsx'
+import { IconeAjuda, IconeConfirmar, IconeEscudo, IconeLapis, IconeLixeira, IconeSair, IconeVoltar } from '../components/Icones.jsx'
 
 export default function Perfil() {
   const { usuario, perfil, recarregarPerfil, sair } = useAuth()
+  const [editandoNome, setEditandoNome] = useState(false)
+  const [aviso, mostrarAviso] = useAvisoFlutuante()
+
+  function aoSalvarNome() {
+    setEditandoNome(false)
+    mostrarAviso('Nome atualizado')
+    recarregarPerfil() // atualiza o nome no app inteiro (saudação da Home, etc.)
+  }
 
   return (
     <div className="mx-auto max-w-2xl px-4 pb-16">
@@ -32,78 +42,93 @@ export default function Perfil() {
         }
       />
 
-      <main>
+      <main className="flex flex-col gap-6">
         <div className="mt-6 flex items-center gap-4">
           <Avatar nome={perfil?.nome ?? ''} id={usuario.id} tamanho="g" />
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <h1 className="text-titulo font-semibold break-words">{perfil?.nome ?? 'Perfil'}</h1>
             <p className="mt-1 truncate text-apoio text-suave">{usuario.email}</p>
           </div>
+          {perfil && (
+            <BotaoIcone rotulo="Editar nome" className="shrink-0" onClick={() => setEditandoNome(true)}>
+              <IconeLapis className="h-5 w-5" />
+            </BotaoIcone>
+          )}
         </div>
 
-        {/* key: o formulário é recriado só quando o perfil termina de carregar
-            (não a cada nome salvo, senão a mensagem "Salvo" sumiria na hora) */}
-        <EditarNome key={perfil?.id_usuario ?? 'carregando'} nomeAtual={perfil?.nome ?? ''} idUsuario={usuario.id} onSalvo={recarregarPerfil} />
-
-        <Painel className="mt-6">
-          <h2 className="text-corpo font-semibold">Acessibilidade</h2>
+        <Painel>
+          <h2 className="text-corpo font-semibold">Aparência e acessibilidade</h2>
           <p className="mt-1 text-apoio text-suave">Muda na hora e fica salvo neste aparelho.</p>
           <SeletorAparencia />
           <SeletorTamanhoTexto />
         </Painel>
 
-        {/* Sair fica junto das ações da conta (não no cabeçalho), em vermelho como
-            todo "sair" do app. Largura total e ícone de porta: não se confunde com
-            o "Apagar minha conta" logo abaixo, que tem seção própria e confirmação. */}
-        <Botao variante="perigo" icone={IconeSair} larguraTotal className="mt-6" onClick={() => sair('/login')}>
-          Sair da conta
-        </Botao>
+        <Painel titulo="Ajuda e informações">
+          <div className="flex flex-col gap-2">
+            <Botao as={Link} to="/ajuda" state={{ de: 'perfil' }} variante="secundario" icone={IconeAjuda} larguraTotal>
+              Perguntas frequentes
+            </Botao>
+            <Botao as={Link} to="/privacidade" state={{ de: 'perfil' }} variante="secundario" icone={IconeEscudo} larguraTotal>
+              Política de privacidade
+            </Botao>
+          </div>
+        </Painel>
 
-        {/* Conta apagada: a pessoa não tem mais conta, então vai para as boas-vindas */}
-        <ApagarConta idUsuario={usuario.id} onApagada={() => sair('/boas-vindas')} />
-
-        <p className="mt-10 text-corpo">
-          <Link to="/privacidade" state={{ de: 'perfil' }} className="font-medium text-destaque hover:underline">Política de privacidade</Link>
-        </p>
+        <Painel titulo="Sair e apagar">
+          <div className="flex flex-col gap-2">
+            <Botao variante="perigo" icone={IconeSair} larguraTotal onClick={() => sair('/login')}>
+              Sair da conta
+            </Botao>
+            {/* Conta apagada: a pessoa não tem mais conta, então vai para as boas-vindas */}
+            <ApagarConta idUsuario={usuario.id} onApagada={() => sair('/boas-vindas')} />
+          </div>
+        </Painel>
       </main>
+
+      {/* Só existe enquanto está aberta: o campo sempre começa com o nome salvo */}
+      {editandoNome && (
+        <ModalEditarNome
+          nomeAtual={perfil.nome}
+          idUsuario={usuario.id}
+          onFechar={() => setEditandoNome(false)}
+          onSalvo={aoSalvarNome}
+        />
+      )}
+      <AvisoFlutuante aviso={aviso} />
     </div>
   )
 }
 
-function EditarNome({ nomeAtual, idUsuario, onSalvo }) {
+function ModalEditarNome({ nomeAtual, idUsuario, onFechar, onSalvo }) {
   const [nome, setNome] = useState(nomeAtual)
   const [erro, setErro] = useState('')
-  const [salvo, setSalvo] = useState(false)
   const [enviando, setEnviando] = useState(false)
 
   async function salvar(e) {
     e.preventDefault()
     setErro('')
-    setSalvo(false)
     setEnviando(true)
     const { error } = await supabase.from('usuario').update({ nome: nome.trim() }).eq('id_usuario', idUsuario)
     setEnviando(false)
     if (error) return setErro(mensagemDeErro(error))
-    setSalvo(true)
-    onSalvo() // atualiza o nome no app inteiro (saudação da Home, etc.)
+    onSalvo()
   }
 
   const mudou = nome.trim() !== nomeAtual && nome.trim() !== ''
 
   return (
-    <section className="mt-10 rounded-cartao bg-painel p-5">
-      <h2 className="text-corpo font-semibold">Seu nome</h2>
-      <p className="mt-1 text-apoio text-suave">É assim que você aparece para os integrantes dos seus grupos.</p>
-      <form onSubmit={salvar} className="mt-5 flex flex-col gap-4">
+    <Modal aberto onFechar={onFechar} titulo="Editar nome">
+      <p className="text-apoio text-suave">É assim que você aparece para os integrantes dos seus grupos.</p>
+      <form onSubmit={salvar} className="mt-4 flex flex-col gap-4">
         <Campo rotulo="Nome" required maxLength={60} autoComplete="name" value={nome}
-          onChange={(e) => { setNome(e.target.value); setSalvo(false) }} />
+          onChange={(e) => setNome(e.target.value)} />
         <Aviso>{erro}</Aviso>
-        <div className="flex flex-wrap items-center justify-end gap-3">
-          {salvo && <span role="status" className="text-apoio text-suave">Salvo</span>}
+        <div className="mt-2 flex flex-wrap justify-end gap-3">
+          <Botao variante="secundario" onClick={onFechar}>Cancelar</Botao>
           <Botao type="submit" icone={IconeConfirmar} disabled={!mudou || enviando}>{enviando ? 'Salvando…' : 'Salvar'}</Botao>
         </div>
       </form>
-    </section>
+    </Modal>
   )
 }
 
@@ -134,15 +159,9 @@ function ApagarConta({ idUsuario, onApagada }) {
   }
 
   return (
-    <section className="mt-10 border-t border-borda pt-8">
-      <h2 className="text-corpo font-semibold text-negativo">Apagar conta</h2>
-      <p className="mt-1 text-apoio text-suave">
-        Apaga seu login, seu perfil, suas listas de presentes e os presentes que você escolheu. Não dá para desfazer.
-      </p>
-
-      {gruposAdmin?.length > 0 && <ResumoGruposAdmin grupos={gruposAdmin} />}
-
-      <Botao variante="perigo" icone={IconeLixeira} className="mt-4" disabled={gruposAdmin === null} onClick={() => setConfirmando(true)}>
+    <>
+      {/* A explicação e os grupos afetados aparecem na confirmação, na hora de decidir */}
+      <Botao variante="perigo" icone={IconeLixeira} larguraTotal disabled={gruposAdmin === null} onClick={() => setConfirmando(true)}>
         Apagar minha conta
       </Botao>
 
@@ -157,7 +176,7 @@ function ApagarConta({ idUsuario, onApagada }) {
         <p>Sua conta, suas listas e suas escolhas de presentes serão apagadas para sempre. Os presentes que você escolheu voltam a ficar livres.</p>
         {gruposAdmin?.length > 0 && <ResumoGruposAdmin grupos={gruposAdmin} />}
       </ModalConfirmar>
-    </section>
+    </>
   )
 }
 

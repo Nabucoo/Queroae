@@ -1,4 +1,4 @@
-// Aparência escolhida em Perfil > Acessibilidade: claro, escuro ou automático.
+// Aparência escolhida em Perfil > Aparência e acessibilidade: claro, escuro ou automático.
 // Fica guardada no aparelho, como o tamanho do texto, e vale também antes do login.
 // As cores do tema escuro estão em src/index.css. O script no <head> do index.html
 // repete a leitura abaixo para a tela não piscar em branco ao abrir: se mudar a

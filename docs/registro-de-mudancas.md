@@ -6,6 +6,80 @@ Entradas da mais recente para a mais antiga.
 
 <!-- Novas entradas entram logo abaixo desta linha. -->
 
+## Mudança 31: Opção selecionada com a cor principal
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/components/SeletorAparencia.jsx`, `src/components/SeletorTamanhoTexto.jsx`
+
+### Problema (antes)
+Em Aparência e Tamanho do texto, a opção escolhida se diferenciava só por um contorno e um sinal pequeno, o que era fácil de não perceber, principalmente entre os cartões do tamanho do texto (**H1**).
+
+### O que foi alterado (depois)
+- A opção selecionada passou a ser preenchida com a cor do botão principal: preta no tema claro e clara no escuro, com o texto invertido. O sinal de confirmação continua.
+
+A proposta foi apresentada em mockup comparando as duas versões, e o Lucas aprovou. A ideia foi dele.
+
+### Heurísticas e princípios considerados
+- **H1 – Visibilidade do status:** a escolha atual fica evidente de imediato.
+- **H6 – Reconhecer em vez de lembrar:** a pessoa vê qual opção está ligada, sem precisar comparar as bordas.
+- **Facilidade de observar (Dix):** o estado atual fica claro na própria interface.
+- **Acessibilidade:** o contraste do texto é de 16,4:1 nos dois temas, e a seleção também é indicada pelo sinal, e não só pela cor.
+
+### Trade-offs / heurísticas em tensão
+- **H8 × destaque:** a cor principal, antes usada só para a ação principal, agora também indica o que está selecionado. Foi aceito porque as opções têm formato diferente dos botões, e o Perfil não tem outro botão principal competindo com elas.
+
+### Regra da surpresa
+A mudança é só visual e não mostra nenhuma informação nova.
+
+### Como testar
+1. Abrir o Perfil: a aparência e o tamanho escolhidos aparecem preenchidos, com o sinal.
+2. Tocar em outra opção: o preenchimento muda na hora.
+3. Conferir nos temas claro e escuro. Ao trocar de tema, a cor da opção acompanha.
+4. Num computador, usar Tab e as setas: o foco fica visível também na opção preenchida.
+
+## Mudança 30: Perfil organizado em cards, com o nome editado pelo lápis
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/pages/Perfil.jsx`, `src/components/Icones.jsx`, `src/pages/Ajuda.jsx`
+
+### Problema (antes)
+O Perfil era uma sequência sem divisão clara: formulário do nome, acessibilidade, botão de sair, texto de apagar a conta e um link da política, cada um com um estilo. O formulário ocupava espaço sendo pouco usado, e o texto longo de apagar a conta ficava sempre à vista (**H8**, **H4**).
+
+### O que foi alterado (depois)
+- A tela foi dividida em cards, um para cada tipo de assunto: **Aparência e acessibilidade**, **Ajuda e informações** e **Sair e apagar**.
+- O nome passou a ser editado por um **ícone de lápis** ao lado dele, que abre a janela "Editar nome", com "Cancelar" e "Salvar". Ao salvar, aparece o aviso "Nome atualizado".
+- **Ajuda e informações** tem os botões "Perguntas frequentes" e "Política de privacidade". O "?" do topo continua.
+- **Sair e apagar** reúne "Sair da conta" e "Apagar minha conta".
+- A explicação de apagar a conta e a lista de grupos afetados aparecem só na janela de confirmação.
+- A resposta sobre aparência nas perguntas frequentes passou a citar o novo nome do card.
+
+A proposta foi apresentada em mockup com duas ideias. O Lucas escolheu misturar os cards com botões da primeira com o lápis da segunda.
+
+### Heurísticas e princípios considerados
+- **H8 – Design estético e minimalista:** o que é raro sai da tela e aparece só quando a pessoa pede.
+- **H4 – Consistência e padrões:** todos os blocos usam o mesmo `Painel`, e as ações usam os mesmos botões do resto do app.
+- **H6 – Reconhecer em vez de lembrar:** cada card tem um título, e a pessoa encontra as opções pelo assunto.
+- **H5 – Prevenção de erros:** a consequência de apagar a conta aparece na hora de confirmar, e "Salvar" fica desligado até o nome mudar.
+- **H3 – Controle e liberdade:** a janela do nome tem "Cancelar", e o campo volta ao nome salvo ao abrir de novo.
+- **H1 – Visibilidade do status:** o nome atualiza na tela, com um aviso de confirmação.
+- **Acessibilidade:** o lápis tem o nome "Editar nome" para leitores de tela, e cada botão tem texto e ícone.
+
+### Trade-offs / heurísticas em tensão
+- **Caminho duplicado:** "Perguntas frequentes" aparece no botão e no "?" do topo. Foi mantido porque o Perfil é um lugar natural para procurar ajuda.
+- **Sair sem confirmação:** "Sair da conta" continua saindo direto, agora perto de "Apagar minha conta". Foi aceito porque um toque errado não apaga nada, e apagar sempre pede confirmação.
+- **Menos aviso prévio:** a explicação de apagar a conta só aparece depois do toque. Foi aceito porque a confirmação mostra tudo antes de qualquer ação.
+
+### Regra da surpresa
+A mudança é só de organização e não mostra nenhuma informação sobre escolhas de presentes.
+
+### Como testar
+1. Abrir o Perfil: aparecem o topo com o lápis e os três cards.
+2. Tocar no lápis, mudar o nome e salvar: a janela fecha, o nome muda e aparece "Nome atualizado".
+3. Abrir de novo, mudar e tocar em "Cancelar": o nome continua igual. "Salvar" fica desligado sem mudança.
+4. Tocar em "Perguntas frequentes" e em "Política de privacidade": as duas voltam para o Perfil.
+5. Tocar em "Apagar minha conta" e conferir o texto e, para quem é admin, os grupos afetados. Tocar em "Cancelar".
+6. Conferir nos temas claro e escuro, e em "Muito grande".
+
 ## Mudança 29: Cadastro mantém o que foi digitado ao abrir a política de privacidade
 
 **Data:** 2026-11-05
