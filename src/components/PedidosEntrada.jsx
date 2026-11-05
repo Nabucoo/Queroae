@@ -13,14 +13,16 @@ import { Aviso } from './TelaAuth.jsx'
 // onAprovado: avisa a tela do grupo para atualizar a lista de integrantes.
 export default function PedidosEntrada({ idGrupo, onAprovado }) {
   const [pedidos, setPedidos] = useState([])
-  const [erro, setErro] = useState('')
+  const [erro, setErro] = useState('') // falha ao aprovar ou recusar
+  const [erroBusca, setErroBusca] = useState('') // some sozinho quando a busca volta a funcionar
   const [resultado, setResultado] = useState('') // ex.: "Marina agora faz parte do grupo."
   const [ocupado, setOcupado] = useState(null) // { id, acao } do pedido em andamento
 
   const buscar = useCallback(async () => {
     const { data, error } = await supabase.rpc('pedidos_do_grupo', { p_id_grupo: idGrupo })
-    if (error) setErro(mensagemDeErro(error))
-    else setPedidos(data)
+    if (error) return setErroBusca(mensagemDeErro(error))
+    setErroBusca('')
+    setPedidos(data)
   }, [idGrupo])
 
   useEffect(() => {
@@ -47,12 +49,12 @@ export default function PedidosEntrada({ idGrupo, onAprovado }) {
     setOcupado(null)
   }
 
-  if (pedidos.length === 0 && !erro && !resultado) return null
+  if (pedidos.length === 0 && !erro && !erroBusca && !resultado) return null
 
   return (
     <div className="mt-6 flex flex-col gap-3">
       {resultado && <Aviso tipo="info">{resultado}</Aviso>}
-      <Aviso>{erro}</Aviso>
+      <Aviso>{erro || erroBusca}</Aviso>
       {pedidos.length > 0 && (
         <Painel titulo={`Pedidos para entrar (${pedidos.length})`}>
           <ul className="flex flex-col gap-2">

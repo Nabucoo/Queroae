@@ -21,7 +21,7 @@ export default function Botao({
     <Componente
       type={Componente === 'button' ? type : undefined}
       className={[
-        'inline-flex min-h-[38px] items-center justify-center gap-2 rounded-full px-4 py-2 text-center',
+        'inline-flex min-h-[2.375rem] items-center justify-center gap-2 rounded-full px-4 py-2 text-center',
         'text-corpo font-medium transition-colors active:scale-[0.98]',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-destaque',
         'disabled:cursor-not-allowed disabled:opacity-60',

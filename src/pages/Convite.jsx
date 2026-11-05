@@ -5,11 +5,8 @@ import { guardarConvitePendente } from '../lib/convitePendente.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import TelaAuth from '../components/TelaAuth.jsx'
 import Botao from '../components/Botao.jsx'
+import { TelaAbrindo } from '../components/Esqueleto.jsx'
 import { IconeChave, IconeEntrar, IconePessoaMais, IconePresente } from '../components/Icones.jsx'
-
-function Carregando() {
-  return <p className="p-6 text-apoio text-suave">Carregando…</p>
-}
 
 // Porta de entrada do link /convite/:codigo.
 // Logado: vai para a Home, onde abre a janela "Entrar neste grupo?".
@@ -30,11 +27,11 @@ export default function Convite() {
     })
   }, [carregando, sessao, codigo])
 
-  if (carregando) return <Carregando />
+  if (carregando) return <TelaAbrindo />
 
   if (sessao) return <Navigate to="/" replace state={{ convite: codigo }} />
 
-  if (existe === null) return <Carregando />
+  if (existe === null) return <TelaAbrindo />
 
   // Código inválido: as boas-vindas abrem o aviso
   if (!existe) return <Navigate to="/boas-vindas" replace state={{ conviteInvalido: true }} />
@@ -44,7 +41,7 @@ export default function Convite() {
       <div className="flex flex-col gap-8">
         <ol className="relative flex flex-col gap-4">
           {/* A linha liga os ícones e mostra que é uma sequência */}
-          <span aria-hidden="true" className="absolute top-4 bottom-4 left-[17px] w-0.5 bg-borda" />
+          <span aria-hidden="true" className="absolute top-4 bottom-4 left-[1.0625rem] w-0.5 bg-borda" />
           <Passo icone={IconePessoaMais} cor="bg-confete-5 text-confete-5-tinta" titulo="Crie sua conta">
             Ou entre, se já tiver uma.
           </Passo>

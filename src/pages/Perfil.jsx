@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { supabase } from '../lib/supabase.js'
-import { mensagemDeErro } from '../lib/erros.js'
+import { ehFalhaDeConexao, mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
 import Avatar from '../components/Avatar.jsx'
@@ -125,6 +125,7 @@ function ApagarConta({ idUsuario, onApagada }) {
     // Chama a Edge Function; o login vai junto automaticamente
     const { error } = await supabase.functions.invoke('apagar-conta', { method: 'POST' })
     if (error) {
+      if (ehFalhaDeConexao(error)) return mensagemDeErro(error)
       // Tenta ler a mensagem que a função mandou
       const corpo = await error.context?.json?.().catch(() => null)
       return corpo?.erro ?? 'Não foi possível apagar a conta agora. Tente novamente.'

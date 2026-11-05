@@ -68,8 +68,8 @@
   --font-serif: "Fraunces", Georgia, serif;   /* só na saudação (itálica) */
 
   /* Cantos arredondados → classes rounded-cartao, rounded-campo */
-  --radius-cartao: 22px;
-  --radius-campo: 10px;
+  --radius-cartao: 1.375rem;
+  --radius-campo: 0.625rem;
 }
 
 /*

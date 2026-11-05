@@ -33,12 +33,24 @@ export function campoDoErro(erro) {
   return campoPorCodigo[erro?.code] ?? null
 }
 
+// Cada navegador descreve a falha de rede de um jeito, e o Supabase pode acrescentar
+// "TypeError: " na frente. "Load failed" é a mensagem do iPhone.
+const TEXTOS_DE_CONEXAO = ['Failed to fetch', 'Load failed', 'NetworkError when attempting to fetch resource.']
+
+// O pedido nem chegou ao servidor: sem internet ou servidor fora do ar
+export function ehFalhaDeConexao(erro) {
+  if (!erro) return false
+  if (erro.name === 'FunctionsFetchError') return true
+  if (erro.name === 'AuthRetryableFetchError' && erro.status === 0) return true
+  return TEXTOS_DE_CONEXAO.includes((erro.message ?? '').replace(/^TypeError: /, ''))
+}
+
 export function mensagemDeErro(erro) {
   if (!erro) return ''
   if (porCodigo[erro.code]) return porCodigo[erro.code]
   // P0001 = mensagem escrita por nós nas funções do banco (já em português)
   if (erro.code === 'P0001') return erro.message
-  if (erro.message === 'Failed to fetch') return 'Sem conexão com o servidor. Verifique sua internet.'
+  if (ehFalhaDeConexao(erro)) return 'Sem conexão com o servidor. Confira sua internet e tente de novo.'
   console.error(erro) // ajuda a investigar erros que ainda não traduzimos
   return 'Não foi possível concluir agora. Espere um instante e tente de novo.'
 }

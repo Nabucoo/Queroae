@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Botao from './Botao.jsx'
 import CartaoPresente from './CartaoPresente.jsx'
+import EstadoDeErro from './EstadoDeErro.jsx'
+import { EsqueletoPresentes } from './Esqueleto.jsx'
 import { soltarConfetes } from '../lib/confete.js'
 import { IconeDesfazer, IconePresente } from './Icones.jsx'
 
@@ -15,7 +17,8 @@ export default function ListaDoIntegrante({ idUsuarioGrupo, nome, onMudou }) {
   const { usuario } = useAuth()
   const [presentes, setPresentes] = useState([])
   const [carregando, setCarregando] = useState(true)
-  const [erro, setErro] = useState('')
+  const [falha, setFalha] = useState(null) // a lista não carregou na primeira vez
+  const jaCarregou = useRef(false)
   const [aviso, setAviso] = useState('') // ex.: "Alguém já escolheu este presente."
   const [ocupado, setOcupado] = useState(null) // id do presente sendo marcado/desmarcado
 
@@ -26,8 +29,13 @@ export default function ListaDoIntegrante({ idUsuarioGrupo, nome, onMudou }) {
       .select('id_presente, nome, descricao, link, escolha_presente(id_escolha_presente, id_presenteador, usuario(nome))')
       .eq('id_usuario_grupo', idUsuarioGrupo)
       .order('created_at')
-    if (error) setErro(mensagemDeErro(error))
-    else {
+    if (error) {
+      // Com a lista na tela, só avisa: ela continua visível
+      if (jaCarregou.current) setAviso(mensagemDeErro(error))
+      else setFalha(error)
+    } else {
+      jaCarregou.current = true
+      setFalha(null)
       // Cada presente tem no máximo uma escolha; deixamos como objeto ou null
       const lista = data.map((p) => ({ ...p, escolha: [p.escolha_presente].flat()[0] ?? null }))
       setPresentes(lista)
@@ -37,6 +45,12 @@ export default function ListaDoIntegrante({ idUsuarioGrupo, nome, onMudou }) {
   }, [idUsuarioGrupo, onMudou])
 
   useEffect(() => {
+    buscar()
+  }, [buscar])
+
+  const tentarDeNovo = useCallback(() => {
+    setFalha(null)
+    setCarregando(true)
     buscar()
   }, [buscar])
 
@@ -70,8 +84,8 @@ export default function ListaDoIntegrante({ idUsuarioGrupo, nome, onMudou }) {
     setOcupado(null)
   }
 
-  if (carregando) return <p className="text-apoio text-suave">Carregando…</p>
-  if (erro) return <p role="alert" className="text-apoio text-negativo">{erro}</p>
+  if (carregando) return <EsqueletoPresentes quantidade={1} />
+  if (falha) return <EstadoDeErro falha={falha} acao="carregar esta lista" onTentar={tentarDeNovo} />
 
   return (
     <div className="flex flex-col gap-3">

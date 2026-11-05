@@ -29,6 +29,36 @@ export function IconeAjuda(props) {
   )
 }
 
+export function IconeSemInternet(props) {
+  return (
+    <Icone {...props}>
+      <path d="M2 2l12 12" />
+      <path d="M1.5 6.2a10 10 0 0 1 3-1.9M6.8 3.7a10 10 0 0 1 7.7 2.5" />
+      <path d="M3.8 8.7a6.5 6.5 0 0 1 2.6-1.5M9.7 7.3a6.5 6.5 0 0 1 2.5 1.4" />
+      <path d="M6.2 11a2.9 2.9 0 0 1 3.6 0" />
+      <path d="M8 13.3v.05" />
+    </Icone>
+  )
+}
+
+export function IconeTentarDeNovo(props) {
+  return (
+    <Icone {...props}>
+      <path d="M13.5 8a5.5 5.5 0 1 1-1.7-4" />
+      <path d="M13.5 2v3h-3" />
+    </Icone>
+  )
+}
+
+export function IconeAlerta(props) {
+  return (
+    <Icone {...props}>
+      <path d="M8 2.2l6.3 11.3H1.7z" />
+      <path d="M8 6.5v3.5M8 12v.05" />
+    </Icone>
+  )
+}
+
 export function IconeVoltar(props) {
   return (
     <Icone {...props}>

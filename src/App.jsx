@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router'
 
 import { AuthProvider } from './contexts/AuthContext.jsx'
+import AvisoSemInternet from './components/AvisoSemInternet.jsx'
 import { RotaProtegida, RotaPublica } from './components/Rotas.jsx'
 
 import BoasVindas from './pages/BoasVindas.jsx'
@@ -22,6 +23,7 @@ import NaoEncontrada from './pages/NaoEncontrada.jsx'
 export default function App() {
   return (
     <AuthProvider>
+      <AvisoSemInternet />
       <BrowserRouter>
         <Routes>
           {/* Só para quem NÃO está logado */}

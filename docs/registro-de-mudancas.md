@@ -6,6 +6,80 @@ Entradas da mais recente para a mais antiga.
 
 <!-- Novas entradas entram logo abaixo desta linha. -->
 
+## Mudança 23: Carregamento com esqueleto e falta de internet reconhecida
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/components/Esqueleto.jsx`, `src/components/EstadoDeErro.jsx` e `src/components/AvisoSemInternet.jsx` (novos), `src/lib/erros.js`, `src/lib/useAoVoltarParaApp.js`, `src/components/Icones.jsx`, `src/App.jsx`, `src/components/Rotas.jsx`, `src/components/ModalConvite.jsx`, `src/components/MinhaLista.jsx`, `src/components/ListaDoIntegrante.jsx`, `src/components/PedidosEntrada.jsx`, `src/pages/Home.jsx`, `src/pages/Grupo.jsx`, `src/pages/Integrante.jsx`, `src/pages/Perfil.jsx`, `src/pages/Convite.jsx`, `src/pages/NovaSenha.jsx`, `docs/heuristicas-ihc.md`
+
+### Problema (antes)
+A Home usava esqueleto, mas as outras telas mostravam só "Carregando…", e a tela dava um salto quando os dados chegavam (**H1**, **H4**).
+
+A falta de internet quase nunca era reconhecida. O Supabase devolve `TypeError: Failed to fetch`, e o iPhone costuma usar `Load failed`, mas o app comparava com o texto exato `Failed to fetch`. Com isso, a Home sem conexão dizia "Você ainda não participa de nenhum grupo", e o grupo dizia "Grupo não encontrado". A pessoa podia achar que tinha perdido os dados (**H9**).
+
+### O que foi alterado (depois)
+- **Carregamento:** grupo, listas de presentes e tela do integrante usam barras no formato do conteúdo. A pulsação para para quem pediu menos movimento no aparelho.
+- **Abertura do app e de links:** aparece só a logo, porque ainda não se sabe qual tela vem depois.
+- **Falha de conexão reconhecida:** nas mensagens do Chrome, do Safari e do Firefox, no banco, no login e na função de apagar a conta.
+- **Nova tela de erro:** Home, grupo, integrante e listas dizem o que houve e têm "Tentar de novo". Quando a internet volta, a tela tenta sozinha.
+- **"Não encontrado" só quando é verdade:** a mensagem aparece apenas se o grupo ou a pessoa realmente não estiver lá.
+- **Faixa "Você está sem internet":** fica no topo enquanto o aparelho estiver sem conexão.
+- **Dados na tela são mantidos:** se uma atualização falhar quando já há dados, a lista continua visível, com um aviso. O que foi digitado nos formulários também continua nos campos.
+
+A proposta foi apresentada em mockup com antes e depois, e o Lucas aprovou.
+
+### Heurísticas e princípios considerados
+- **H1 – Visibilidade do status:** a pessoa vê que a tela está carregando e sabe quando está sem internet.
+- **H4 – Consistência e padrões:** o carregamento e os erros têm o mesmo formato em todas as telas, com componentes reaproveitados.
+- **H9 – Reconhecer e recuperar-se de erros:** a mensagem diz o que aconteceu e o que fazer, em linguagem simples, com um botão para resolver.
+- **H3 – Controle e liberdade:** "Tentar de novo" evita recarregar a página ou sair da tela.
+- **Facilidade de observar (Dix):** a interface mostra o estado real, em vez de parecer uma lista vazia.
+- **Recuperabilidade (Dix):** a pessoa continua de onde parou quando a conexão volta.
+- **Acessibilidade:** o carregamento é anunciado com `role="status"`, e os erros com `role="alert"`. A situação é escrita e tem ícone, e não depende só da cor.
+
+### Trade-offs / heurísticas em tensão
+- **Faixa × H8:** a faixa é um aviso a mais, mas avisa antes de a pessoa tentar uma ação. Ela depende do que o aparelho informa, então os erros de cada tela continuam tratando a falha por conta própria.
+- **Causa da falha:** o app não distingue a falta de internet de um servidor fora do ar. Por isso, a mensagem pede para conferir a internet e tentar de novo, sem afirmar que o problema é só esse.
+- **Telas com formato diferente:** ao carregar, a lista de presentes mostra dois cartões, ainda que a pessoa tenha mais ou menos. A tela pode mudar um pouco de altura quando os dados chegam.
+
+### Regra da surpresa
+A mudança não altera nenhuma consulta nem mostra informação nova. "Minha lista" continua sem consultar quem escolheu cada presente.
+
+### Como testar
+1. Com a internet lenta (nas ferramentas do navegador), abrir a Home, um grupo e uma lista: aparecem as barras cinza.
+2. Sem internet, abrir a Home: aparecem a faixa e "Sem conexão", e não "nenhum grupo". Repetir num grupo.
+3. Tocar em "Tentar de novo" sem internet: o erro volta. Ligar a internet: a tela carrega sozinha.
+4. Sem internet, tentar salvar um presente: a mensagem pede para conferir a conexão, e o texto digitado continua nos campos.
+5. No iPhone, ligar o modo avião e repetir os passos 2 a 4.
+6. Abrir um grupo que não existe (`/grupo/999999`): continua "Grupo não encontrado".
+7. Ligar "Reduzir movimento" no aparelho: as barras não pulsam.
+
+## Mudança 22: Medidas em rem no lugar de px
+
+**Data:** 2026-11-04
+**Telas/arquivos alterados:** `src/index.css`, `src/components/Botao.jsx`, `src/components/Modal.jsx`, `src/pages/Home.jsx`, `src/pages/Convite.jsx`, `docs/heuristicas-ihc.md`
+
+### Problema (antes)
+Algumas medidas da interface estavam em `px`: os cantos arredondados, a altura mínima dos botões e dos cartões da Home, a linha dos passos do convite e a sombra das janelas. Quando a pessoa aumentava o texto padrão do navegador, o texto e os espaços cresciam, mas essas medidas não, e as proporções mudavam.
+
+### O que foi alterado (depois)
+- Essas medidas passaram para `rem`, com os mesmos valores no tamanho padrão do navegador (16 px). O visual não muda para quem não alterou esse ajuste.
+- O guia do projeto passou a pedir `rem` nas medidas da interface.
+- `px` continua na animação de confetes, que é calculada a partir de posições na tela e é só decorativa. As bordas finas do Tailwind também seguem em `px`, porque não devem engrossar junto com o texto.
+
+### Heurísticas e princípios considerados
+- **Acessibilidade:** a interface mantém as proporções quando a pessoa aumenta o texto nas configurações do navegador.
+- **H4 – Consistência e padrões:** o app usa uma única unidade para medidas da interface.
+
+### Trade-offs / heurísticas em tensão
+Nenhum. Os valores são equivalentes no tamanho padrão.
+
+### Regra da surpresa
+A mudança é só de medidas e não mostra nenhuma informação nova.
+
+### Como testar
+1. Abrir o app no tamanho normal: nada muda em relação à versão anterior.
+2. Num computador, aumentar o tamanho da fonte nas configurações do navegador: botões, cartões e cantos crescem junto com o texto.
+
 ## Mudança 21: Conteúdo sempre no centro, sem pular entre telas
 
 **Data:** 2026-11-04

@@ -6,6 +6,8 @@ import { useAuth } from '../contexts/AuthContext.jsx'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
 import Painel from '../components/Painel.jsx'
 import Abas from '../components/Abas.jsx'
+import EstadoDeErro from '../components/EstadoDeErro.jsx'
+import { Barra, Carregando, EsqueletoCartoes } from '../components/Esqueleto.jsx'
 import CartaoIntegrante from '../components/CartaoIntegrante.jsx'
 import Botao from '../components/Botao.jsx'
 import MinhaLista from '../components/MinhaLista.jsx'
@@ -28,7 +30,8 @@ export default function Grupo() {
   const [grupo, setGrupo] = useState(null)
   const [integrantes, setIntegrantes] = useState([])
   const [carregando, setCarregando] = useState(true)
-  const [erro, setErro] = useState('')
+  const [falha, setFalha] = useState(null) // a busca não funcionou (é diferente de o grupo não existir)
+  const [versao, setVersao] = useState(0) // somar 1 busca de novo ("Tentar de novo")
   const [aba, setAba] = useState('integrantes')
   const [modal, setModal] = useState(null) // 'editar' | 'integrantes' | 'remover' | 'excluir' | 'sair' | null
   const [removendo, setRemovendo] = useState(null) // integrante que o admin quer remover
@@ -43,16 +46,18 @@ export default function Grupo() {
           .eq('id_grupo', idGrupo).maybeSingle(),
         pedirIntegrantes(idGrupo),
       ])
-      const falha = resGrupo.error || resIntegrantes.error
-      if (falha) setErro(mensagemDeErro(falha))
-      else {
+      const falhaBusca = resGrupo.error || resIntegrantes.error
+      setFalha(falhaBusca)
+      if (!falhaBusca) {
         setGrupo(resGrupo.data)
         setIntegrantes(resIntegrantes.data)
       }
       setCarregando(false)
     }
     buscar()
-  }, [idGrupo])
+  }, [idGrupo, versao])
+
+  const tentarDeNovo = useCallback(() => setVersao((v) => v + 1), [])
 
   // Depois de aprovar um pedido: a pessoa já aparece na lista, sem recarregar a tela
   const atualizarIntegrantes = useCallback(async () => {
@@ -100,13 +105,23 @@ export default function Grupo() {
     </BotaoIcone>
   )
 
-  if (carregando) return <Moldura voltar={voltar}><p className="mt-8 text-apoio text-suave">Carregando…</p></Moldura>
+  if (carregando) return <Moldura voltar={voltar}><EsqueletoGrupo aba={aba} onTrocarAba={setAba} /></Moldura>
 
-  if (erro || !grupo) {
+  if (falha) {
+    return (
+      <Moldura voltar={voltar}>
+        <Painel className="mt-6">
+          <EstadoDeErro falha={falha} acao="abrir este grupo" onTentar={tentarDeNovo} />
+        </Painel>
+      </Moldura>
+    )
+  }
+
+  if (!grupo) {
     return (
       <Moldura voltar={voltar}>
         <h1 className="mt-8 text-titulo font-semibold">Grupo não encontrado</h1>
-        <p className="mt-2 text-apoio text-suave">{erro || 'Este grupo não existe ou você não participa dele.'}</p>
+        <p className="mt-2 text-apoio text-suave">Este grupo não existe ou você não participa dele.</p>
       </Moldura>
     )
   }
@@ -228,6 +243,35 @@ export default function Grupo() {
         )}
       </Painel>
     </Moldura>
+  )
+}
+
+// Mesma disposição da tela pronta: título, convite e lista com as abas
+function EsqueletoGrupo({ aba, onTrocarAba }) {
+  return (
+    <>
+      <Carregando className="mt-6 flex flex-col gap-6">
+        <Barra className="h-[2.125rem] w-2/3 rounded-full" />
+        <div className="flex items-center justify-between gap-3 rounded-cartao bg-painel px-5 py-4">
+          <div className="flex flex-1 flex-col gap-2">
+            <Barra className="h-[1.125rem] w-3/4 rounded-full" />
+            <Barra className="h-3.5 w-1/2 rounded-full" />
+          </div>
+          <Barra className="h-[2.375rem] w-[7.5rem] shrink-0 rounded-full" />
+        </div>
+      </Carregando>
+      <Painel className="mt-8">
+        <Abas
+          abas={[
+            { id: 'integrantes', rotulo: 'Integrantes' },
+            { id: 'lista', rotulo: 'Minha lista de presentes' },
+          ]}
+          ativa={aba}
+          onTrocar={onTrocarAba}
+        />
+        <div className="mt-4"><EsqueletoCartoes quantidade={3} /></div>
+      </Painel>
+    </>
   )
 }
 

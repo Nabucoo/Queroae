@@ -5,6 +5,7 @@ import { mensagemDeErro } from '../lib/erros.js'
 import Modal from './Modal.jsx'
 import Avatar from './Avatar.jsx'
 import Botao from './Botao.jsx'
+import { Barra, Carregando } from './Esqueleto.jsx'
 import ModalConviteInvalido from './ModalConviteInvalido.jsx'
 import { Aviso } from './TelaAuth.jsx'
 import { IconeEntrar } from './Icones.jsx'
@@ -71,10 +72,10 @@ export default function ModalConvite({ codigo, onFechar, onPedido }) {
   if (convite === undefined) {
     return (
       <Modal aberto onFechar={onFechar} titulo="Abrindo convite…">
-        <div role="status" aria-label="Carregando" className="flex flex-col gap-2">
-          <div className="h-5 w-3/4 rounded-full bg-ativo" />
-          <div className="h-8 w-1/2 rounded-full bg-ativo" />
-        </div>
+        <Carregando className="flex flex-col gap-2">
+          <Barra className="h-5 w-3/4 rounded-full" />
+          <Barra className="h-8 w-1/2 rounded-full" />
+        </Carregando>
       </Modal>
     )
   }

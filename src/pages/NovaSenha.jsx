@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext.jsx'
 import TelaAuth, { Aviso } from '../components/TelaAuth.jsx'
 import Campo from '../components/Campo.jsx'
 import Botao from '../components/Botao.jsx'
+import { TelaAbrindo } from '../components/Esqueleto.jsx'
 import { IconeCadeado, IconeConfirmar } from '../components/Icones.jsx'
 
 // A pessoa chega aqui pelo link do e-mail. O Supabase lê o link
@@ -31,7 +32,7 @@ export default function NovaSenha() {
     navegar('/', { replace: true })
   }
 
-  if (carregando) return <p className="p-6 text-apoio text-suave">Carregando…</p>
+  if (carregando) return <TelaAbrindo />
 
   if (!sessao) {
     return (

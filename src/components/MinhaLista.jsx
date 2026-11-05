@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
 import CartaoPresente from './CartaoPresente.jsx'
+import EstadoDeErro from './EstadoDeErro.jsx'
+import { EsqueletoPresentes } from './Esqueleto.jsx'
 import ModalPresente from './ModalPresente.jsx'
 import ModalConfirmar from './ModalConfirmar.jsx'
 import Botao from './Botao.jsx'
@@ -13,7 +15,8 @@ import { IconeLapis, IconeLixeira, IconeMais } from './Icones.jsx'
 export default function MinhaLista({ idUsuarioGrupo }) {
   const [presentes, setPresentes] = useState([])
   const [carregando, setCarregando] = useState(true)
-  const [erro, setErro] = useState('')
+  const [falha, setFalha] = useState(null) // a lista não carregou
+  const [versao, setVersao] = useState(0) // somar 1 busca de novo ("Tentar de novo")
   // null = fechado; { presente: null } = novo; { presente } = editando
   const [editor, setEditor] = useState(null)
   const [removendo, setRemovendo] = useState(null) // presente a remover
@@ -25,12 +28,18 @@ export default function MinhaLista({ idUsuarioGrupo }) {
         .select('id_presente, nome, descricao, link, created_at')
         .eq('id_usuario_grupo', idUsuarioGrupo)
         .order('created_at')
-      if (error) setErro(mensagemDeErro(error))
-      else setPresentes(data)
+      setFalha(error)
+      if (!error) setPresentes(data)
       setCarregando(false)
     }
     buscar()
-  }, [idUsuarioGrupo])
+  }, [idUsuarioGrupo, versao])
+
+  const tentarDeNovo = useCallback(() => {
+    setFalha(null)
+    setCarregando(true)
+    setVersao((v) => v + 1)
+  }, [])
 
   // Atualiza a lista na tela sem buscar tudo de novo
   function aoSalvar(salvo, editando) {
@@ -49,8 +58,8 @@ export default function MinhaLista({ idUsuarioGrupo }) {
     setRemovendo(null)
   }
 
-  if (carregando) return <p className="text-apoio text-suave">Carregando…</p>
-  if (erro) return <p role="alert" className="text-apoio text-negativo">{erro}</p>
+  if (carregando) return <EsqueletoPresentes />
+  if (falha) return <EstadoDeErro falha={falha} acao="carregar sua lista" onTentar={tentarDeNovo} />
 
   return (
     <div className="flex flex-col gap-3">

@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router'
 import { supabase } from '../lib/supabase.js'
-import { mensagemDeErro } from '../lib/erros.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import Cabecalho, { BotaoIcone } from '../components/Cabecalho.jsx'
 import Painel from '../components/Painel.jsx'
 import Avatar from '../components/Avatar.jsx'
+import EstadoDeErro from '../components/EstadoDeErro.jsx'
+import { Barra, Carregando, EsqueletoPresentes } from '../components/Esqueleto.jsx'
 import ListaDoIntegrante from '../components/ListaDoIntegrante.jsx'
 import MinhaLista from '../components/MinhaLista.jsx'
 import { IconeVoltar } from '../components/Icones.jsx'
@@ -18,7 +19,8 @@ export default function Integrante() {
   const [integrante, setIntegrante] = useState(null)
   const [presentes, setPresentes] = useState(null) // só para o resumo do topo
   const [carregando, setCarregando] = useState(true)
-  const [erro, setErro] = useState('')
+  const [falha, setFalha] = useState(null) // a busca não funcionou (é diferente de a pessoa não estar no grupo)
+  const [versao, setVersao] = useState(0) // somar 1 busca de novo ("Tentar de novo")
 
   useEffect(() => {
     async function buscar() {
@@ -29,12 +31,14 @@ export default function Integrante() {
         .eq('id_grupo', idGrupo)
         .eq('id_usuario', idUsuario)
         .maybeSingle()
-      if (error) setErro(mensagemDeErro(error))
-      else setIntegrante(data)
+      setFalha(error)
+      if (!error) setIntegrante(data)
       setCarregando(false)
     }
     buscar()
-  }, [idGrupo, idUsuario])
+  }, [idGrupo, idUsuario, versao])
+
+  const tentarDeNovo = useCallback(() => setVersao((v) => v + 1), [])
 
   // Se viemos da Home (pelo "bilhete" state do link), voltar leva para a Home,
   // na aba "Vou comprar" (de onde o link saiu); senão (ex.: endereço colado),
@@ -55,11 +59,24 @@ export default function Integrante() {
       <Cabecalho voltar={voltar} />
       <main>
         {carregando ? (
-          <p className="mt-8 text-apoio text-suave">Carregando…</p>
-        ) : erro || !integrante ? (
+          <>
+            <Carregando className="mt-6 flex items-center gap-4">
+              <Barra className="h-20 w-20 shrink-0 rounded-full" />
+              <div className="flex flex-1 flex-col gap-2">
+                <Barra className="h-[2.125rem] w-3/4 rounded-full" />
+                <Barra className="h-4 w-1/2 rounded-full" />
+              </div>
+            </Carregando>
+            <Painel titulo="Lista de presentes" className="mt-8"><EsqueletoPresentes /></Painel>
+          </>
+        ) : falha ? (
+          <Painel className="mt-6">
+            <EstadoDeErro falha={falha} acao="abrir esta lista" onTentar={tentarDeNovo} />
+          </Painel>
+        ) : !integrante ? (
           <>
             <h1 className="mt-8 text-titulo font-semibold">Integrante não encontrado</h1>
-            <p className="mt-2 text-apoio text-suave">{erro || 'Esta pessoa não participa deste grupo.'}</p>
+            <p className="mt-2 text-apoio text-suave">Esta pessoa não participa deste grupo.</p>
           </>
         ) : (
           <>

@@ -11,6 +11,8 @@ import Abas from '../components/Abas.jsx'
 import Botao from '../components/Botao.jsx'
 import Avatar from '../components/Avatar.jsx'
 import Modal from '../components/Modal.jsx'
+import EstadoDeErro from '../components/EstadoDeErro.jsx'
+import { EsqueletoCartoes } from '../components/Esqueleto.jsx'
 import ModalCriarGrupo from '../components/ModalCriarGrupo.jsx'
 import ModalEntrarGrupo from '../components/ModalEntrarGrupo.jsx'
 import ModalConvite from '../components/ModalConvite.jsx'
@@ -24,7 +26,9 @@ export default function Home() {
   const [contagens, setContagens] = useState({}) // { idGrupo: nº de pedidos } dos grupos em que sou admin
   const [versao, setVersao] = useState(0) // somar 1 busca tudo de novo, sem piscar a tela
   const [carregando, setCarregando] = useState(true)
-  const [erro, setErro] = useState('')
+  const [carregou, setCarregou] = useState(false) // já há dados para mostrar
+  const [falha, setFalha] = useState(null) // a última busca falhou
+  const [erro, setErro] = useState('') // falha ao cancelar ou dispensar um pedido
   const [modal, setModal] = useState(null) // 'adicionar' | 'criar' | 'entrar' | null
   // A aba aberta fica no endereço (/?aba=presentes): assim, quem sai para a lista
   // de alguém e toca em voltar cai na mesma aba.
@@ -79,19 +83,26 @@ export default function Home() {
         supabase.rpc('meus_pedidos'),
         supabase.rpc('contagem_pedidos'),
       ])
-      const falha = resGrupos.error || resEscolhas.error || resPedidos.error || resContagens.error
-      if (falha) setErro(mensagemDeErro(falha))
-      else {
+      const falhaBusca = resGrupos.error || resEscolhas.error || resPedidos.error || resContagens.error
+      setFalha(falhaBusca)
+      if (!falhaBusca) {
         setGrupos(resGrupos.data.map((linha) => linha.grupo))
         setEscolhas(resEscolhas.data)
         setPedidos(resPedidos.data)
         setContagens(Object.fromEntries(resContagens.data.map((c) => [c.id_grupo, c.total])))
         setErro('')
+        setCarregou(true)
       }
       setCarregando(false)
     }
     buscar()
   }, [usuario.id, versao])
+
+  const tentarDeNovo = useCallback(() => {
+    setFalha(null)
+    setCarregando(true)
+    atualizar()
+  }, [atualizar])
 
   // Cancelar um pedido pendente ou dispensar o aviso de recusa
   async function descartarPedido(idPedido) {
@@ -126,22 +137,33 @@ export default function Home() {
           Olá{primeiroNome && <>, <span className="font-bold text-destaque">{primeiroNome}</span></>}
         </h1>
 
-        {erro && <p role="alert" className="mb-4 rounded-campo bg-negativo-claro px-3 py-2 text-apoio text-negativo">{erro}</p>}
+        {/* Com dados na tela, a falha de uma atualização só avisa: a lista continua visível */}
+        {(erro || (falha && carregou)) && (
+          <p role="alert" className="mb-4 rounded-campo bg-negativo-claro px-3 py-2 text-apoio text-negativo">
+            {erro || mensagemDeErro(falha)}
+          </p>
+        )}
 
         {/* Um card só, com as duas listas em abas (mesmo padrão da tela do Grupo).
             O número em cada aba mostra o que tem na outra sem precisar abrir. */}
         <Painel>
           <Abas
             abas={[
-              { id: 'grupos', rotulo: carregando ? 'Grupos' : `Grupos (${grupos.length})` },
-              { id: 'presentes', rotulo: carregando ? 'Vou comprar' : `Vou comprar (${escolhas.length})` },
+              { id: 'grupos', rotulo: carregou ? `Grupos (${grupos.length})` : 'Grupos' },
+              { id: 'presentes', rotulo: carregou ? `Vou comprar (${escolhas.length})` : 'Vou comprar' },
             ]}
             ativa={aba}
             onTrocar={trocarAba}
           />
 
           <div className="mt-4">
-            {aba === 'grupos' ? (
+            {falha && !carregou ? (
+              <EstadoDeErro
+                falha={falha}
+                acao={aba === 'grupos' ? 'carregar seus grupos' : 'carregar seus presentes'}
+                onTentar={tentarDeNovo}
+              />
+            ) : aba === 'grupos' ? (
               <ListaGrupos
                 grupos={grupos}
                 pedidos={pedidos}
@@ -172,7 +194,7 @@ export default function Home() {
 }
 
 function ListaGrupos({ grupos, pedidos, contagens, onDescartarPedido, carregando, idUsuario, onAdicionar, onCriar, onEntrar }) {
-  if (carregando) return <Esqueleto />
+  if (carregando) return <EsqueletoCartoes />
 
   // Pedidos ficam antes dos grupos, separados: eles ainda não abrem nada
   const blocoPedidos = pedidos.length > 0 && (
@@ -290,7 +312,7 @@ function OpcaoGrupo({ icone: Icone, cor, titulo, children, onClick }) {
 // Presentes que escolhi comprar, separados por grupo (na ordem em que aparecem:
 // o grupo com a escolha mais recente vem primeiro)
 function ListaPresentes({ escolhas, carregando }) {
-  if (carregando) return <Esqueleto />
+  if (carregando) return <EsqueletoCartoes />
   if (escolhas.length === 0) {
     return <Vazio>Quando você marcar “vou comprar” num presente da lista de alguém, ele aparece aqui.</Vazio>
   }
@@ -340,7 +362,7 @@ function CartaoLink({ to, state, children }) {
     <Link
       to={to}
       state={state}
-      className="flex min-h-[63px] items-center gap-3 rounded-2xl border border-borda bg-elevado px-4 py-3 transition-colors hover:border-controle focus-visible:outline-2 focus-visible:outline-destaque"
+      className="flex min-h-[3.9375rem] items-center gap-3 rounded-2xl border border-borda bg-elevado px-4 py-3 transition-colors hover:border-controle focus-visible:outline-2 focus-visible:outline-destaque"
     >
       {children}
       <IconeSeta className="ml-auto h-4 w-4 shrink-0 text-suave" />
@@ -350,14 +372,4 @@ function CartaoLink({ to, state, children }) {
 
 function Vazio({ children }) {
   return <p className="rounded-2xl border border-dashed border-controle px-4 py-3 text-apoio text-suave">{children}</p>
-}
-
-// Enquanto carrega: barras cinza no tamanho dos cartões
-function Esqueleto() {
-  return (
-    <div className="flex flex-col gap-2" aria-label="Carregando">
-      <div className="h-[63px] rounded-2xl bg-ativo" />
-      <div className="h-[63px] rounded-2xl bg-ativo" />
-    </div>
-  )
 }
