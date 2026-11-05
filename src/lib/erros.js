@@ -3,8 +3,8 @@
 const porCodigo = {
   invalid_credentials: 'E-mail ou senha incorretos.',
   email_not_confirmed: 'Confirme seu e-mail antes de entrar (veja sua caixa de entrada).',
-  user_already_exists: 'Já existe uma conta com este e-mail. Entre pela tela de login ou use outro e-mail.',
-  email_exists: 'Já existe uma conta com este e-mail. Entre pela tela de login ou use outro e-mail.',
+  user_already_exists: 'Já existe uma conta com este e-mail. Entre na sua conta ou use outro e-mail.',
+  email_exists: 'Já existe uma conta com este e-mail. Entre na sua conta ou use outro e-mail.',
   weak_password: 'Senha fraca: use pelo menos 8 caracteres.',
   same_password: 'A nova senha precisa ser diferente da atual.',
   over_email_send_rate_limit: 'Muitos e-mails enviados. Aguarde alguns minutos e tente de novo.',
@@ -13,9 +13,9 @@ const porCodigo = {
   validation_failed: 'Este e-mail não parece válido. Confira se está escrito certo (ex.: nome@exemplo.com).',
   email_provider_disabled: 'Cadastro por e-mail desativado no momento. Tente mais tarde.',
   signup_disabled: 'Novos cadastros estão desativados no momento. Tente mais tarde.',
-  session_not_found: 'Sua sessão expirou. Entre novamente.',
+  session_not_found: 'Por segurança, entre na sua conta de novo.',
   // Erros do banco (Postgres)
-  23505: 'Esse registro já existe.',
+  23505: 'Isso já foi salvo. Atualize a tela para conferir.',
   23514: 'Algum texto ficou longo demais. Encurte e tente de novo.', // limite de tamanho do banco
   42501: 'Você não tem permissão para fazer isso.',
 }
@@ -50,7 +50,7 @@ export function mensagemDeErro(erro) {
   if (porCodigo[erro.code]) return porCodigo[erro.code]
   // P0001 = mensagem escrita por nós nas funções do banco (já em português)
   if (erro.code === 'P0001') return erro.message
-  if (ehFalhaDeConexao(erro)) return 'Sem conexão com o servidor. Confira sua internet e tente de novo.'
+  if (ehFalhaDeConexao(erro)) return 'Sem conexão. Confira sua internet e tente de novo.'
   console.error(erro) // ajuda a investigar erros que ainda não traduzimos
   return 'Não foi possível concluir agora. Espere um instante e tente de novo.'
 }

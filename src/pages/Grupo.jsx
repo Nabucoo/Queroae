@@ -18,9 +18,11 @@ import PedidosEntrada from '../components/PedidosEntrada.jsx'
 import { Aviso } from '../components/TelaAuth.jsx'
 import { IconeCompartilhar, IconeConfig, IconeConfirmar, IconeCopiar, IconeLixeira, IconePessoaMenos, IconeSair, IconeVoltar } from '../components/Icones.jsx'
 
-// presente(count): quantos presentes cada um tem (para o card fechado)
+// Os presentes de cada um e as escolhas, para o resumo do card fechado.
+// REGRA DA SURPRESA: a linha da própria pessoa também vem, mas o banco não entrega
+// as escolhas dos presentes dela, e ela não tem card na aba Integrantes.
 function pedirIntegrantes(idGrupo) {
-  return supabase.from('usuario_grupo').select('id_usuario_grupo, id_usuario, usuario(nome), presente(count)')
+  return supabase.from('usuario_grupo').select('id_usuario_grupo, id_usuario, usuario(nome), presente(id_presente, escolha_presente(id_escolha_presente))')
     .eq('id_grupo', idGrupo).order('created_at')
 }
 
@@ -129,7 +131,8 @@ export default function Grupo() {
   const souAdmin = grupo.id_admin === usuario.id
   // Minha "participação" neste grupo: é a ela que meus presentes ficam ligados
   const minhaParticipacao = integrantes.find((p) => p.id_usuario === usuario.id)
-  // Na aba Integrantes aparecem só os outros (sua lista fica na aba "Minha lista")
+  // A lista mostra só os outros (sua lista fica na aba "Minha lista"), mas o número da
+  // aba é o total do grupo, com você incluído, igual ao da Home.
   const outros = integrantes.filter((p) => p.id_usuario !== usuario.id)
   const acaoTopo = souAdmin ? (
     <BotaoIcone rotulo="Editar grupo" onClick={() => setModal('editar')}>
@@ -213,7 +216,7 @@ export default function Grupo() {
       <Painel className="mt-8">
         <Abas
           abas={[
-            { id: 'integrantes', rotulo: `Integrantes (${outros.length})` },
+            { id: 'integrantes', rotulo: `Integrantes (${integrantes.length})` },
             { id: 'lista', rotulo: 'Minha lista de presentes' },
           ]}
           ativa={aba}

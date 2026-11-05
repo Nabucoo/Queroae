@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { mensagemDeErro } from '../lib/erros.js'
+import AvisoFlutuante, { useAvisoFlutuante } from './AvisoFlutuante.jsx'
 import CartaoPresente from './CartaoPresente.jsx'
 import EstadoDeErro from './EstadoDeErro.jsx'
 import { EsqueletoPresentes } from './Esqueleto.jsx'
@@ -20,6 +21,7 @@ export default function MinhaLista({ idUsuarioGrupo }) {
   // null = fechado; { presente: null } = novo; { presente } = editando
   const [editor, setEditor] = useState(null)
   const [removendo, setRemovendo] = useState(null) // presente a remover
+  const [aviso, mostrarAviso] = useAvisoFlutuante()
 
   useEffect(() => {
     async function buscar() {
@@ -47,6 +49,7 @@ export default function MinhaLista({ idUsuarioGrupo }) {
       editando ? atual.map((p) => (p.id_presente === salvo.id_presente ? salvo : p)) : [...atual, salvo],
     )
     setEditor(null)
+    mostrarAviso(editando ? 'Alterações salvas' : `“${salvo.nome}” foi adicionado à sua lista`)
   }
 
   async function remover() {
@@ -55,6 +58,7 @@ export default function MinhaLista({ idUsuarioGrupo }) {
     if (error) return mensagemDeErro(error)
     if (data.length === 0) return 'Não foi possível remover este presente.'
     setPresentes((atual) => atual.filter((p) => p.id_presente !== removendo.id_presente))
+    mostrarAviso(`“${removendo.nome}” foi removido da sua lista`)
     setRemovendo(null)
   }
 
@@ -96,7 +100,6 @@ export default function MinhaLista({ idUsuarioGrupo }) {
           idUsuarioGrupo={idUsuarioGrupo}
           onFechar={() => setEditor(null)}
           onSalvo={aoSalvar}
-          onPedirRemocao={() => { setRemovendo(editor.presente); setEditor(null) }}
         />
       )}
 
@@ -110,6 +113,8 @@ export default function MinhaLista({ idUsuarioGrupo }) {
       >
         <p><strong>{removendo?.nome}</strong> vai sair da sua lista.</p>
       </ModalConfirmar>
+
+      <AvisoFlutuante aviso={aviso} />
     </div>
   )
 }

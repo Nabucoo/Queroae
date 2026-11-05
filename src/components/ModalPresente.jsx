@@ -6,10 +6,10 @@ import Modal from './Modal.jsx'
 import Campo from './Campo.jsx'
 import Botao from './Botao.jsx'
 import { Aviso } from './TelaAuth.jsx'
-import { IconeConfirmar, IconeLixeira, IconeMais } from './Icones.jsx'
+import { IconeConfirmar, IconeMais } from './Icones.jsx'
 
 // Serve para ADICIONAR (presente = null) e para EDITAR (presente = o presente).
-export default function ModalPresente({ presente, idUsuarioGrupo, onFechar, onSalvo, onPedirRemocao }) {
+export default function ModalPresente({ presente, idUsuarioGrupo, onFechar, onSalvo }) {
   const editando = Boolean(presente)
   const [nome, setNome] = useState(presente?.nome ?? '')
   const [descricao, setDescricao] = useState(presente?.descricao ?? '')
@@ -48,15 +48,11 @@ export default function ModalPresente({ presente, idUsuarioGrupo, onFechar, onSa
           value={nome} onChange={(e) => setNome(e.target.value)} />
         <Campo rotulo="Descrição" opcional multilinha maxLength={500} placeholder="Cor, tamanho, modelo…"
           value={descricao} onChange={(e) => setDescricao(e.target.value)} />
-        <Campo rotulo="Link de referência" opcional inputMode="url" autoComplete="off" maxLength={2000}
+        <Campo rotulo="Link do presente" opcional inputMode="url" autoComplete="off" maxLength={2000}
           placeholder="https://" value={link} onChange={(e) => setLink(e.target.value)} />
         <Aviso>{erro}</Aviso>
         <div className="mt-2 flex flex-wrap justify-end gap-3">
-          {editando ? (
-            <Botao variante="perigo" icone={IconeLixeira} className="mr-auto" onClick={onPedirRemocao}>Remover</Botao>
-          ) : (
-            <Botao variante="secundario" onClick={onFechar}>Cancelar</Botao>
-          )}
+          <Botao variante="secundario" onClick={onFechar}>Cancelar</Botao>
           <Botao type="submit" icone={editando ? IconeConfirmar : IconeMais} disabled={enviando}>
             {enviando ? 'Salvando…' : editando ? 'Salvar' : 'Adicionar'}
           </Botao>

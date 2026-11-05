@@ -9,6 +9,7 @@ import EstadoDeErro from '../components/EstadoDeErro.jsx'
 import { Barra, Carregando, EsqueletoPresentes } from '../components/Esqueleto.jsx'
 import ListaDoIntegrante from '../components/ListaDoIntegrante.jsx'
 import MinhaLista from '../components/MinhaLista.jsx'
+import { resumoPresentes } from '../lib/resumoPresentes.js'
 import { IconeVoltar } from '../components/Icones.jsx'
 
 export default function Integrante() {
@@ -87,7 +88,7 @@ export default function Integrante() {
                   {integrante.usuario.nome}
                   {ehVoce && <span className="font-normal text-suave"> (você)</span>}
                 </h1>
-                {!ehVoce && presentes && <p className="mt-1 text-apoio text-suave">{resumo(presentes)}</p>}
+                {!ehVoce && presentes && <p className="mt-1 text-apoio text-suave">{resumoPresentes(presentes)}</p>}
               </div>
             </div>
 
@@ -109,14 +110,4 @@ export default function Integrante() {
       </main>
     </div>
   )
-}
-
-// "3 presentes · 1 ainda livre"
-function resumo(presentes) {
-  const total = presentes.length
-  if (total === 0) return 'Nenhum presente na lista'
-  const livres = presentes.filter((p) => !p.escolha).length
-  const parte1 = total === 1 ? '1 presente' : `${total} presentes`
-  const parte2 = livres === 0 ? 'todos já escolhidos' : livres === 1 ? '1 ainda livre' : `${livres} ainda livres`
-  return `${parte1} · ${parte2}`
 }

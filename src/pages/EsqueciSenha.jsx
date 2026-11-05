@@ -26,13 +26,13 @@ export default function EsqueciSenha() {
     else setEnviado(true)
   }
 
-  const voltar = <Link to="/login" className="font-medium text-destaque hover:underline">Voltar para o login</Link>
+  const voltar = <Link to="/login" className="font-medium text-destaque hover:underline">Voltar para a tela de entrada</Link>
 
   if (enviado) {
     return (
       <TelaAuth
         titulo="Confira seu e-mail"
-        voltar={{ para: '/login', rotulo: 'Voltar para o login' }}
+        voltar={{ para: '/login', rotulo: 'Voltar para a tela de entrada' }}
         subtitulo={`Se existir uma conta com ${email}, você vai receber um link para criar uma nova senha.`}
         rodape={voltar}
       />
@@ -42,7 +42,7 @@ export default function EsqueciSenha() {
   return (
     <TelaAuth
       titulo="Esqueceu a senha?"
-      voltar={{ para: '/login', rotulo: 'Voltar para o login' }}
+      voltar={{ para: '/login', rotulo: 'Voltar para a tela de entrada' }}
       subtitulo="Digite seu e-mail e enviaremos um link para você criar uma nova."
       rodape={voltar}
     >

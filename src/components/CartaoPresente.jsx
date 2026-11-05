@@ -22,7 +22,7 @@ export default function CartaoPresente({ presente, acoes, riscado = false, rodap
             rel="noopener noreferrer" // a página aberta não consegue mexer na nossa
             className="mt-2 inline-block text-corpo font-medium text-destaque hover:underline"
           >
-            Ver referência em {dominio(presente.link)}
+            Ver em {dominio(presente.link)}
           </a>
         )}
         {rodape}

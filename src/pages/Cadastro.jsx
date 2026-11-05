@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { supabase } from '../lib/supabase.js'
 import { campoDoErro, mensagemDeErro } from '../lib/erros.js'
 import { lerConvitePendente } from '../lib/convitePendente.js'
+import { guardarRascunhoCadastro, lerRascunhoCadastro, limparRascunhoCadastro } from '../lib/rascunhoCadastro.js'
 import TelaAuth, { Aviso } from '../components/TelaAuth.jsx'
 import Campo from '../components/Campo.jsx'
 import Botao from '../components/Botao.jsx'
@@ -14,14 +15,18 @@ export default function Cadastro() {
   const voltar = convite
     ? { para: `/convite/${convite}`, rotulo: 'Voltar para o convite' }
     : { para: '/boas-vindas', rotulo: 'Voltar para o início' }
-  const [nome, setNome] = useState('')
-  const [email, setEmail] = useState('')
-  const [senha, setSenha] = useState('')
-  const [confirmar, setConfirmar] = useState('')
+  // Quem foi ler a política volta com o formulário como deixou
+  const [nome, setNome] = useState(() => lerRascunhoCadastro()?.nome ?? '')
+  const [email, setEmail] = useState(() => lerRascunhoCadastro()?.email ?? '')
+  const [senha, setSenha] = useState(() => lerRascunhoCadastro()?.senha ?? '')
+  const [confirmar, setConfirmar] = useState(() => lerRascunhoCadastro()?.confirmar ?? '')
   const [erros, setErros] = useState({}) // erro de cada campo: { email: '...', senha: '...' }
   const [erroGeral, setErroGeral] = useState('') // erro que não é de nenhum campo (ex.: sem internet)
   const [enviando, setEnviando] = useState(false)
   const [confirmarEmail, setConfirmarEmail] = useState(false)
+
+  // Só vale para esta volta: se a pessoa sair e abrir o cadastro depois, começa vazio
+  useEffect(() => limparRascunhoCadastro(), [])
 
   // Para levar o foco ao primeiro campo com erro (na ordem da tela)
   const refNome = useRef(null)
@@ -84,7 +89,7 @@ export default function Cadastro() {
         subtitulo={convite
           ? `Enviamos um link de confirmação para ${email}. Clique nele para continuar seu convite. Se o app pedir, entre com sua senha.`
           : `Enviamos um link de confirmação para ${email}. Clique nele e depois entre com sua senha.`}
-        rodape={<Link to="/login" className="font-medium text-destaque hover:underline">Voltar para o login</Link>}
+        rodape={<Link to="/login" className="font-medium text-destaque hover:underline">Voltar para a tela de entrada</Link>}
       />
     )
   }
@@ -98,7 +103,7 @@ export default function Cadastro() {
           <p className="text-suave">
             Já tem conta? <Link to="/login" className="font-medium text-destaque hover:underline">Entrar</Link>
           </p>
-          <Link to="/privacidade" state={{ de: 'cadastro' }} className="text-nota font-medium text-destaque hover:underline">Política de privacidade</Link>
+          <Link to="/privacidade" state={{ de: 'cadastro' }} onClick={() => guardarRascunhoCadastro({ nome, email, senha, confirmar })} className="text-nota font-medium text-destaque hover:underline">Política de privacidade</Link>
         </>
       }
     >

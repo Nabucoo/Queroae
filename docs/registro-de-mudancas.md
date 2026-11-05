@@ -6,6 +6,210 @@ Entradas da mais recente para a mais antiga.
 
 <!-- Novas entradas entram logo abaixo desta linha. -->
 
+## Mudança 29: Cadastro mantém o que foi digitado ao abrir a política de privacidade
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/lib/rascunhoCadastro.js` (novo), `src/pages/Cadastro.jsx`
+
+### Problema (antes)
+Quem abria a política de privacidade durante o cadastro perdia tudo o que tinha digitado ao voltar. Isso punia justamente quem queria ler sobre os próprios dados antes de criar a conta (**H5**, **H3**).
+
+### O que foi alterado (depois)
+- Ao abrir a política pelo cadastro, o formulário guarda nome, e-mail, senha e confirmação. Ao voltar, os campos aparecem como estavam.
+- O rascunho vale só para essa volta. Se a pessoa sair e abrir o cadastro depois, ele começa vazio.
+
+### Heurísticas e princípios considerados
+- **H5 – Prevenção de erros:** a pessoa não perde o que digitou.
+- **H3 – Controle e liberdade:** dá para sair para ler a política e voltar sem custo.
+- **Recuperabilidade (Dix):** a pessoa continua de onde parou.
+- **Segurança:** a senha fica só na memória da página, e nunca no armazenamento do navegador.
+
+### Trade-offs / heurísticas em tensão
+- **Recarregar a página:** como o rascunho fica só na memória, recarregar na política apaga os campos. Foi aceito para não guardar a senha no aparelho.
+
+### Regra da surpresa
+A mudança é só no cadastro e não envolve listas nem escolhas.
+
+### Como testar
+1. No cadastro, preencher os campos e tocar em "Política de privacidade".
+2. Voltar pela seta: todos os campos continuam preenchidos. Repetir com o voltar do navegador.
+3. Tocar na seta do cadastro para sair e abrir o cadastro de novo: os campos estão vazios.
+4. Conferir que a conta é criada normalmente com os dados restaurados.
+
+## Mudança 28: Mesma contagem de integrantes na Home e no grupo
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/pages/Grupo.jsx`
+
+### Problema (antes)
+Um grupo de 3 pessoas aparecia como "3 integrantes" na Home e "Integrantes (2)" na aba do grupo, porque a aba não contava a própria pessoa. O mesmo dado tinha dois valores (**H4**).
+
+### O que foi alterado (depois)
+- O número da aba passou a ser o total do grupo, com a própria pessoa incluída, igual ao da Home.
+- A lista da aba continua mostrando só as outras pessoas, porque a lista da própria pessoa fica em "Minha lista de presentes".
+
+### Heurísticas e princípios considerados
+- **H4 – Consistência e padrões:** o grupo tem o mesmo número nas duas telas.
+- **Consistência (Dix):** a pessoa não precisa entender duas formas de contar.
+
+### Trade-offs / heurísticas em tensão
+- **Número × linhas da lista:** a aba diz "Integrantes (3)" e mostra 2 cartões. Foi aceito porque o número descreve o grupo, e a própria pessoa tem a aba ao lado. Mostrar um cartão de "você" poderia ser avaliado depois.
+
+### Regra da surpresa
+A contagem é só de pessoas e não envolve presentes nem escolhas.
+
+### Como testar
+1. Na Home, ver quantos integrantes o grupo tem.
+2. Abrir o grupo: a aba mostra o mesmo número.
+3. Em um grupo só com você, a Home e a aba mostram 1, e a lista explica que só você está no grupo.
+4. Como admin, aprovar um pedido: o número aumenta em 1.
+
+## Mudança 27: Termos técnicos trocados por palavras do dia a dia
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/lib/erros.js`, `src/components/ModalPresente.jsx`, `src/components/CartaoPresente.jsx`, `src/components/TelaAuth.jsx`, `src/pages/NovaSenha.jsx`, `src/pages/EsqueciSenha.jsx`, `src/pages/Cadastro.jsx`
+
+### Problema (antes)
+Algumas mensagens e rótulos usavam palavras de quem desenvolve sistemas, como "registro", "sessão", "servidor" e "login", ou pouco claras, como "referência" (**H2**).
+
+### O que foi alterado (depois)
+| Antes | Depois |
+|---|---|
+| Esse registro já existe. | Isso já foi salvo. Atualize a tela para conferir. |
+| Sua sessão expirou. Entre novamente. | Por segurança, entre na sua conta de novo. |
+| Sem conexão com o servidor. Confira sua internet e tente de novo. | Sem conexão. Confira sua internet e tente de novo. |
+| Entre pela tela de login ou use outro e-mail. | Entre na sua conta ou use outro e-mail. |
+| Voltar para o login | Voltar para a tela de entrada |
+| Link inválido ou expirado | Este link não funciona mais |
+| Link de referência | Link do presente |
+| Ver referência em loja.com.br | Ver em loja.com.br |
+
+### Heurísticas e princípios considerados
+- **H2 – Correspondência com o mundo real:** os textos usam palavras que a pessoa já conhece.
+- **H9 – Reconhecer e recuperar-se de erros:** as mensagens continuam dizendo o que houve e o que fazer, sem termos técnicos.
+- **Familiaridade (Dix):** o conhecimento do dia a dia basta para entender a mensagem.
+
+### Trade-offs / heurísticas em tensão
+- **"admin" e "integrante" mantidos:** "admin" é a mesma palavra dos grupos do WhatsApp, e "integrante" é português comum, que não muda conforme o gênero. Trocá-las afetaria várias telas, sem ganho claro.
+- **"Sem conexão":** a mensagem não distingue a falta de internet de um servidor fora do ar. Ela continua pedindo para conferir a internet e tentar de novo.
+- **"Senha fraca" mantida:** o app já recusa senhas com menos de 8 caracteres antes de enviá-las, então esse aviso só aparece por outros motivos, e trocar para "senha curta" ficaria errado.
+- **Nomes de empresas:** a política de privacidade continua citando Supabase, Vercel e Google, porque a pessoa precisa saber quem trata os dados dela.
+
+### Regra da surpresa
+A mudança é só de texto e não mostra nenhuma informação nova.
+
+### Como testar
+1. Adicionar um presente: o campo se chama "Link do presente". Salvar com um link: o cartão mostra "Ver em" e o nome do site.
+2. No cadastro, usar um e-mail já cadastrado: aparece "Entre na sua conta ou use outro e-mail."
+3. Depois de criar a conta, conferir o link "Voltar para a tela de entrada".
+4. Abrir um link antigo de troca de senha: aparece "Este link não funciona mais".
+5. Sem internet, tentar salvar um presente: aparece "Sem conexão. Confira sua internet e tente de novo."
+
+## Mudança 26: Aviso ao adicionar, editar e remover um presente
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/components/AvisoFlutuante.jsx` (novo), `src/components/MinhaLista.jsx`, `docs/heuristicas-ihc.md`
+
+### Problema (antes)
+Ao adicionar, editar ou remover um presente, a janela fechava e a lista mudava, sem nenhuma mensagem. Numa lista longa, o presente novo podia ficar fora da tela, e uma edição pequena podia passar despercebida. A pessoa ficava sem saber se a ação tinha dado certo (**H1**).
+
+### O que foi alterado (depois)
+- Novo aviso cinza na parte de baixo da tela, com um sinal de confirmação. Ele some sozinho depois de 4 segundos.
+- As mensagens são: "“Tênis de corrida” foi adicionado à sua lista", "Alterações salvas" e "“Tênis de corrida” foi removido da sua lista".
+- Um aviso novo substitui o anterior e recomeça a contagem.
+- A confirmação antes de remover continua igual.
+
+A proposta foi apresentada em mockup com três estilos, e o Lucas escolheu o cinza.
+
+### Heurísticas e princípios considerados
+- **H1 – Visibilidade do status:** toda ação na lista agora tem uma resposta clara, em tempo razoável.
+- **H4 – Consistência e padrões:** o aviso usa a mesma cor dos botões secundários e dos selos, e é um componente reaproveitável.
+- **H8 – Design estético e minimalista:** o cinza não compete com o botão principal da tela, e o aviso some sozinho.
+- **Facilidade de observar (Dix):** a pessoa confirma o resultado sem precisar procurar o presente na lista.
+- **Acessibilidade:** o aviso é anunciado por leitores de tela com `role="status"`. O contraste do texto é de 14:1 no tema claro e de 10,8:1 no escuro. A animação é desligada para quem pediu menos movimento, e a mensagem acompanha o tamanho do texto.
+
+### Trade-offs / heurísticas em tensão
+- **Discrição × atenção:** o cinza chama menos atenção que o preto. Foi aceito porque é só uma confirmação. A sombra e o sinal ajudam a separá-lo da tela.
+- **Tempo limitado:** quem lê devagar pode não terminar antes de o aviso sumir. Foi aceito porque a lista também mostra o resultado, e o leitor de tela anuncia o texto.
+- **Desfazer:** o aviso não tem "Desfazer" ao remover. Remover apaga também a escolha de quem ia comprar, e recuperá-la exigiria atrasar a remoção. Fica como possível melhoria da H3.
+- **Troca de aba:** se a pessoa trocar de aba logo depois da ação, o aviso some antes dos 4 segundos.
+
+### Regra da surpresa
+O aviso só confirma a ação que a própria pessoa fez na própria lista. Ele não consulta as escolhas e não diz nada sobre quem escolheu um presente.
+
+### Como testar
+1. Em "Minha lista de presentes", adicionar um presente: aparece o aviso com o nome dele, que some depois de 4 segundos.
+2. Editar um presente e salvar: aparece "Alterações salvas".
+3. Tocar em "Cancelar" na edição: nenhum aviso aparece.
+4. Remover um presente e confirmar: aparece o aviso com o nome. Ao cancelar a remoção, nada aparece.
+5. Fazer duas ações seguidas: o segundo aviso substitui o primeiro.
+6. Com uma lista longa, conferir que o aviso aparece mesmo com a tela rolada.
+7. Conferir nos temas claro e escuro, e em "Muito grande".
+
+## Mudança 25: "3 presentes · 1 livre" no cartão de cada integrante
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/lib/resumoPresentes.js` (novo), `src/components/CartaoIntegrante.jsx`, `src/pages/Grupo.jsx`, `src/pages/Integrante.jsx`
+
+### Problema (antes)
+O cartão de um integrante mostrava só quantos presentes a pessoa tinha. Para descobrir se ainda havia algo para escolher, era preciso abrir a lista de cada um (**H6**).
+
+### O que foi alterado (depois)
+- O cartão passou a mostrar o resumo: "3 presentes · 1 livre", "3 presentes · 2 livres", "3 presentes · todos escolhidos" ou "Nenhum presente". Com um único presente, aparece "1 presente · 1 livre" ou "1 presente · já escolhido".
+- O resumo muda na hora ao marcar ou desmarcar "Vou comprar" com o cartão aberto.
+- A tela do integrante passou a usar o mesmo texto, no lugar de "1 ainda livre" e "todos já escolhidos".
+
+### Heurísticas e princípios considerados
+- **H6 – Reconhecer em vez de lembrar:** a informação fica visível, sem abrir cada lista.
+- **H1 – Visibilidade do status:** a pessoa vê a situação de cada lista, e o número acompanha o que ela marca.
+- **H7 – Flexibilidade e eficiência:** dá para ir direto a quem ainda tem presentes livres.
+- **H4 – Consistência e padrões:** o mesmo resumo aparece no cartão e na tela do integrante.
+
+### Trade-offs / heurísticas em tensão
+- **Mais dados na busca:** para saber o que está livre, o grupo agora busca os presentes e as escolhas de todos, e não só a contagem. Foi aceito porque cada lista costuma ser pequena.
+- **Número desatualizado:** se outra pessoa marcar um presente enquanto a tela está aberta, o resumo só muda quando o grupo for aberto de novo ou o cartão for aberto.
+
+### Regra da surpresa
+O resumo aparece só para os outros integrantes. A pessoa não tem cartão na própria aba Integrantes, a tela dela não mostra o resumo, e a "Minha lista" não consulta as escolhas. Mesmo que a linha da própria pessoa venha na busca, o banco não entrega ao dono as escolhas dos presentes dele, pela política "escolha: integrantes veem, menos o dono".
+
+### Como testar
+1. Abrir um grupo com outras pessoas: cada cartão mostra o resumo.
+2. Abrir um cartão e marcar "Vou comprar": o número de livres diminui na hora. Tocar em "Desmarcar": ele volta.
+3. Marcar todos os presentes de alguém: aparece "todos escolhidos".
+4. Com outra conta, a do dono da lista, abrir o grupo: não há resumo da própria lista em lugar nenhum.
+5. Testar com uma pessoa sem presentes: aparece "Nenhum presente".
+
+## Mudança 24: "Cancelar" no lugar de "Remover" ao editar um presente
+
+**Data:** 2026-11-05
+**Telas/arquivos alterados:** `src/components/ModalPresente.jsx`, `src/components/MinhaLista.jsx`
+
+### Problema (antes)
+Ao editar um presente, a janela não tinha "Cancelar": no lugar dele estava "Remover". Quem queria só desistir da alteração via uma ação destrutiva naquela posição (**H3**, **H4**). "Remover" também aparecia duas vezes, na janela e no cartão do presente (**H8**).
+
+### O que foi alterado (depois)
+- A janela de editar presente passou a ter "Cancelar", cinza, igual à janela de adicionar. Ele fecha sem salvar e descarta o que foi alterado.
+- "Remover" saiu da janela e continua no cartão do presente, com a confirmação de sempre.
+
+### Heurísticas e princípios considerados
+- **H3 – Controle e liberdade:** a pessoa tem uma saída clara para desistir da alteração.
+- **H4 – Consistência e padrões:** as janelas de adicionar e de editar têm os mesmos botões, nos mesmos lugares.
+- **H5 – Prevenção de erros:** a ação destrutiva sai de perto de "Salvar", o que reduz o risco de um toque errado.
+- **H8 – Design estético e minimalista:** some o "Remover" duplicado.
+
+### Trade-offs / heurísticas em tensão
+- **Perda de um caminho:** quem está na janela de edição precisa fechá-la para remover o presente. Foi aceito porque o cartão está logo atrás e mostra "Remover" sempre.
+- **Cancelar sem aviso:** "Cancelar" descarta a alteração sem perguntar, como pedido. Avisar antes de descartar continua como possível melhoria da H5.
+
+### Regra da surpresa
+A mudança é só nos botões da própria lista e não mostra nenhuma informação sobre escolhas.
+
+### Como testar
+1. Em "Minha lista de presentes", tocar em "Editar": a janela mostra "Cancelar" e "Salvar".
+2. Alterar o nome e tocar em "Cancelar": a janela fecha, e o nome continua o mesmo.
+3. Abrir de novo: o campo mostra o nome original.
+4. Tocar em "Remover" no cartão: aparece a confirmação, e o presente sai da lista.
+
 ## Mudança 23: Carregamento com esqueleto e falta de internet reconhecida
 
 **Data:** 2026-11-05

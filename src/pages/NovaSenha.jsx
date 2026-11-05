@@ -37,8 +37,8 @@ export default function NovaSenha() {
   if (!sessao) {
     return (
       <TelaAuth
-        titulo="Link inválido ou expirado"
-        voltar={{ para: '/login', rotulo: 'Voltar para o login' }}
+        titulo="Este link não funciona mais"
+        voltar={{ para: '/login', rotulo: 'Voltar para a tela de entrada' }}
         subtitulo="Peça um novo link para criar sua senha."
         rodape={<Link to="/esqueci-senha" className="font-medium text-destaque hover:underline">Pedir novo link</Link>}
       />

@@ -3,7 +3,7 @@ import Cabecalho, { BotaoIcone } from './Cabecalho.jsx'
 import { IconeVoltar } from './Icones.jsx'
 
 // Moldura comum das telas de login, cadastro, senha e "página não encontrada".
-// voltar={{ para: '/login', rotulo: 'Voltar para o login' }} mostra a seta de
+// voltar={{ para: '/login', rotulo: 'Voltar para a tela de entrada' }} mostra a seta de
 // voltar no topo: a saída visível para quem entrou na tela errada.
 // O cabeçalho fica preso no topo (igual às telas logadas) e o conteúdo vem logo
 // abaixo, com um espaço fixo: assim ele não fica solto no meio de celulares altos
